@@ -1,0 +1,48 @@
+<section class="perf-chart" [attr.aria-label]="title" role="group">
+  <header class="chart-head">
+    <ng-container [ngSwitch]="a11y.headingLevel || 2">
+      <h2 *ngSwitchCase="2" class="chart-title">{{ title }}</h2>
+      <h1 *ngSwitchCase="1" class="chart-title">{{ title }}</h1>
+      <h3 *ngSwitchCase="3" class="chart-title">{{ title }}</h3>
+      <h4 *ngSwitchCase="4" class="chart-title">{{ title }}</h4>
+      <h5 *ngSwitchCase="5" class="chart-title">{{ title }}</h5>
+      <h6 *ngSwitchCase="6" class="chart-title">{{ title }}</h6>
+    </ng-container>
+    <p *ngIf="subtitle" class="chart-sub">{{ subtitle }}</p>
+  </header>
+
+  <div class="controls" aria-label="Display options">
+    <fieldset>
+      <legend>Values</legend>
+      <label><input type="checkbox" [checked]="showActualLine()" (change)="toggle('actualLine')"> Actual line</label>
+      <label><input type="checkbox" [checked]="showTargetLine()" (change)="toggle('targetLine')"> Target line</label>
+      <label><input type="checkbox" [checked]="showActualValues()" (change)="toggle('actualValues')"> Actual label</label>
+      <label><input type="checkbox" [checked]="showTargetValues()" (change)="toggle('targetValues')"> Target label</label>
+      <label><input type="checkbox" [checked]="fillActual()" (change)="toggle('fillActual')"> Actual fill</label>
+      <label><input type="checkbox" [checked]="fillTarget()" (change)="toggle('fillTarget')"> Target fill</label>
+      <label><input type="checkbox" [checked]="showTooltipVisual()" (change)="toggle('tooltipVisual')"> Tooltip visible</label>
+    </fieldset>
+  </div>
+
+  <div class="chart-container" role="img" aria-label="Performance chart" [attr.aria-describedby]="descIds()" >
+    <div class="chart-focus-layer" tabindex="0" (keydown)="onKeydown($event)" (focus)="onFocus()" (blur)="onBlur()" aria-roledescription="interactive time series" [attr.aria-label]="'Use Left and Right Arrow keys to move across years. Home jumps to first year. End jumps to last year. Current index '+ (focusedIndex()+1) + ' of ' + years().length + '.'"></div>
+    <div echarts [options]="chartOptions()" (chartInit)="onChartInit($event)"></div>
+  </div>
+  <p id="chartKeyboardHelp" class="sr-only">Keyboard guidance: focus the chart then use Left and Right Arrow keys to move through years; Home jumps to first year; End jumps to last year. Tooltip content is announced as you navigate.</p>
+
+  <div class="sr-only" aria-live="polite">{{ liveMessage() }}</div>
+
+  <table *ngIf="a11y.showTable !== false" id="perfChartData" class="sr-only">
+    <caption>Underlying data values, actual and target performance percentages by year.</caption>
+    <thead>
+      <tr><th scope="col">Year</th><th scope="col">Actual %</th><th scope="col">Target %</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let row of data">
+        <th scope="row">{{ row.year }}</th>
+        <td>{{ formatForTable(row.actual) }}</td>
+        <td>{{ formatForTable(row.target) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>

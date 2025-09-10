@@ -1,0 +1,237 @@
+@use 'sass:color';
+
+.perf-chart {
+    max-width: 960px;
+    margin: 1.5rem auto 3rem;
+    padding: 0 1rem 1.5rem;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+.chart-head {
+    margin-bottom: .5rem;
+}
+
+.chart-title {
+    font-size: 1.1rem;
+    margin: 0 0 .15rem;
+}
+
+.chart-sub {
+    margin: 0 0 .75rem;
+    font-size: .8rem;
+    color: #444;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin: .25rem 0 1rem;
+}
+
+.controls fieldset {
+    border: 1px solid #d5d5d5;
+    border-radius: 6px;
+    padding: .6rem .9rem .85rem;
+    min-width: 200px;
+}
+
+.controls legend {
+    font-weight: 600;
+    font-size: .8rem;
+    padding: 0 .25rem;
+}
+
+.controls label {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .72rem;
+    line-height: 1.05;
+    margin-top: .35rem;
+}
+
+.controls input[type=checkbox] {
+    width: .9rem;
+    height: .9rem;
+}
+
+.controls input[type=checkbox]:focus-visible {
+    outline: 2px solid #1e62d0;
+    outline-offset: 2px;
+}
+
+.chart-container {
+    height: 400px;
+    position: relative;
+}
+
+.chart-container>div {
+    height: 100%;
+}
+
+.chart-container .chart-focus-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    outline: none;
+    pointer-events: none;
+    /* allow mouse interactions to reach chart */
+}
+
+.chart-container .chart-focus-layer:focus-visible {
+    outline: 3px solid #1e62d0;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(30, 98, 208, 0.35);
+    pointer-events: auto;
+    /* allow focus outline interaction state */
+}
+
+.sr-only {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/*
+   Comprehensive theming tokens for the a11y line chart.
+   Each public option has a CSS variable ("--a11y-line-chart-*") so designers / themes
+   can override without touching TS. The component's resolvedTheme() will read these.
+   You can scope overrides either globally (:root) or within a container that
+   applies the .a11y-line-chart-theme class (see duplicate block below for scoping).
+
+   NOTE: Legacy short variables (--actual-line, etc.) are retained as aliases so any
+   earlier experimentation still works; they now simply forward to the new names.
+*/
+:root, .a11y-line-chart-theme {
+    /* Core line + area colors */
+    --a11y-line-chart-actual-color: #1e62d0;
+    --a11y-line-chart-actual-fill: #87B0FF;
+    --a11y-line-chart-actual-fill-opacity: 1; /* 0–1 */
+
+    --a11y-line-chart-target-color: #c1a100;
+    --a11y-line-chart-target-fill: #e8dca4;
+    --a11y-line-chart-target-fill-opacity: 1; /* 0–1 */
+
+    /* Focus (axis pointer) line */
+    --a11y-line-chart-focus-line-color: rgba(0,0,0,0.45);
+    --a11y-line-chart-focus-line-width: 1;  /* px */
+    --a11y-line-chart-focus-line-type: dashed; /* solid | dashed | dotted */
+
+    /* Trend indicator colors + symbols */
+    --a11y-line-chart-trend-up-color: #148f2a;
+    --a11y-line-chart-trend-down-color: #c62828;
+    --a11y-line-chart-trend-equal-color: #444444;
+    --a11y-line-chart-trend-up-symbol: "↑";
+    --a11y-line-chart-trend-down-symbol: "↓";
+    --a11y-line-chart-trend-equal-symbol: "=";
+
+    /* Symbol sizes & point adornments */
+    --a11y-line-chart-actual-symbol-size: 12; /* px */
+    --a11y-line-chart-target-symbol-size: 14; /* px */
+    --a11y-line-chart-point-border-color: #ffffff;
+    --a11y-line-chart-point-border-width: 2; /* px */
+    --a11y-line-chart-point-shadow-color: rgba(0,0,0,0.25);
+    --a11y-line-chart-point-shadow-blur: 4; /* px */
+
+    /* Line stroke */
+    --a11y-line-chart-line-width: 4; /* px */
+
+    /* Emphasis (hover/focus) styles */
+    --a11y-line-chart-emphasis-border-color: #000000;
+    --a11y-line-chart-emphasis-border-width: 2; /* px */
+    --a11y-line-chart-actual-emphasis-fill-color: #1e62d0;
+    --a11y-line-chart-target-emphasis-fill-color: #c1a100;
+    --a11y-line-chart-actual-emphasis-border-color: #000000;
+    --a11y-line-chart-target-emphasis-border-color: #000000;
+
+    /* Line halo/outline */
+    --a11y-line-chart-actual-line-outline-color: #ffffff;
+    --a11y-line-chart-actual-line-outline-width: 6; /* px */
+    --a11y-line-chart-target-line-outline-color: #ffffff;
+    --a11y-line-chart-target-line-outline-width: 6; /* px */
+
+    /* Value label styling */
+    --a11y-line-chart-actual-label-color: #143e82;
+    --a11y-line-chart-target-label-color: #6d5a00;
+    --a11y-line-chart-label-font-size: 11; /* px */
+
+    /* Legacy short aliases (do not remove yet) */
+    --actual-line: var(--a11y-line-chart-actual-color);
+    --actual-fill: var(--a11y-line-chart-actual-fill);
+    --target-line: var(--a11y-line-chart-target-color);
+    --target-fill: var(--a11y-line-chart-target-fill);
+}
+
+/* Custom tooltip */
+.perf-tooltip {
+    font: 600 14px/1.25 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #fff;
+    border: 2px solid #d0d0d0;
+    border-radius: 18px;
+    padding: 16px 20px 18px;
+    /* Single subtle shadow to avoid double-layer with ECharts container */
+    box-shadow: 0 3px 12px rgba(0, 0, 0, .18);
+    min-width: 180px;
+}
+
+.perf-tooltip__year {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.perf-tooltip__row {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 4px 0 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.perf-tooltip__label {
+    font-weight: 500;
+}
+
+.perf-tooltip__value {
+    font-weight: 700;
+}
+
+.perf-tooltip__trend {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.perf-tooltip__diff {
+    display: block;
+    margin-top: 12px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+/* Visually hidden modifier (still occupies minimal space off-screen for SR)
+   We position it off-screen and remove shadow/border to avoid visual artifact. */
+.perf-tooltip--visually-hidden {
+    position: absolute !important;
+    left: -9999px !important;
+    top: auto !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    overflow: hidden !important;
+}
+
+/* modifier classes intentionally inherit base color via inline style */
