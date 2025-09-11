@@ -1,10 +1,16 @@
 @use 'sass:color';
 
+app-a11y-line-chart {
+    display:flex;
+    width:100%;
+}
+
 .perf-chart {
-    max-width: 960px;
+    width:100%;
     margin: 1.5rem auto 3rem;
     padding: 0 1rem 1.5rem;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    box-sizing: border-box;
 }
 
 .chart-head {
@@ -66,6 +72,23 @@
     position: relative;
 }
 
+/* Responsive wrapping: allows horizontal scroll when intrinsic min width exceeds viewport */
+.chart-responsive-viewport {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: .25rem; /* space for possible scrollbar */
+}
+
+.chart-responsive-viewport:focus-visible {
+    outline: 2px solid #1e62d0;
+    outline-offset: 2px;
+}
+
+.chart-resizable { /* min-width applied inline by component for intrinsic layout */
+    position: relative; /* non-empty to satisfy linter */
+}
+
 .chart-container>div {
     height: 100%;
 }
@@ -119,6 +142,12 @@
     --a11y-line-chart-target-fill: #e8dca4;
     --a11y-line-chart-target-fill-opacity: 1; /* 0–1 */
 
+    /* Optional pattern settings (applied if pattern-type != none) */
+    --a11y-line-chart-actual-pattern-type: none; /* none | diagonal | dots | horizontal */
+    --a11y-line-chart-actual-pattern-color: var(--a11y-line-chart-actual-color);
+    --a11y-line-chart-target-pattern-type: none; /* none | diagonal | dots | horizontal */
+    --a11y-line-chart-target-pattern-color: var(--a11y-line-chart-target-color);
+
     /* Focus (axis pointer) line */
     --a11y-line-chart-focus-line-color: rgba(0,0,0,0.45);
     --a11y-line-chart-focus-line-width: 1;  /* px */
@@ -161,6 +190,18 @@
     --a11y-line-chart-actual-label-color: #143e82;
     --a11y-line-chart-target-label-color: #6d5a00;
     --a11y-line-chart-label-font-size: 11; /* px */
+
+    /* Dynamic sizing heuristics (optional) */
+    --a11y-line-chart-per-point-min-width: 70; /* px per data point when dynamicMinWidth */
+    --a11y-line-chart-per-point-max-width: 110; /* px per data point when dynamicMaxWidth */
+
+    /* Axis title styling */
+    --a11y-line-chart-x-axis-title-color: #222222;
+    --a11y-line-chart-x-axis-title-font-size: 12;
+    --a11y-line-chart-x-axis-title-font-weight: 600;
+    --a11y-line-chart-y-axis-title-color: #222222;
+    --a11y-line-chart-y-axis-title-font-size: 12;
+    --a11y-line-chart-y-axis-title-font-weight: 600;
 
     /* Legacy short aliases (do not remove yet) */
     --actual-line: var(--a11y-line-chart-actual-color);
@@ -211,6 +252,20 @@
     font-size: 20px;
     font-weight: 700;
     line-height: 1;
+}
+
+.perf-tooltip__status {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    padding: 4px 8px 5px;
+    border-radius: 10px;
+    background: #555;
+    color: #fff;
+    letter-spacing: .25px;
+    vertical-align: middle;
+    white-space: nowrap;
 }
 
 .perf-tooltip__diff {

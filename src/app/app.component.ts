@@ -62,21 +62,4 @@ export class AppComponent {
     wrapAround: true
   };
 
-  themeConfig = {
-  // Can pass literal colors or CSS variable names ("--token") or full var() expressions
-  // actualColor: '--brand-primary',
-  // actualFill: 'var(--brand-primary-fill)',
-  // targetColor: '--brand-accent',
-  // targetFill: 'rgba(214,175,38,0.30)',
-    actualSymbolSize: 14,
-    targetSymbolSize: 16,
-    pointBorderColor: '#fff',
-    pointBorderWidth: 2,
-    pointShadowColor: 'rgba(0,0,0,0.35)',
-    pointShadowBlur: 5,
-    emphasisBorderColor: '#000',
-    emphasisBorderWidth: 2,
-    lineWidth: 2,
-    focusLineWidth: 4,
-  };
 }

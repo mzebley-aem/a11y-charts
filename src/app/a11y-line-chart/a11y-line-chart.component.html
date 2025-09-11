@@ -21,16 +21,24 @@
       <label><input type="checkbox" [checked]="fillActual()" (change)="toggle('fillActual')"> Actual fill</label>
       <label><input type="checkbox" [checked]="fillTarget()" (change)="toggle('fillTarget')"> Target fill</label>
       <label><input type="checkbox" [checked]="showTooltipVisual()" (change)="toggle('tooltipVisual')"> Tooltip visible</label>
+  <label><input type="checkbox" [checked]="showXAxisTitle()" (change)="toggleAxis('x')"> X axis title</label>
+  <label><input type="checkbox" [checked]="showYAxisTitle()" (change)="toggleAxis('y')"> Y axis title</label>
+  <label><input type="checkbox" [checked]="zoomY()" (change)="toggleZoomY()"> Zoom Y-axis</label>
     </fieldset>
   </div>
 
-  <div class="chart-container" role="img" aria-label="Performance chart" [attr.aria-describedby]="descIds()" >
-    <div class="chart-focus-layer" tabindex="0" (keydown)="onKeydown($event)" (focus)="onFocus()" (blur)="onBlur()" aria-roledescription="interactive time series" [attr.aria-label]="'Use Left and Right Arrow keys to move across years. Home jumps to first year. End jumps to last year. Current index '+ (focusedIndex()+1) + ' of ' + years().length + '.'"></div>
-    <div echarts [options]="chartOptions()" (chartInit)="onChartInit($event)"></div>
+  <div #viewport class="chart-responsive-viewport">
+    <div class="chart-resizable" [style.min-width.px]="minWidth" [style.max-width.px]="maxWidth || null">
+      <div class="chart-container" role="img" aria-label="Performance chart" [attr.aria-describedby]="descIds()" >
+        <div class="chart-focus-layer" tabindex="0" (keydown)="onKeydown($event)" (focus)="onFocus()" (blur)="onBlur()" aria-roledescription="interactive time series" [attr.aria-label]="'Use Left and Right Arrow keys to move across years. Home jumps to first year. End jumps to last year. Current index '+ (focusedIndex()+1) + ' of ' + years().length + '.'"></div>
+        <div echarts [options]="chartOptions()" (chartInit)="onChartInit($event)"></div>
+      </div>
+    </div>
   </div>
   <p id="chartKeyboardHelp" class="sr-only">Keyboard guidance: focus the chart then use Left and Right Arrow keys to move through years; Home jumps to first year; End jumps to last year. Tooltip content is announced as you navigate.</p>
 
   <div class="sr-only" aria-live="polite">{{ liveMessage() }}</div>
+  <p *ngIf="isOverflowing()" id="chartScrollHelp" class="sr-only">Chart is wider than the available space. Scroll horizontally to view all years.</p>
 
   <table *ngIf="a11y.showTable !== false" id="perfChartData" class="sr-only">
     <caption>Underlying data values, actual and target performance percentages by year.</caption>
