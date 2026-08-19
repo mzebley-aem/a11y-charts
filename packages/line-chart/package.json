@@ -1,0 +1,42 @@
+{
+  "name": "@a11y-charts/line-chart",
+  "version": "0.0.0",
+  "description": "Framework-free, accessible actual-versus-target line chart custom element",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0 <27"
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./define": {
+      "types": "./dist/define.d.ts",
+      "import": "./dist/define.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "scripts": {
+    "build": "npm run clean && tsc -p tsconfig.build.json && node scripts/copy-assets.mjs",
+    "clean": "node scripts/clean.mjs",
+    "dev": "vite demo --host 127.0.0.1",
+    "demo:build": "vite build --config vite.demo.config.mjs && node scripts/inline-demo.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "echarts": "^6.1.0"
+  },
+  "devDependencies": {
+    "happy-dom": "^20.11.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.1",
+    "vitest": "^4.1.11"
+  }
+}

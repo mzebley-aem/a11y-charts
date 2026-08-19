@@ -1,0 +1,159 @@
+a11y-line-chart {
+  --a11y-line-chart-actual-color: #1e62d0;
+  --a11y-line-chart-actual-fill: #87b0ff;
+  --a11y-line-chart-actual-fill-opacity: 1;
+  --a11y-line-chart-target-color: #765f00;
+  --a11y-line-chart-target-fill: #e8dca4;
+  --a11y-line-chart-target-fill-opacity: 1;
+  --a11y-line-chart-actual-pattern-type: none;
+  --a11y-line-chart-actual-pattern-color: var(--a11y-line-chart-actual-color);
+  --a11y-line-chart-target-pattern-type: none;
+  --a11y-line-chart-target-pattern-color: var(--a11y-line-chart-target-color);
+  --a11y-line-chart-focus-line-color: rgba(0, 0, 0, 0.45);
+  --a11y-line-chart-focus-line-width: 1;
+  --a11y-line-chart-focus-line-type: dashed;
+  --a11y-line-chart-trend-up-color: #148f2a;
+  --a11y-line-chart-trend-down-color: #c62828;
+  --a11y-line-chart-trend-equal-color: #444;
+  --a11y-line-chart-trend-up-symbol: "↑";
+  --a11y-line-chart-trend-down-symbol: "↓";
+  --a11y-line-chart-trend-equal-symbol: "=";
+  --a11y-line-chart-actual-symbol-size: 12;
+  --a11y-line-chart-target-symbol-size: 14;
+  --a11y-line-chart-point-border-color: #fff;
+  --a11y-line-chart-point-border-width: 2;
+  --a11y-line-chart-point-shadow-color: rgba(0, 0, 0, 0.25);
+  --a11y-line-chart-point-shadow-blur: 4;
+  --a11y-line-chart-line-width: 4;
+  --a11y-line-chart-emphasis-border-color: #000;
+  --a11y-line-chart-emphasis-border-width: 2;
+  --a11y-line-chart-actual-emphasis-fill-color: #1e62d0;
+  --a11y-line-chart-target-emphasis-fill-color: #765f00;
+  --a11y-line-chart-actual-emphasis-border-color: #000;
+  --a11y-line-chart-target-emphasis-border-color: #000;
+  --a11y-line-chart-actual-line-outline-color: #fff;
+  --a11y-line-chart-actual-line-outline-width: 6;
+  --a11y-line-chart-target-line-outline-color: #fff;
+  --a11y-line-chart-target-line-outline-width: 6;
+  --a11y-line-chart-actual-label-color: #143e82;
+  --a11y-line-chart-target-label-color: #6d5a00;
+  --a11y-line-chart-label-font-size: 11;
+  --a11y-line-chart-per-point-min-width: 70;
+  --a11y-line-chart-per-point-max-width: 110;
+  --a11y-line-chart-x-axis-title-color: #222;
+  --a11y-line-chart-x-axis-title-font-size: 12;
+  --a11y-line-chart-x-axis-title-font-weight: 600;
+  --a11y-line-chart-y-axis-title-color: #222;
+  --a11y-line-chart-y-axis-title-font-size: 12;
+  --a11y-line-chart-y-axis-title-font-weight: 600;
+  --a11y-line-chart-color: #1b1b1b;
+  --a11y-line-chart-error-color: #b50909;
+  --a11y-line-chart-focus-color: #1e62d0;
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  color: var(--a11y-line-chart-color);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+a11y-line-chart *, a11y-line-chart *::before, a11y-line-chart *::after { box-sizing: border-box; }
+
+a11y-line-chart .a11y-line-chart__root {
+  width: 100%;
+  max-width: 100%;
+  margin: 1.5rem auto 3rem;
+  padding: 0 1rem 1.5rem;
+}
+
+a11y-line-chart .a11y-line-chart__header { margin-bottom: 0.5rem; }
+a11y-line-chart .a11y-line-chart__title { font-size: 1.1rem; margin: 0 0 0.15rem; }
+a11y-line-chart .a11y-line-chart__subtitle { margin: 0 0 0.75rem; font-size: 0.8rem; color: #444; }
+a11y-line-chart .a11y-line-chart__message { margin: 1rem 0 0; padding: 1rem; }
+a11y-line-chart .a11y-line-chart__message--empty { border: 1px solid currentColor; }
+a11y-line-chart .a11y-line-chart__message--error { border-inline-start: 0.25rem solid var(--a11y-line-chart-error-color); color: var(--a11y-line-chart-error-color); }
+
+a11y-line-chart .a11y-line-chart__controls { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0.25rem 0 1rem; }
+a11y-line-chart .a11y-line-chart__controls fieldset { border: 1px solid #d5d5d5; border-radius: 6px; padding: 0.6rem 0.9rem 0.85rem; min-width: 200px; }
+a11y-line-chart .a11y-line-chart__controls legend { font-weight: 600; font-size: 0.8rem; padding: 0 0.25rem; }
+a11y-line-chart .a11y-line-chart__controls label { display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; line-height: 1.05; margin-top: 0.35rem; }
+a11y-line-chart .a11y-line-chart__controls input[type="checkbox"] { width: 0.9rem; height: 0.9rem; }
+a11y-line-chart .a11y-line-chart__pattern-selects { margin-top: 0.35rem; }
+a11y-line-chart .a11y-line-chart__pattern-selects select { min-height: 1.75rem; }
+
+a11y-line-chart .a11y-line-chart__viewport {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  padding-bottom: 0.25rem;
+}
+a11y-line-chart .a11y-line-chart__resizable { position: relative; }
+a11y-line-chart .a11y-line-chart__chart-group { height: 400px; position: relative; }
+a11y-line-chart .a11y-line-chart__chart { height: 100%; width: 100%; }
+a11y-line-chart .a11y-line-chart__navigator {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: transparent;
+  cursor: default;
+  height: 100%;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  z-index: 10;
+}
+a11y-line-chart .a11y-line-chart__navigator::-webkit-slider-runnable-track,
+a11y-line-chart .a11y-line-chart__navigator::-webkit-slider-thumb { appearance: none; background: transparent; border: 0; }
+a11y-line-chart .a11y-line-chart__navigator::-moz-range-track,
+a11y-line-chart .a11y-line-chart__navigator::-moz-range-thumb { background: transparent; border: 0; }
+a11y-line-chart .a11y-line-chart__navigator:focus { outline: 0; }
+a11y-line-chart .a11y-line-chart__chart-group:focus-within {
+  outline: 3px solid var(--a11y-line-chart-focus-color);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px rgba(30, 98, 208, 0.35);
+}
+
+a11y-line-chart :is(input, select):focus-visible { outline: 2px solid var(--a11y-line-chart-focus-color); outline-offset: 2px; }
+a11y-line-chart .a11y-line-chart__visually-hidden,
+a11y-line-chart .a11y-line-chart__table-region--visually-hidden,
+a11y-line-chart .perf-tooltip--visually-hidden {
+  border: 0 !important;
+  clip: rect(0 0 0 0) !important;
+  clip-path: inset(50%) !important;
+  height: 1px !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  white-space: nowrap !important;
+  width: 1px !important;
+}
+
+a11y-line-chart .a11y-line-chart__table { border-collapse: collapse; width: 100%; }
+a11y-line-chart .a11y-line-chart__table caption { font-weight: 700; padding-block-end: 0.5rem; text-align: start; }
+a11y-line-chart .a11y-line-chart__table :is(th, td) { border: 1px solid currentColor; padding: 0.75rem; text-align: start; }
+
+a11y-line-chart .perf-tooltip {
+  font: 600 14px/1.25 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: #fff;
+  border: 2px solid #d0d0d0;
+  border-radius: 18px;
+  padding: 16px 20px 18px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+  min-width: 180px;
+}
+a11y-line-chart .perf-tooltip__year { font-size: 22px; font-weight: 700; margin: 0 0 10px; display: flex; align-items: center; gap: 10px; }
+a11y-line-chart .perf-tooltip__row { font-size: 14px; font-weight: 500; margin: 4px 0 0; display: flex; justify-content: space-between; gap: 12px; }
+a11y-line-chart .perf-tooltip__label { font-weight: 500; }
+a11y-line-chart .perf-tooltip__value { font-weight: 700; }
+a11y-line-chart .perf-tooltip__trend { font-size: 20px; font-weight: 700; line-height: 1; }
+a11y-line-chart .perf-tooltip__status { display: inline-block; font-size: 11px; font-weight: 600; line-height: 1; padding: 4px 8px 5px; border-radius: 10px; color: #fff; letter-spacing: 0.25px; vertical-align: middle; white-space: nowrap; }
+a11y-line-chart .perf-tooltip__diff { display: block; margin-top: 12px; font-size: 13px; font-weight: 500; }
+
+@media (forced-colors: active) {
+  a11y-line-chart .a11y-line-chart__chart-group:focus-within { outline-color: Highlight; box-shadow: none; }
+}
