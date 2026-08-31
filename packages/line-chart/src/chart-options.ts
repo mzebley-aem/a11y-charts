@@ -2,6 +2,7 @@ import type { EChartsCoreOption } from 'echarts/core';
 import type { ResolvedA11yLineChartConfig, ResolvedA11yLineChartTheme } from './config.js';
 import type {
   A11yLineChartDatum,
+  A11yLineChartSemanticModel,
   A11yLineChartTooltipAriaLabelBuilder,
   A11yLineChartTooltipContext,
   A11yLineChartTooltipHtmlBuilder,
@@ -11,7 +12,18 @@ import type {
 
 interface TooltipParameter {
   dataIndex?: number;
+  seriesId?: string;
   seriesName?: string;
+}
+
+export interface A11yLineChartVisibleViewport {
+  left: number;
+  width: number;
+}
+
+interface TooltipPositionSize {
+  contentSize: [number, number];
+  viewSize: [number, number];
 }
 
 export interface ChartOptionContext {
@@ -21,15 +33,50 @@ export interface ChartOptionContext {
   data: A11yLineChartDatum[];
   formatValue: (value: number | null, series: 'actual' | 'target', x: A11yLineChartXValue) => string;
   formatXValue: (value: A11yLineChartXValue) => string;
+  getVisibleViewport?: () => A11yLineChartVisibleViewport;
+  legendSelection?: Record<string, boolean>;
+  model: A11yLineChartSemanticModel;
   reducedMotion: boolean;
   renderTooltip?: A11yLineChartTooltipRenderer;
   subtitle?: string;
   theme: ResolvedA11yLineChartTheme;
 }
 
-function calculateYBounds(data: A11yLineChartDatum[], config: ResolvedA11yLineChartConfig): { max: number; min: number } {
+export function calculateTooltipPosition(
+  point: [number, number],
+  contentSize: [number, number],
+  viewSize: [number, number],
+  visibleViewport?: A11yLineChartVisibleViewport
+): [number, number] {
+  const edgePadding = 8;
+  const pointGap = 16;
+  const visibleLeft = Math.max(0, Math.min(visibleViewport?.left ?? 0, viewSize[0]));
+  const visibleWidth = Math.max(0, visibleViewport?.width ?? viewSize[0]);
+  const visibleRight = Math.min(viewSize[0], visibleLeft + visibleWidth);
+  const minX = visibleLeft + edgePadding;
+  const maxX = Math.max(minX, visibleRight - contentSize[0] - edgePadding);
+
+  let x = point[0] + pointGap;
+  if (x + contentSize[0] > visibleRight - edgePadding) {
+    x = point[0] - contentSize[0] - pointGap;
+  }
+  x = Math.max(minX, Math.min(x, maxX));
+
+  const minY = edgePadding;
+  const maxY = Math.max(minY, viewSize[1] - contentSize[1] - edgePadding);
+  const y = Math.max(minY, Math.min(point[1] - contentSize[1] / 2, maxY));
+
+  return [Math.round(x), Math.round(y)];
+}
+
+function calculateYBounds(
+  data: A11yLineChartDatum[],
+  config: ResolvedA11yLineChartConfig,
+  model: A11yLineChartSemanticModel
+): { max: number; min: number } {
   if (!config.initialZoomY) return { min: config.yAxisBaseMin, max: config.yAxisBaseMax };
   const values = data.flatMap((item) => [item.actual, item.target].filter((value): value is number => typeof value === 'number'));
+  if (model.baseline) values.push(model.baseline.value);
   if (!values.length) return { min: config.yAxisBaseMin, max: config.yAxisBaseMax };
 
   let valueMin = Math.min(...values);
@@ -107,44 +154,30 @@ function areaColor(kind: 'actual' | 'target', config: ResolvedA11yLineChartConfi
 
 function tooltipContext(index: number, context: ChartOptionContext): A11yLineChartTooltipContext | undefined {
   const datum = context.data[index];
-  if (!datum) return undefined;
-  const actualValue = datum.actual ?? null;
-  const targetValue = datum.target ?? null;
-  const actualFormatted = context.formatValue(actualValue, 'actual', datum.x);
-  const targetFormatted = context.formatValue(targetValue, 'target', datum.x);
-  const hasBoth = actualValue !== null && targetValue !== null;
-  const relation = !hasBoth ? 'incomplete' : actualValue === targetValue ? 'equal' : actualValue > targetValue ? 'above' : 'below';
-  const diffPercent = hasBoth ? Math.abs(actualValue - targetValue) : null;
-  const diffFormatted = diffPercent === null ? null : `${diffPercent.toFixed(context.config.decimalPlaces)}%`;
-  const differenceLabel = !hasBoth
-    ? ''
-    : relation === 'equal'
-      ? 'Actual equals target'
-      : `Actual is ${diffFormatted} ${relation} target`;
-  const relationLabel = relation === 'equal'
-    ? context.config.equalLabel
-    : relation === 'incomplete'
-      ? ''
-      : relation === context.config.positiveDirection
-        ? context.config.positiveLabel
-        : context.config.negativeLabel;
-  const xLabel = context.formatXValue(datum.x);
+  const interpretation = context.model.points[index];
+  if (!datum || !interpretation) return undefined;
+  const differenceLabel = interpretation.targetDifference
+    ? interpretation.targetDifference.relation === 'equal'
+      ? `${context.config.actualSeriesLabel} equals ${context.config.targetSeriesLabel.toLocaleLowerCase()}`
+      : `${context.config.actualSeriesLabel} is ${interpretation.targetDifference.description}`
+    : '';
   return {
     datum,
     index,
-    xLabel,
-    year: datum.x instanceof Date ? xLabel : datum.x,
-    actualValue,
-    targetValue,
-    actualFormatted,
-    targetFormatted,
-    actualLabel: actualFormatted,
-    targetLabel: targetFormatted,
-    diffPercent,
-    diffFormatted,
+    interpretation,
+    xLabel: interpretation.xLabel,
+    year: datum.x instanceof Date ? interpretation.xLabel : datum.x,
+    actualValue: interpretation.actualValue,
+    targetValue: interpretation.targetValue,
+    actualFormatted: interpretation.actualFormatted,
+    targetFormatted: interpretation.targetFormatted,
+    actualLabel: interpretation.actualFormatted,
+    targetLabel: interpretation.targetFormatted,
+    diffPercent: interpretation.targetDifference?.absoluteValue ?? null,
+    diffFormatted: interpretation.targetDifference?.formatted ?? null,
     differenceLabel,
-    relation,
-    relationLabel,
+    relation: interpretation.relation,
+    relationLabel: interpretation.outcome === 'unavailable' ? '' : interpretation.outcomeLabel,
     theme: context.theme
   };
 }
@@ -159,22 +192,28 @@ function defaultTooltip(ctx: A11yLineChartTooltipContext, context: ChartOptionCo
   const { config, theme } = context;
   const hasBoth = ctx.relation !== 'incomplete';
   const direction = ctx.relation === 'above' ? 'up' : ctx.relation === 'below' ? 'down' : 'equal';
-  const trendColor = direction === 'up' ? theme.trendUpColor : direction === 'down' ? theme.trendDownColor : theme.trendEqualColor;
+  const trendColor = ctx.interpretation.outcome === 'met'
+    ? theme.trendUpColor
+    : ctx.interpretation.outcome === 'not-met'
+      ? theme.trendDownColor
+      : theme.trendEqualColor;
   const trendSymbol = direction === 'up' ? theme.trendUpSymbol : direction === 'down' ? theme.trendDownSymbol : theme.trendEqualSymbol;
   const headerExtra = !hasBoth
     ? ''
     : config.trendMode === 'arrows'
       ? `<span class="perf-tooltip__trend perf-tooltip__trend--${direction}" aria-hidden="true" style="color:${escapeHtml(trendColor)}">${escapeHtml(trendSymbol)}</span>`
       : `<span class="perf-tooltip__status" style="background:${escapeHtml(trendColor)};color:#fff" aria-hidden="true">${escapeHtml(ctx.relationLabel)}</span>`;
-  const defaultAria = `Year ${ctx.xLabel}. Actual ${ctx.actualFormatted}. Target ${ctx.targetFormatted}. ${ctx.differenceLabel}${ctx.relationLabel ? ` ${ctx.relationLabel}.` : ''}`.trim();
+  const defaultAria = ctx.interpretation.narrative;
   let aria = defaultAria;
   try { aria = context.buildTooltipAriaLabel?.(ctx) || defaultAria; } catch { /* use default */ }
   const hiddenClass = config.showTooltipVisual ? '' : ' perf-tooltip--visually-hidden';
   return `<div class="perf-tooltip${hiddenClass}" role="group" aria-label="${escapeHtml(aria)}">
     <div class="perf-tooltip__year">${escapeHtml(ctx.xLabel)} ${headerExtra}</div>
-    <div class="perf-tooltip__row"><span class="perf-tooltip__label">Actual Value:</span> <span class="perf-tooltip__value">${escapeHtml(ctx.actualFormatted)}</span></div>
-    <div class="perf-tooltip__row"><span class="perf-tooltip__label">Target Value:</span> <span class="perf-tooltip__value">${escapeHtml(ctx.targetFormatted)}</span></div>
+    <div class="perf-tooltip__row"><span class="perf-tooltip__label">${escapeHtml(config.actualSeriesLabel)}:</span> <span class="perf-tooltip__value">${escapeHtml(ctx.actualFormatted)}</span></div>
+    <div class="perf-tooltip__row"><span class="perf-tooltip__label">${escapeHtml(config.targetSeriesLabel)}:</span> <span class="perf-tooltip__value">${escapeHtml(ctx.targetFormatted)}</span></div>
+    ${ctx.interpretation.baseline ? `<div class="perf-tooltip__row"><span class="perf-tooltip__label">${escapeHtml(config.baselineSeriesLabel)} (${escapeHtml(ctx.interpretation.baseline.xLabel)}):</span> <span class="perf-tooltip__value">${escapeHtml(ctx.interpretation.baseline.formatted)}</span></div>` : ''}
     ${ctx.differenceLabel ? `<span class="perf-tooltip__diff">${escapeHtml(ctx.differenceLabel)}.</span>` : ''}
+    ${ctx.interpretation.baseline?.difference ? `<span class="perf-tooltip__diff">Change from ${escapeHtml(config.baselineSeriesLabel.toLocaleLowerCase())}: ${escapeHtml(ctx.interpretation.baseline.difference.description)}.</span>` : ''}
   </div>`;
 }
 
@@ -188,66 +227,133 @@ export function buildChartOptions(context: ChartOptionContext): EChartsCoreOptio
     actual.forEach((value, index) => { if (value !== null) last = index; });
     actual = actual.map((value, index) => index > last && last >= 0 ? null : value);
   }
-  const bounds = calculateYBounds(data, config);
+  const bounds = calculateYBounds(data, config, context.model);
   const series: Array<Record<string, unknown>> = [];
   const labelFormatter = (kind: 'actual' | 'target') => (parameter: { data?: number | null; dataIndex?: number }) => {
     const item = data[parameter.dataIndex ?? -1];
     return item ? formatValue(parameter.data ?? null, kind, item.x) : '';
   };
 
-  if (config.showTargetLine && config.fillTarget) series.push({
-    id: 'target-area', name: 'Target area', type: 'line', data: target, symbol: 'none',
+  if (context.model.baseline) {
+    const baseline = context.model.baseline;
+    series.push({
+      id: 'baseline-main',
+      name: config.baselineSeriesLabel,
+      type: 'line',
+      data: data.map(() => baseline.value),
+      symbol: 'none',
+      lineStyle: {
+        color: theme.baselineColor,
+        type: theme.baselineLineType,
+        width: theme.baselineLineWidth
+      },
+      silent: true,
+      tooltip: { show: false },
+      z: 2
+    });
+    series.push({
+      id: 'baseline-marker',
+      name: config.baselineSeriesLabel,
+      type: 'scatter',
+      data: [[categories[0], baseline.value]],
+      symbol: 'roundRect',
+      symbolSize: theme.baselineSymbolSize,
+      itemStyle: {
+        color: theme.baselineColor,
+        borderColor: theme.pointBorderColor,
+        borderWidth: theme.pointBorderWidth
+      },
+      label: {
+        show: true,
+        formatter: `${baseline.xLabel} ${config.baselineSeriesLabel.toLocaleLowerCase()}: ${baseline.formatted}`,
+        position: 'right',
+        distance: 8,
+        offset: [0, 14],
+        backgroundColor: 'rgba(255,255,255,0.92)',
+        borderRadius: 3,
+        padding: [2, 4],
+        color: theme.baselineLabelColor,
+        fontSize: theme.labelFontSize,
+        fontWeight: 600
+      },
+      silent: true,
+      tooltip: { show: false },
+      z: 3
+    });
+  }
+
+  if (config.fillTarget) series.push({
+    id: 'target-area', name: config.targetSeriesLabel, type: 'line', data: target, symbol: 'none',
     lineStyle: { width: 0 }, areaStyle: { color: areaColor('target', config, theme), opacity: theme.targetFillOpacity },
     silent: true, tooltip: { show: false }, z: 0
   });
-  if (config.showActualLine && config.fillActual) series.push({
-    id: 'actual-area', name: 'Actual area', type: 'line', data: actual, connectNulls: false, symbol: 'none',
+  if (config.fillActual) series.push({
+    id: 'actual-area', name: config.actualSeriesLabel, type: 'line', data: actual, connectNulls: false, symbol: 'none',
     lineStyle: { width: 0 }, areaStyle: { color: areaColor('actual', config, theme), opacity: theme.actualFillOpacity },
     silent: true, tooltip: { show: false }, z: 1
   });
-  if (config.showTargetLine && theme.targetLineOutlineWidth > theme.lineWidth) series.push({
-    id: 'target-outline', name: 'Target outline', type: 'line', data: target, symbol: 'none',
+  if (theme.targetLineOutlineWidth > theme.lineWidth) series.push({
+    id: 'target-outline', name: config.targetSeriesLabel, type: 'line', data: target, symbol: 'none',
     lineStyle: { width: theme.targetLineOutlineWidth, color: theme.targetLineOutlineColor, cap: 'round', join: 'round' },
     silent: true, tooltip: { show: false }, z: 2
   });
-  if (config.showTargetLine) series.push({
-    id: 'target-main', name: 'Target', type: 'line', data: target, connectNulls: false, symbol: 'diamond', symbolSize: theme.targetSymbolSize,
+  series.push({
+    id: 'target-main', name: config.targetSeriesLabel, type: 'line', data: target, connectNulls: false, symbol: 'diamond', symbolSize: theme.targetSymbolSize,
     lineStyle: { color: theme.targetColor, type: 'dashed', width: theme.lineWidth },
     itemStyle: { color: theme.targetColor, borderColor: theme.pointBorderColor, borderWidth: theme.pointBorderWidth, shadowBlur: theme.pointShadowBlur, shadowColor: theme.pointShadowColor },
     emphasis: { scale: !reducedMotion, itemStyle: { borderColor: theme.targetEmphasisBorderColor, borderWidth: theme.emphasisBorderWidth, color: theme.targetEmphasisFillColor } },
-    label: { show: config.showTargetValues, formatter: labelFormatter('target'), position: 'top', color: theme.targetLabelColor, fontSize: theme.labelFontSize }, z: 2
+    label: { show: config.showTargetValues, formatter: labelFormatter('target'), position: 'top', color: theme.targetLabelColor, fontSize: theme.labelFontSize }, z: 4
   });
-  if (config.showActualLine && theme.actualLineOutlineWidth > theme.lineWidth) series.push({
-    id: 'actual-outline', name: 'Actual outline', type: 'line', data: actual, connectNulls: false, symbol: 'none',
+  if (theme.actualLineOutlineWidth > theme.lineWidth) series.push({
+    id: 'actual-outline', name: config.actualSeriesLabel, type: 'line', data: actual, connectNulls: false, symbol: 'none',
     lineStyle: { width: theme.actualLineOutlineWidth, color: theme.actualLineOutlineColor, cap: 'round', join: 'round' },
     silent: true, tooltip: { show: false }, z: 3
   });
-  if (config.showActualLine) series.push({
-    id: 'actual-main', name: 'Actual', type: 'line', data: actual, connectNulls: false, symbol: 'circle', symbolSize: theme.actualSymbolSize,
+  series.push({
+    id: 'actual-main', name: config.actualSeriesLabel, type: 'line', data: actual, connectNulls: false, symbol: 'circle', symbolSize: theme.actualSymbolSize,
     lineStyle: { color: theme.actualColor, type: 'solid', width: theme.lineWidth },
     itemStyle: { color: theme.actualColor, borderColor: theme.pointBorderColor, borderWidth: theme.pointBorderWidth, shadowBlur: theme.pointShadowBlur, shadowColor: theme.pointShadowColor },
     emphasis: { scale: !reducedMotion, itemStyle: { borderColor: theme.actualEmphasisBorderColor, borderWidth: theme.emphasisBorderWidth, color: theme.actualEmphasisFillColor } },
-    label: { show: config.showActualValues, formatter: labelFormatter('actual'), position: 'top', color: theme.actualLabelColor, fontSize: theme.labelFontSize }, z: 4
+    label: { show: config.showActualValues, formatter: labelFormatter('actual'), position: 'top', color: theme.actualLabelColor, fontSize: theme.labelFontSize }, z: 6
   });
 
   return {
     animation: !reducedMotion,
     animationDuration: reducedMotion ? 0 : 600,
-    animationDurationUpdate: reducedMotion ? 0 : 400,
+    animationDurationUpdate: reducedMotion ? 0 : 650,
     animationEasing: reducedMotion ? 'linear' : 'cubicOut',
-    animationEasingUpdate: reducedMotion ? 'linear' : 'cubicOut',
+    animationEasingUpdate: reducedMotion ? 'linear' : 'cubicInOut',
     aria: { enabled: false },
     grid: { left: config.showYAxisTitle ? 70 : 42, right: 16, top: 54, bottom: config.showXAxisTitle ? 120 : 90 },
-    legend: { top: 4, data: ['Actual', 'Target'], selected: { Actual: config.showActualLine, Target: config.showTargetLine } },
+    legend: {
+      top: 4,
+      data: [config.actualSeriesLabel, config.targetSeriesLabel, ...(context.model.baseline ? [config.baselineSeriesLabel] : [])],
+      textStyle: { fontSize: theme.legendFontSize },
+      selected: {
+        [config.actualSeriesLabel]: context.legendSelection?.[config.actualSeriesLabel] ?? config.showActualLine,
+        [config.targetSeriesLabel]: context.legendSelection?.[config.targetSeriesLabel] ?? config.showTargetLine,
+        ...(context.model.baseline ? {
+          [config.baselineSeriesLabel]: context.legendSelection?.[config.baselineSeriesLabel] ?? true
+        } : {})
+      }
+    },
     title: context.subtitle ? { text: context.subtitle, left: 'center', top: 24, textStyle: { fontSize: 12, fontWeight: 400 } } : undefined,
     series,
     tooltip: {
       trigger: 'axis', confine: true, renderMode: 'html', appendToBody: false,
+      position: (
+        point: [number, number],
+        _parameters: TooltipParameter | TooltipParameter[],
+        _element: HTMLElement,
+        _rect: unknown,
+        size: TooltipPositionSize
+      ) => calculateTooltipPosition(point, size.contentSize, size.viewSize, context.getVisibleViewport?.()),
       axisPointer: { type: 'line', lineStyle: { color: theme.focusLineColor, width: theme.focusLineWidth, type: theme.focusLineType } },
       backgroundColor: 'transparent', borderWidth: 0, padding: 0, extraCssText: 'box-shadow:none;padding:0;',
       formatter: (parameters: TooltipParameter | TooltipParameter[]) => {
         const list = Array.isArray(parameters) ? parameters : [parameters];
-        const main = list.find((parameter) => parameter.seriesName === 'Actual') ?? list.find((parameter) => parameter.seriesName === 'Target');
+        const main = list.find((parameter) => parameter.seriesId === 'actual-main' || parameter.seriesName === config.actualSeriesLabel)
+          ?? list.find((parameter) => parameter.seriesId === 'target-main' || parameter.seriesName === config.targetSeriesLabel);
         const ctx = tooltipContext(main?.dataIndex ?? -1, context);
         if (!ctx) return '';
         if (context.renderTooltip) {
@@ -260,13 +366,16 @@ export function buildChartOptions(context: ChartOptionContext): EChartsCoreOptio
       }
     },
     xAxis: {
-      type: 'category', boundaryGap: false, data: categories, axisLabel: { interval: 0 },
+      type: 'category', boundaryGap: false, data: categories, axisLabel: { interval: 0, fontSize: theme.axisLabelFontSize },
       name: config.showXAxisTitle ? config.xAxisTitle : undefined, nameLocation: 'middle', nameGap: 50,
       nameTextStyle: { fontSize: theme.xAxisTitleFontSize, fontWeight: theme.xAxisTitleFontWeight, color: theme.xAxisTitleColor }
     },
     yAxis: {
       type: 'value', min: bounds.min, max: bounds.max,
-      axisLabel: { formatter: (value: number) => `${Number(value).toFixed(config.axisDecimalPlaces)}${config.valuePreset === 'percent' ? '%' : ''}` },
+      axisLabel: {
+        fontSize: theme.axisLabelFontSize,
+        formatter: (value: number) => `${Number(value).toFixed(config.axisDecimalPlaces)}${config.valuePreset === 'percent' ? '%' : ''}`
+      },
       name: config.showYAxisTitle ? config.yAxisTitle : undefined, nameLocation: 'middle', nameGap: 48, nameRotate: 90,
       nameTextStyle: { fontSize: theme.yAxisTitleFontSize, fontWeight: theme.yAxisTitleFontWeight, color: theme.yAxisTitleColor }
     }

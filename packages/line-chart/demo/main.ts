@@ -17,6 +17,7 @@ const config = {
 
 const data = [
   [
+    { x: 2015, actual: 40.00, target: 80.00 },
     { x: 2016, actual: 68.90, target: 80.00 },
     { x: 2017, actual: 70.32, target: 80.00 },
     { x: 2018, actual: 69.06, target: 80.00 },
@@ -44,6 +45,22 @@ const data = [
 ];
 
 charts.forEach((chart, index) => {
-  chart.config = config;
+  chart.config = {
+    ...config,
+    contextNote: index === 0
+      ? 'Targets after 2020 are planned values; actual results have not yet been reported.'
+      : ''
+  };
+  chart.baseline = index === 0
+    ? {
+        x: 2015,
+        value: 38,
+        explanation: 'A policy and reporting-strategy change took effect in 2015, so earlier results are not comparable.'
+      }
+    : {
+        x: 2015,
+        value: 55,
+        explanation: 'The 2015 reporting methodology defines the comparison boundary for this measure.'
+      };
   chart.data = data[index] ?? [];
 });

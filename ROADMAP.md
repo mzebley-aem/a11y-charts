@@ -1,5 +1,10 @@
 # A11y Line Chart product and migration roadmap
 
+The living product and interaction plan is maintained in
+[`CHART-EXPERIENCE-PLAN.md`](./CHART-EXPERIENCE-PLAN.md). This roadmap covers
+architecture, migration, compatibility, and release sequencing; the experience
+plan defines the intended user understanding and interaction quality.
+
 **Status:** Implementation underway on `codex/vanilla-web-component-migration`
 **Updated:** August 19, 2026
 **Starting point:** Angular 18 proof of concept at `8c75e34`, plus the current uncommitted pattern-control experiment
@@ -26,6 +31,9 @@ starting baseline, including:
 - one valid native range-control tab stop for Arrow/Home/End navigation,
   wraparound, live point descriptions, visible focus, and automatic internal
   scrolling to offscreen points;
+- overflow-aware Previous/Next period controls with 44 px touch targets,
+  contextual adjacent-period names, endpoint and wraparound behavior, and the
+  same selection, tooltip, announcement, scrolling, and event path;
 - a framework-free two-chart HTML consumer fixture matching the Angular
   datasets, with desktop and 375 px rendered proof;
 - passing TypeScript, behavior-test, and production-build gates on Node 24.16.
@@ -34,6 +42,26 @@ Still required before an accessibility-ready public release: physical
 assistive-technology testing, all-framework consumer fixtures, the historical
 browser matrix, packaging metadata, and publication/licensing work. Those are
 release-readiness gates rather than missing chart features.
+
+The approved product-experience Phase 1 is now implemented locally on top of
+that parity baseline:
+
+- one pure ECharts-independent semantic model determines the latest reported
+  period, target outcome, target difference, historical counts, missing/future
+  states, and baseline change;
+- a typed and validated independent baseline property requires the earliest
+  displayed period while allowing a value different from that period's actual;
+- the visible integrated summary, default tooltip, keyboard narrative, data
+  table, and point-change event consume the same interpretation;
+- the baseline renders as one labeled starting marker plus a subdued reference
+  line across the complete horizon and participates in data-fit Y bounds;
+- structured consumer labels, period/value/difference formatters, baseline
+  explanation, and context note retain canonical fallback language; and
+- the framework-free demo exercises eleven periods, future targets, two
+  baseline configurations, desktop rendering, and contained 375 px scrolling;
+  and
+- 35 behavior tests, typecheck, package build, demo build, production dependency
+  audit, and rendered desktop/mobile smoke checks pass locally.
 
 ## Product direction
 
@@ -52,7 +80,8 @@ The production component will:
 - keep ECharts objects and event names out of the public API;
 - be consumed directly without framework wrappers;
 - retain every current chart feature while correcting the audited defects;
-- use WCAG 2.2 Level AA and Section 508 as required release floors;
+- use WCAG 2.2 Level AA as the product floor and report applicable Section 508
+  review separately;
 - treat useful AAA improvements as enhancements rather than mislabeled blockers;
 - support generic numeric values and formatter hooks, with percentage behavior provided as the primary preset;
 - target the current and previous 10 major stable versions of the named browsers;
@@ -70,7 +99,7 @@ The [HTML Standard](https://html.spec.whatwg.org/multipage/custom-elements.html)
 | Framework strategy | Standards-based custom element; no framework runtime |
 | Rendering engine | ECharts 6 internally for v1; replaceable behind an adapter |
 | DOM model | Light DOM only |
-| Accessibility floor | WCAG 2.2 AA + Section 508 |
+| Accessibility floor | WCAG 2.2 AA product target; applicable Section 508 overlay reported separately |
 | Public consumption | Direct Custom Element use; no wrappers |
 | Data semantics | Generic numeric values + formatter hooks; percentage preset |
 | Configuration | Properties for complex data; attributes for simple values; standard `CustomEvent`s |

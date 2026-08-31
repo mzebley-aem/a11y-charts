@@ -1,4 +1,4 @@
-import { LineChart } from 'echarts/charts';
+import { LineChart, ScatterChart } from 'echarts/charts';
 import {
   GridComponent,
   LegendComponent,
@@ -13,10 +13,11 @@ import {
 } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 
-use([LineChart, GridComponent, LegendComponent, TitleComponent, TooltipComponent, CanvasRenderer]);
+use([LineChart, ScatterChart, GridComponent, LegendComponent, TitleComponent, TooltipComponent, CanvasRenderer]);
 
 export class EchartsAdapter {
   #chart: EChartsType;
+  #hasOptions = false;
 
   constructor(container: HTMLElement) {
     this.#chart = init(container, undefined, { renderer: 'canvas' });
@@ -39,10 +40,10 @@ export class EchartsAdapter {
     this.#chart.dispatchAction({ type: 'hideTip' });
   }
 
-  onLegendSelection(listener: (selected: Record<string, boolean>) => void): () => void {
+  onLegendSelection(listener: (selected: Record<string, boolean>, name?: string) => void): () => void {
     const handler = (...args: unknown[]): void => {
-      const event = args[0] as { selected?: Record<string, boolean> } | undefined;
-      if (event?.selected) listener(event.selected);
+      const event = args[0] as { name?: string; selected?: Record<string, boolean> } | undefined;
+      if (event?.selected) listener(event.selected, event.name);
     };
     this.#chart.on('legendselectchanged', handler);
     return () => this.#chart.off('legendselectchanged', handler);
@@ -55,6 +56,12 @@ export class EchartsAdapter {
   }
 
   update(options: EChartsCoreOption): void {
-    this.#chart.setOption(options, { notMerge: true });
+    this.#chart.setOption(
+      options,
+      this.#hasOptions
+        ? { notMerge: false, replaceMerge: ['series'] }
+        : { notMerge: true }
+    );
+    this.#hasOptions = true;
   }
 }

@@ -1,23 +1,29 @@
 import type {
   A11yLineChartConfig,
   A11yLineChartConfigChangeDetail,
+  A11yLineChartBaseline,
   A11yLineChartDatum,
+  A11yLineChartDifferenceFormatter,
   A11yLineChartErrorDetail,
   A11yLineChartLegacyDatum,
   A11yLineChartPattern,
   A11yLineChartPointChangeDetail,
+  A11yLineChartSemanticModel,
+  A11yLineChartSeries,
   A11yLineChartTheme,
   A11yLineChartTooltipAriaLabelBuilder,
   A11yLineChartTooltipHtmlBuilder,
   A11yLineChartTooltipRenderer,
   A11yLineChartValueFormatter,
   A11yLineChartValuePreset,
+  A11yLineChartXFormatter,
   A11yLineChartXValue
 } from './model.js';
 import { buildChartOptions } from './chart-options.js';
 import { resolveConfig, resolveTheme, type ResolvedA11yLineChartConfig } from './config.js';
 import { EchartsAdapter } from './echarts-adapter.js';
-import { validateData } from './validation.js';
+import { buildSemanticModel } from './semantic-model.js';
+import { validateBaseline, validateData } from './validation.js';
 
 const OWNED_ROOT_ATTRIBUTE = 'data-a11y-line-chart-owned';
 let nextInstanceId = 0;
@@ -31,6 +37,13 @@ function isHeadingLevel(value: number): value is 1 | 2 | 3 | 4 | 5 | 6 {
   return value >= 1 && value <= 6;
 }
 
+interface StepperElements {
+  next: HTMLButtonElement;
+  previous: HTMLButtonElement;
+  root: HTMLDivElement;
+  status: HTMLSpanElement;
+}
+
 export class A11yLineChartElement extends HTMLElement {
   static readonly observedAttributes = ['chart-title', 'heading-level', 'locale', 'subtitle', 'value-preset'];
 
@@ -38,19 +51,26 @@ export class A11yLineChartElement extends HTMLElement {
 
   #buildTooltipAriaLabel: A11yLineChartTooltipAriaLabelBuilder | undefined;
   #buildTooltipHtml: A11yLineChartTooltipHtmlBuilder | undefined;
+  #baselineInput: unknown;
+  #baselineErrorMessage = '';
   #chartAdapter: EchartsAdapter | undefined;
+  #chartUpdate: (() => void) | undefined;
   #config: A11yLineChartConfig = {};
   #data: A11yLineChartDatum[] = [];
   #errorMessage = '';
   #focusedIndex = 0;
+  #formatDifference: A11yLineChartDifferenceFormatter | undefined;
   #formatValue: A11yLineChartValueFormatter | undefined;
+  #formatX: A11yLineChartXFormatter | undefined;
   #legendCleanup: (() => void) | undefined;
+  #legendSelection: Record<string, boolean> | undefined;
   #liveClearTimer: ReturnType<typeof setTimeout> | undefined;
   #ownedRoot?: HTMLElement;
   #readyDispatched = false;
   #renderQueued = false;
   #renderTooltip: A11yLineChartTooltipRenderer | undefined;
   #resizeObserver: ResizeObserver | undefined;
+  #semanticModel: A11yLineChartSemanticModel | undefined;
   #theme: A11yLineChartTheme = {};
   #windowResizeListener = (): void => this.#chartAdapter?.resize();
 
@@ -71,12 +91,35 @@ export class A11yLineChartElement extends HTMLElement {
     else this.removeAttribute('subtitle');
   }
 
+  get baseline(): A11yLineChartBaseline | undefined {
+    const result = validateBaseline(this.#baselineInput, this.#data);
+    if (!result.valid || !result.baseline) return undefined;
+    return {
+      ...result.baseline,
+      x: result.baseline.x instanceof Date
+        ? new Date(result.baseline.x.getTime())
+        : result.baseline.x
+    };
+  }
+
+  set baseline(value: A11yLineChartBaseline | undefined) {
+    this.#baselineInput = value && typeof value === 'object'
+      ? {
+          ...value,
+          x: value.x instanceof Date ? new Date(value.x.getTime()) : value.x
+        }
+      : value;
+    this.#updateBaselineValidation(true);
+    this.#queueRender();
+  }
+
   get config(): A11yLineChartConfig {
     return { ...this.#config };
   }
 
   set config(value: A11yLineChartConfig) {
     this.#config = { ...value };
+    this.#legendSelection = undefined;
     this.#focusedIndex = Math.min(this.#focusedIndex, Math.max(0, this.#data.length - 1));
     this.#queueRender();
   }
@@ -100,6 +143,7 @@ export class A11yLineChartElement extends HTMLElement {
       this.#data = result.data;
       this.#errorMessage = '';
       this.#focusedIndex = Math.min(this.#focusedIndex, Math.max(0, this.#data.length - 1));
+      this.#updateBaselineValidation(true);
     } else {
       this.#data = [];
       this.#errorMessage = result.message;
@@ -113,6 +157,12 @@ export class A11yLineChartElement extends HTMLElement {
 
   get formatValue(): A11yLineChartValueFormatter | undefined { return this.#formatValue; }
   set formatValue(value: A11yLineChartValueFormatter | undefined) { this.#formatValue = value; this.#queueRender(); }
+
+  get formatDifference(): A11yLineChartDifferenceFormatter | undefined { return this.#formatDifference; }
+  set formatDifference(value: A11yLineChartDifferenceFormatter | undefined) { this.#formatDifference = value; this.#queueRender(); }
+
+  get formatXValue(): A11yLineChartXFormatter | undefined { return this.#formatX; }
+  set formatXValue(value: A11yLineChartXFormatter | undefined) { this.#formatX = value; this.#queueRender(); }
 
   get buildTooltipHtml(): A11yLineChartTooltipHtmlBuilder | undefined { return this.#buildTooltipHtml; }
   set buildTooltipHtml(value: A11yLineChartTooltipHtmlBuilder | undefined) { this.#buildTooltipHtml = value; this.#queueRender(); }
@@ -187,20 +237,89 @@ export class A11yLineChartElement extends HTMLElement {
     this.#queueRender();
   }
 
-  #formatSeriesValue(value: number | null | undefined, series: 'actual' | 'target', x: A11yLineChartXValue): string {
+  #formatSeriesValue(value: number | null | undefined, series: A11yLineChartSeries, x: A11yLineChartXValue): string {
     const config = this.#resolvedConfig();
     const normalized = value ?? null;
-    if (this.#formatValue) return this.#formatValue({ value: normalized, series, x, locale: config.locale });
+    if (this.#formatValue) {
+      try {
+        const formatted = this.#formatValue({ value: normalized, series, x, locale: config.locale });
+        if (typeof formatted === 'string' && formatted.trim()) return formatted;
+      } catch {
+        // Fall through to the canonical formatter.
+      }
+    }
     if (normalized === null) return config.describeMissingAs;
     const suffix = config.valuePreset === 'percent' ? '%' : '';
     return `${normalized.toFixed(config.decimalPlaces)}${suffix}`;
   }
 
+  #formatDifferenceValue(
+    value: number,
+    comparison: 'baseline' | 'target',
+    x: A11yLineChartXValue
+  ): string {
+    const config = this.#resolvedConfig();
+    if (this.#formatDifference) {
+      try {
+        const formatted = this.#formatDifference({
+          comparison,
+          locale: config.locale,
+          value,
+          valuePreset: config.valuePreset,
+          x
+        });
+        if (typeof formatted === 'string' && formatted.trim()) return formatted;
+      } catch {
+        // Fall through to the canonical formatter.
+      }
+    }
+    const number = value.toFixed(config.decimalPlaces);
+    if (config.valuePreset !== 'percent') return number;
+    return `${number} percentage ${value === 1 ? 'point' : 'points'}`;
+  }
+
   #formatXValue(value: A11yLineChartXValue): string {
+    if (this.#formatX) {
+      try {
+        const formatted = this.#formatX(value, this.#locale());
+        if (typeof formatted === 'string' && formatted.trim()) return formatted;
+      } catch {
+        // Fall through to the canonical formatter.
+      }
+    }
     if (value instanceof Date) {
       return new Intl.DateTimeFormat(this.#locale(), { day: 'numeric', month: 'short', year: 'numeric' }).format(value);
     }
     return String(value);
+  }
+
+  #updateBaselineValidation(reportError: boolean): A11yLineChartBaseline | undefined {
+    const result = validateBaseline(this.#baselineInput, this.#data);
+    if (result.valid) {
+      this.#baselineErrorMessage = '';
+      return result.baseline;
+    }
+    const changed = result.message !== this.#baselineErrorMessage;
+    this.#baselineErrorMessage = result.message;
+    if (reportError && changed) {
+      this.dispatchEvent(new CustomEvent<A11yLineChartErrorDetail>('a11y-line-chart-error', {
+        bubbles: true,
+        detail: { code: 'invalid-baseline', message: result.message }
+      }));
+    }
+    return undefined;
+  }
+
+  #buildSemanticModel(config: ResolvedA11yLineChartConfig): A11yLineChartSemanticModel {
+    const baseline = this.#updateBaselineValidation(false);
+    return buildSemanticModel({
+      ...(baseline ? { baseline } : {}),
+      config,
+      data: this.#data,
+      formatDifference: ({ comparison, value, x }) => this.#formatDifferenceValue(value, comparison, x),
+      formatValue: (value, series, x) => this.#formatSeriesValue(value, series, x),
+      formatXValue: (value) => this.#formatXValue(value)
+    });
   }
 
   #headingLevel(): 1 | 2 | 3 | 4 | 5 | 6 {
@@ -245,6 +364,7 @@ export class A11yLineChartElement extends HTMLElement {
     root.append(header);
 
     if (this.#errorMessage) {
+      this.#semanticModel = undefined;
       const error = document.createElement('p');
       error.className = 'a11y-line-chart__message a11y-line-chart__message--error';
       error.setAttribute('role', 'alert');
@@ -254,6 +374,7 @@ export class A11yLineChartElement extends HTMLElement {
     }
 
     if (!this.#data.length) {
+      this.#semanticModel = undefined;
       const empty = document.createElement('p');
       empty.className = 'a11y-line-chart__message a11y-line-chart__message--empty';
       empty.textContent = 'No chart data is available. Provide at least one data point.';
@@ -263,6 +384,16 @@ export class A11yLineChartElement extends HTMLElement {
     }
 
     const config = this.#resolvedConfig();
+    const semanticModel = this.#buildSemanticModel(config);
+    this.#semanticModel = semanticModel;
+    root.append(this.#createSummary(semanticModel, config));
+    if (this.#baselineErrorMessage) {
+      const warning = document.createElement('p');
+      warning.className = 'a11y-line-chart__message a11y-line-chart__message--warning';
+      warning.setAttribute('role', 'status');
+      warning.textContent = `${this.#baselineErrorMessage} The chart remains available without baseline context; check the baseline supplied to the chart.`;
+      root.append(warning);
+    }
     if (config.showControls) root.append(this.#createControls(config));
 
     const help = document.createElement('p');
@@ -310,24 +441,178 @@ export class A11yLineChartElement extends HTMLElement {
     navigator.value = String(this.#focusedIndex);
     navigator.setAttribute('aria-describedby', `${help.id} ${this.instanceId}-data`);
     this.#updateNavigatorLabel(navigator);
-    navigator.addEventListener('keydown', (event) => this.#onNavigatorKeydown(event, navigator, viewport, overflowHelp));
-    navigator.addEventListener('input', () => this.#selectIndex(Number(navigator.value), navigator, viewport, overflowHelp));
-    navigator.addEventListener('focus', () => this.#selectIndex(this.#focusedIndex, navigator, viewport, overflowHelp));
+    const stepper = config.stepperVisibility === 'never'
+      ? undefined
+      : this.#createStepper(config, navigator, viewport, overflowHelp, chart.id);
+    navigator.addEventListener('keydown', (event) => this.#onNavigatorKeydown(event, navigator, viewport, overflowHelp, stepper));
+    navigator.addEventListener('input', () => this.#selectIndex(Number(navigator.value), navigator, viewport, overflowHelp, stepper));
+    navigator.addEventListener('focus', () => this.#selectIndex(this.#focusedIndex, navigator, viewport, overflowHelp, stepper));
     navigator.addEventListener('blur', () => this.#chartAdapter?.hideTip());
 
     chartGroup.append(chart, navigator);
     resizable.append(chartGroup);
     viewport.append(resizable);
 
-    const tableRegion = this.#createTable(config);
-    root.append(viewport, help, overflowHelp, live, tableRegion);
-    this.#mountChart(chart, config);
-    requestAnimationFrame(() => {
-      const overflowing = viewport.scrollWidth > viewport.clientWidth + 2;
-      overflowHelp.hidden = !overflowing;
-      navigator.setAttribute('aria-describedby', [help.id, config.tableVisibility === 'hidden' ? '' : `${this.instanceId}-data`, overflowing ? overflowHelp.id : ''].filter(Boolean).join(' '));
-    });
+    const tableRegion = this.#createTable(config, semanticModel);
+    root.append(viewport);
+    if (stepper) root.append(stepper.root);
+    root.append(help, overflowHelp, live, tableRegion);
+    const updateOverflowState = (): void => this.#updateOverflowState(
+      viewport,
+      overflowHelp,
+      navigator,
+      stepper,
+      config,
+      help.id
+    );
+    this.#mountChart(chart, viewport, config, semanticModel, updateOverflowState);
+    requestAnimationFrame(updateOverflowState);
     this.#dispatchReady();
+  }
+
+  #createStepper(
+    config: ResolvedA11yLineChartConfig,
+    navigator: HTMLInputElement,
+    viewport: HTMLElement,
+    overflowHelp: HTMLElement,
+    chartId: string
+  ): StepperElements {
+    const root = document.createElement('div');
+    root.className = 'a11y-line-chart__stepper';
+    root.setAttribute('role', 'group');
+    root.setAttribute('aria-label', 'Chart period navigation');
+    root.hidden = config.stepperVisibility === 'auto';
+
+    const previous = document.createElement('button');
+    previous.className = 'a11y-line-chart__stepper-button a11y-line-chart__stepper-button--previous';
+    previous.type = 'button';
+    previous.textContent = 'Previous';
+    previous.setAttribute('aria-controls', chartId);
+    previous.dataset['stepperDirection'] = 'previous';
+
+    const status = document.createElement('span');
+    status.className = 'a11y-line-chart__stepper-status';
+    status.setAttribute('aria-current', 'true');
+
+    const next = document.createElement('button');
+    next.className = 'a11y-line-chart__stepper-button a11y-line-chart__stepper-button--next';
+    next.type = 'button';
+    next.textContent = 'Next';
+    next.setAttribute('aria-controls', chartId);
+    next.dataset['stepperDirection'] = 'next';
+
+    const stepper = { next, previous, root, status };
+    previous.addEventListener('click', () => {
+      this.#selectIndex(
+        this.#adjacentIndex(-1, config),
+        navigator,
+        viewport,
+        overflowHelp,
+        stepper
+      );
+    });
+    next.addEventListener('click', () => {
+      this.#selectIndex(
+        this.#adjacentIndex(1, config),
+        navigator,
+        viewport,
+        overflowHelp,
+        stepper
+      );
+    });
+    root.append(previous, status, next);
+    this.#updateStepper(stepper, config);
+    return stepper;
+  }
+
+  #adjacentIndex(direction: -1 | 1, config: ResolvedA11yLineChartConfig): number {
+    if (this.#data.length < 2) return this.#focusedIndex;
+    const requested = this.#focusedIndex + direction;
+    if (requested < 0) return config.wrapAround ? this.#data.length - 1 : 0;
+    if (requested >= this.#data.length) return config.wrapAround ? 0 : this.#data.length - 1;
+    return requested;
+  }
+
+  #updateStepper(stepper: StepperElements | undefined, config: ResolvedA11yLineChartConfig): void {
+    if (!stepper) return;
+    const points = this.#semanticModel?.points ?? [];
+    const current = points[this.#focusedIndex];
+    if (!current) return;
+    const hasMultiplePoints = points.length > 1;
+    const previousIndex = this.#adjacentIndex(-1, config);
+    const nextIndex = this.#adjacentIndex(1, config);
+    const previousPoint = points[previousIndex];
+    const nextPoint = points[nextIndex];
+
+    stepper.status.textContent = `${current.xLabel} · ${current.position} of ${current.total}`;
+    stepper.previous.disabled = !hasMultiplePoints || (!config.wrapAround && this.#focusedIndex === 0);
+    stepper.next.disabled = !hasMultiplePoints || (!config.wrapAround && this.#focusedIndex === points.length - 1);
+    stepper.previous.setAttribute(
+      'aria-label',
+      stepper.previous.disabled || !previousPoint
+        ? 'Previous period'
+        : `Previous period, ${previousPoint.xLabel}`
+    );
+    stepper.next.setAttribute(
+      'aria-label',
+      stepper.next.disabled || !nextPoint
+        ? 'Next period'
+        : `Next period, ${nextPoint.xLabel}`
+    );
+  }
+
+  #updateOverflowState(
+    viewport: HTMLElement,
+    overflowHelp: HTMLElement,
+    navigator: HTMLInputElement,
+    stepper: StepperElements | undefined,
+    config: ResolvedA11yLineChartConfig,
+    keyboardHelpId: string
+  ): void {
+    const overflowing = viewport.scrollWidth > viewport.clientWidth + 2;
+    overflowHelp.hidden = !overflowing;
+    navigator.setAttribute('aria-describedby', [
+      keyboardHelpId,
+      config.tableVisibility === 'hidden' ? '' : `${this.instanceId}-data`,
+      overflowing ? overflowHelp.id : ''
+    ].filter(Boolean).join(' '));
+    if (stepper) {
+      stepper.root.hidden = config.stepperVisibility === 'auto' && !overflowing;
+    }
+  }
+
+  #createSummary(
+    model: A11yLineChartSemanticModel,
+    config: ResolvedA11yLineChartConfig
+  ): HTMLElement {
+    const region = document.createElement('div');
+    region.className = 'a11y-line-chart__summary';
+    region.setAttribute('aria-label', 'Chart summary');
+
+    const narrative = document.createElement('p');
+    narrative.className = 'a11y-line-chart__summary-narrative';
+    const primary = document.createElement('strong');
+    primary.className = 'a11y-line-chart__summary-outcome';
+    primary.textContent = model.summary.primary;
+    narrative.append(primary);
+    if (model.summary.supporting.length) {
+      narrative.append(document.createTextNode(` ${model.summary.supporting.join(' ')}`));
+    }
+    region.append(narrative);
+
+    if (model.baseline?.explanation) {
+      const baselineContext = document.createElement('p');
+      baselineContext.className = 'a11y-line-chart__summary-context';
+      baselineContext.textContent = `${config.baselineSeriesLabel} context: ${model.baseline.explanation}`;
+      region.append(baselineContext);
+    }
+    if (config.contextNote) {
+      const consumerContext = document.createElement('p');
+      consumerContext.className = 'a11y-line-chart__summary-context';
+      consumerContext.textContent = config.contextNote;
+      region.append(consumerContext);
+    }
+    return region;
   }
 
   #createControls(config: ResolvedA11yLineChartConfig): HTMLElement {
@@ -340,9 +625,9 @@ export class A11yLineChartElement extends HTMLElement {
     fieldset.append(legend);
 
     const lineChoices: Array<[keyof A11yLineChartConfig, string]> = [
-      ['showActualLine', 'Actual line'], ['showTargetLine', 'Target line'],
-      ['showActualValues', 'Actual label'], ['showTargetValues', 'Target label'],
-      ['fillActual', 'Actual fill'], ['fillTarget', 'Target fill']
+      ['showActualLine', `${config.actualSeriesLabel} line`], ['showTargetLine', `${config.targetSeriesLabel} line`],
+      ['showActualValues', `${config.actualSeriesLabel} label`], ['showTargetValues', `${config.targetSeriesLabel} label`],
+      ['fillActual', `${config.actualSeriesLabel} fill`], ['fillTarget', `${config.targetSeriesLabel} fill`]
     ];
     const displayChoices: Array<[keyof A11yLineChartConfig, string]> = [
       ['showTooltipVisual', 'Tooltip visible'], ['showXAxisTitle', 'X axis title'],
@@ -365,8 +650,8 @@ export class A11yLineChartElement extends HTMLElement {
     const patterns = document.createElement('div');
     patterns.className = 'a11y-line-chart__pattern-selects pattern-selects';
     patterns.append(
-      this.#createPatternSelect('actualPattern', 'Actual pattern type:', config.actualPattern),
-      this.#createPatternSelect('targetPattern', 'Target pattern type:', config.targetPattern)
+      this.#createPatternSelect('actualPattern', `${config.actualSeriesLabel} pattern type:`, config.actualPattern),
+      this.#createPatternSelect('targetPattern', `${config.targetSeriesLabel} pattern type:`, config.targetPattern)
     );
     fieldset.append(patterns);
     appendChoices(displayChoices);
@@ -395,6 +680,10 @@ export class A11yLineChartElement extends HTMLElement {
   #changeControl(key: keyof A11yLineChartConfig, value: A11yLineChartConfig[keyof A11yLineChartConfig], label: string, source: HTMLElement): void {
     this.#config = { ...this.#config, [key]: value };
     const resolved = this.#resolvedConfig();
+    if (key === 'showActualLine' || key === 'showTargetLine') {
+      const seriesLabel = key === 'showActualLine' ? resolved.actualSeriesLabel : resolved.targetSeriesLabel;
+      this.#legendSelection = { ...this.#legendSelection, [seriesLabel]: Boolean(value) };
+    }
     const message = key === 'actualPattern' || key === 'targetPattern'
       ? `${label} ${String(value)}`
       : `${label} ${value ? 'enabled' : 'disabled'}`;
@@ -407,14 +696,18 @@ export class A11yLineChartElement extends HTMLElement {
       detail: { config: this.config, source: 'controls' }
     }));
     const controlName = source.dataset['control'];
-    this.#render();
+    if (this.#chartUpdate) this.#chartUpdate();
+    else this.#render();
     queueMicrotask(() => {
       if (resolved.announceChanges) this.#announce(message);
       this.querySelector<HTMLElement>(`[data-control="${controlName}"]`)?.focus();
     });
   }
 
-  #createTable(config: ResolvedA11yLineChartConfig): HTMLElement {
+  #createTable(
+    config: ResolvedA11yLineChartConfig,
+    model: A11yLineChartSemanticModel
+  ): HTMLElement {
     const region = document.createElement('div');
     region.className = 'a11y-line-chart__table-region';
     if (config.tableVisibility === 'screen-reader') region.classList.add('a11y-line-chart__table-region--visually-hidden');
@@ -423,20 +716,39 @@ export class A11yLineChartElement extends HTMLElement {
     table.className = 'a11y-line-chart__table';
     table.id = `${this.instanceId}-data`;
     const caption = document.createElement('caption');
-    caption.textContent = 'Underlying data values, actual and target performance percentages by year.';
+    const unit = config.valuePreset === 'percent' ? 'percentages' : 'values';
+    caption.textContent = model.baseline
+      ? `Underlying ${config.actualSeriesLabel.toLocaleLowerCase()} and ${config.targetSeriesLabel.toLocaleLowerCase()} ${unit} by period. ${config.baselineSeriesLabel}: ${model.baseline.xLabel}, ${model.baseline.formatted}.`
+      : `Underlying ${config.actualSeriesLabel.toLocaleLowerCase()} and ${config.targetSeriesLabel.toLocaleLowerCase()} ${unit} by period.`;
     const head = document.createElement('thead');
     const headerRow = document.createElement('tr');
-    for (const label of ['Year', 'Actual %', 'Target %']) {
+    const valueSuffix = config.valuePreset === 'percent' ? ' %' : '';
+    const labels = [
+      config.xAxisTitle,
+      `${config.actualSeriesLabel}${valueSuffix}`,
+      `${config.targetSeriesLabel}${valueSuffix}`,
+      'Target outcome',
+      ...(model.baseline ? [`Change from ${config.baselineSeriesLabel.toLocaleLowerCase()}`] : [])
+    ];
+    for (const label of labels) {
       const cell = document.createElement('th'); cell.scope = 'col'; cell.textContent = label; headerRow.append(cell);
     }
     head.append(headerRow);
     const body = document.createElement('tbody');
-    for (const item of this.#data) {
+    for (const [index, item] of this.#data.entries()) {
+      const interpretation = model.points[index]!;
       const row = document.createElement('tr');
       const x = document.createElement('th'); x.scope = 'row'; x.textContent = this.#formatXValue(item.x);
       const actual = document.createElement('td'); actual.textContent = this.#formatSeriesValue(item.actual, 'actual', item.x);
       const target = document.createElement('td'); target.textContent = this.#formatSeriesValue(item.target, 'target', item.x);
-      row.append(x, actual, target); body.append(row);
+      const outcome = document.createElement('td'); outcome.textContent = interpretation.outcomeLabel;
+      row.append(x, actual, target, outcome);
+      if (model.baseline) {
+        const baselineDifference = document.createElement('td');
+        baselineDifference.textContent = interpretation.baseline?.difference?.description ?? config.describeMissingAs;
+        row.append(baselineDifference);
+      }
+      body.append(row);
     }
     table.append(caption, head, body); region.append(table); return region;
   }
@@ -460,7 +772,13 @@ export class A11yLineChartElement extends HTMLElement {
     return max === undefined ? { min } : { min, max };
   }
 
-  #onNavigatorKeydown(event: KeyboardEvent, navigator: HTMLInputElement, viewport: HTMLElement, overflowHelp: HTMLElement): void {
+  #onNavigatorKeydown(
+    event: KeyboardEvent,
+    navigator: HTMLInputElement,
+    viewport: HTMLElement,
+    overflowHelp: HTMLElement,
+    stepper?: StepperElements
+  ): void {
     let index = this.#focusedIndex;
     if (event.key === 'ArrowRight') index = index === this.#data.length - 1 ? (this.#resolvedConfig().wrapAround ? 0 : index) : index + 1;
     else if (event.key === 'ArrowLeft') index = index === 0 ? (this.#resolvedConfig().wrapAround ? this.#data.length - 1 : 0) : index - 1;
@@ -469,48 +787,94 @@ export class A11yLineChartElement extends HTMLElement {
     else return;
     event.preventDefault();
     navigator.value = String(index);
-    this.#selectIndex(index, navigator, viewport, overflowHelp);
+    this.#selectIndex(index, navigator, viewport, overflowHelp, stepper);
   }
 
-  #selectIndex(index: number, navigator: HTMLInputElement, viewport: HTMLElement, overflowHelp: HTMLElement): void {
+  #selectIndex(
+    index: number,
+    navigator: HTMLInputElement,
+    viewport: HTMLElement,
+    overflowHelp: HTMLElement,
+    stepper?: StepperElements
+  ): void {
     this.#focusedIndex = Math.max(0, Math.min(this.#data.length - 1, index));
     navigator.value = String(this.#focusedIndex);
     this.#updateNavigatorLabel(navigator);
+    this.#updateStepper(stepper, this.#resolvedConfig());
     const datum = this.#data[this.#focusedIndex];
     if (!datum) return;
     const preferred = (!this.#resolvedConfig().showActualLine || datum.actual == null) && this.#resolvedConfig().showTargetLine && datum.target != null ? 'target-main' : 'actual-main';
-    this.#chartAdapter?.showTip(this.#focusedIndex, preferred);
+    const selectedIndex = this.#focusedIndex;
+    const revealSelectedTip = (): void => {
+      if (this.#focusedIndex === selectedIndex && viewport.isConnected) {
+        this.#chartAdapter?.showTip(selectedIndex, preferred);
+      }
+    };
     const announcement = this.#buildAnnouncement(this.#focusedIndex);
     this.#announce(announcement, true);
+    const interpretation = this.#semanticModel?.points[this.#focusedIndex];
+    if (!interpretation) return;
     this.dispatchEvent(new CustomEvent<A11yLineChartPointChangeDetail>('a11y-line-chart-point-change', {
       bubbles: true,
-      detail: { actual: datum.actual ?? null, announcement, index: this.#focusedIndex, target: datum.target ?? null, x: datum.x }
+      detail: {
+        actual: interpretation.actualValue,
+        announcement,
+        baselineDifference: interpretation.baseline?.difference ?? null,
+        index: this.#focusedIndex,
+        outcome: interpretation.outcome,
+        outcomeLabel: interpretation.outcomeLabel,
+        target: interpretation.targetValue,
+        targetDifference: interpretation.targetDifference,
+        x: datum.x
+      }
     }));
     const pixel = this.#chartAdapter?.convertXToPixel(this.#formatXValue(datum.x));
     if (pixel !== undefined && !overflowHelp.hidden) {
-      viewport.scrollTo({ left: Math.max(0, pixel - viewport.clientWidth / 2), behavior: this.#reducedMotion(this.#resolvedConfig()) ? 'auto' : 'smooth' });
+      const targetLeft = Math.max(
+        0,
+        Math.min(viewport.scrollWidth - viewport.clientWidth, pixel - viewport.clientWidth / 2)
+      );
+      if (Math.abs(viewport.scrollLeft - targetLeft) > 1) {
+        this.#chartAdapter?.hideTip();
+        viewport.scrollTo({
+          left: targetLeft,
+          behavior: this.#reducedMotion(this.#resolvedConfig()) ? 'auto' : 'smooth'
+        });
+        let frameCount = 0;
+        let stableFrameCount = 0;
+        let previousScrollLeft = viewport.scrollLeft;
+        const revealWhenSettled = (): void => {
+          if (this.#focusedIndex !== selectedIndex || !viewport.isConnected) return;
+          frameCount += 1;
+          const currentScrollLeft = viewport.scrollLeft;
+          stableFrameCount = Math.abs(currentScrollLeft - previousScrollLeft) < 0.5
+            ? stableFrameCount + 1
+            : 0;
+          previousScrollLeft = currentScrollLeft;
+          if (Math.abs(currentScrollLeft - targetLeft) <= 1 || (frameCount > 4 && stableFrameCount >= 3)) {
+            revealSelectedTip();
+            return;
+          }
+          requestAnimationFrame(revealWhenSettled);
+        };
+        requestAnimationFrame(revealWhenSettled);
+      } else {
+        revealSelectedTip();
+      }
+    } else {
+      revealSelectedTip();
     }
   }
 
   #updateNavigatorLabel(navigator: HTMLInputElement): void {
-    const datum = this.#data[this.#focusedIndex];
-    const current = datum ? this.#formatXValue(datum.x) : '';
-    navigator.setAttribute('aria-label', `Use Left and Right Arrow keys to move across years. Home jumps to first year. End jumps to last year. Current year ${current}, index ${this.#focusedIndex + 1} of ${this.#data.length}.`);
-    if (datum) navigator.setAttribute('aria-valuetext', this.#buildAnnouncement(this.#focusedIndex));
+    const point = this.#semanticModel?.points[this.#focusedIndex];
+    const current = point?.xLabel ?? '';
+    navigator.setAttribute('aria-label', `Use Left and Right Arrow keys to move across periods. Home jumps to the first period. End jumps to the last period. Current period ${current}, ${this.#focusedIndex + 1} of ${this.#data.length}.`);
+    if (point) navigator.setAttribute('aria-valuetext', point.narrative);
   }
 
   #buildAnnouncement(index: number): string {
-    const datum = this.#data[index];
-    if (!datum) return '';
-    const actual = datum.actual ?? null;
-    const target = datum.target ?? null;
-    let difference = '';
-    if (actual !== null && target !== null) {
-      difference = actual === target
-        ? ' Actual equals target.'
-        : ` Actual is ${Math.abs(actual - target).toFixed(this.#resolvedConfig().decimalPlaces)}${this.#resolvedConfig().valuePreset === 'percent' ? '%' : ''} ${actual > target ? 'above' : 'below'} target.`;
-    }
-    return `Year ${this.#formatXValue(datum.x)}. Actual: ${this.#formatSeriesValue(actual, 'actual', datum.x)}. Target: ${this.#formatSeriesValue(target, 'target', datum.x)}.${difference}`;
+    return this.#semanticModel?.points[index]?.narrative ?? '';
   }
 
   #announce(message: string, navigation = false): void {
@@ -530,30 +894,63 @@ export class A11yLineChartElement extends HTMLElement {
     window.removeEventListener('resize', this.#windowResizeListener);
     this.#chartAdapter?.dispose();
     this.#chartAdapter = undefined;
+    this.#chartUpdate = undefined;
   }
 
   #reducedMotion(config: ResolvedA11yLineChartConfig): boolean {
     return config.reducedMotion === 'always' || (config.reducedMotion === 'auto' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true);
   }
 
-  #mountChart(container: HTMLElement, config: ResolvedA11yLineChartConfig): void {
+  #mountChart(
+    container: HTMLElement,
+    viewport: HTMLElement,
+    config: ResolvedA11yLineChartConfig,
+    model: A11yLineChartSemanticModel,
+    onViewportResize: () => void
+  ): void {
     if (container.clientWidth === 0 || container.clientHeight === 0) return;
+    const updateTooltipWidth = (): void => {
+      container.style.setProperty(
+        '--a11y-line-chart-tooltip-max-width',
+        `${Math.max(0, viewport.clientWidth - 16)}px`
+      );
+    };
+    updateTooltipWidth();
     this.#chartAdapter = new EchartsAdapter(container);
-    this.#chartAdapter.update(buildChartOptions({
-      ...(this.#buildTooltipAriaLabel ? { buildTooltipAriaLabel: this.#buildTooltipAriaLabel } : {}),
-      ...(this.#buildTooltipHtml ? { buildTooltipHtml: this.#buildTooltipHtml } : {}),
-      config,
-      data: this.#data,
-      formatValue: (value, series, x) => this.#formatSeriesValue(value, series, x),
-      formatXValue: (value) => this.#formatXValue(value),
-      reducedMotion: this.#reducedMotion(config),
-      ...(this.#renderTooltip ? { renderTooltip: this.#renderTooltip } : {}),
-      ...(this.subtitle ? { subtitle: this.subtitle } : {}),
-      theme: resolveTheme(this.#theme, this)
-    }));
-    this.#legendCleanup = this.#chartAdapter.onLegendSelection((selected) => {
-      this.#config = { ...this.#config, showActualLine: selected['Actual'] ?? config.showActualLine, showTargetLine: selected['Target'] ?? config.showTargetLine };
-      this.#queueRender();
+    this.#chartUpdate = (): void => {
+      const currentConfig = this.#resolvedConfig();
+      this.#chartAdapter?.update(buildChartOptions({
+        ...(this.#buildTooltipAriaLabel ? { buildTooltipAriaLabel: this.#buildTooltipAriaLabel } : {}),
+        ...(this.#buildTooltipHtml ? { buildTooltipHtml: this.#buildTooltipHtml } : {}),
+        config: currentConfig,
+        data: this.#data,
+        formatValue: (value, series, x) => this.#formatSeriesValue(value, series, x),
+        formatXValue: (value) => this.#formatXValue(value),
+        getVisibleViewport: () => ({ left: viewport.scrollLeft, width: viewport.clientWidth }),
+        ...(this.#legendSelection ? { legendSelection: this.#legendSelection } : {}),
+        model: this.#semanticModel ?? model,
+        reducedMotion: this.#reducedMotion(currentConfig),
+        ...(this.#renderTooltip ? { renderTooltip: this.#renderTooltip } : {}),
+        ...(this.subtitle ? { subtitle: this.subtitle } : {}),
+        theme: resolveTheme(this.#theme, this)
+      }));
+    };
+    this.#chartUpdate();
+    this.#legendCleanup = this.#chartAdapter.onLegendSelection((selected, name) => {
+      this.#legendSelection = { ...selected };
+      this.#config = {
+        ...this.#config,
+        showActualLine: selected[config.actualSeriesLabel] ?? config.showActualLine,
+        showTargetLine: selected[config.targetSeriesLabel] ?? config.showTargetLine
+      };
+      const actualControl = this.querySelector<HTMLInputElement>('[data-control="showActualLine"]');
+      const targetControl = this.querySelector<HTMLInputElement>('[data-control="showTargetLine"]');
+      if (actualControl) actualControl.checked = this.#resolvedConfig().showActualLine;
+      if (targetControl) targetControl.checked = this.#resolvedConfig().showTargetLine;
+      const detail: A11yLineChartConfigChangeDetail = { config: this.config, source: 'legend' };
+      this.dispatchEvent(new CustomEvent<A11yLineChartConfigChangeDetail>('a11y-line-chart-config-change', { bubbles: true, detail }));
+      this.dispatchEvent(new CustomEvent<A11yLineChartConfigChangeDetail>('a11y-line-chart-display-change', { bubbles: true, detail }));
+      if (name && config.announceChanges) this.#announce(`${name} ${selected[name] ? 'shown' : 'hidden'}`);
     });
     queueMicrotask(() => {
       const datum = this.#data[this.#focusedIndex];
@@ -562,9 +959,21 @@ export class A11yLineChartElement extends HTMLElement {
       this.#chartAdapter.showTip(this.#focusedIndex, preferred);
     });
     if (typeof ResizeObserver === 'function') {
-      this.#resizeObserver = new ResizeObserver(() => this.#chartAdapter?.resize());
+      this.#resizeObserver = new ResizeObserver(() => {
+        updateTooltipWidth();
+        onViewportResize();
+        this.#chartAdapter?.resize();
+      });
       this.#resizeObserver.observe(container);
-    } else window.addEventListener('resize', this.#windowResizeListener, { passive: true });
+      this.#resizeObserver.observe(viewport);
+    } else {
+      this.#windowResizeListener = (): void => {
+        updateTooltipWidth();
+        onViewportResize();
+        this.#chartAdapter?.resize();
+      };
+      window.addEventListener('resize', this.#windowResizeListener, { passive: true });
+    }
   }
 
   #dispatchReady(): void {
