@@ -1,0 +1,11 @@
+.git/
+.vercel/
+node_modules/
+**/node_modules/
+.angular/
+coverage/
+dist/
+packages/line-chart/.demo-dist/
+packages/line-chart/demo/build/
+packages/line-chart/demo/report-build/
+packages/line-chart/dist/
