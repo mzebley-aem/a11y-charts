@@ -1,0 +1,229 @@
+@font-face {
+  font-family: 'Public Sans Web';
+  src: url('./assets/public-sans/PublicSans-Regular.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Public Sans Web';
+  src: url('./assets/public-sans/PublicSans-SemiBold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Public Sans Web';
+  src: url('./assets/public-sans/PublicSans-Bold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+/*
+ * Project-owned adapter example. The source --usa-data-rep-* names and their
+ * defaults are copied from Adapt's compiled USWDS+ chart tokens; this gallery
+ * does not load USWDS+ itself. The local --usa-* values below are fixtures.
+ */
+.theme-adapt {
+  --a11y-charts-text: var(--usa-data-rep-container-ink, #1b1b1b);
+  --a11y-charts-muted: var(--usa-data-rep-container-ink, #565c65);
+  --a11y-charts-surface: var(--usa-data-rep-container-background, #fff);
+  --a11y-charts-border: var(--usa-data-rep-container-border-color, #dfe1e2);
+  --a11y-charts-focus: var(--usa-data-rep-focus-outline-color, #d72d79);
+  --a11y-charts-font-family: var(--usa-data-rep-container-content-font-family, 'Public Sans Web', system-ui, sans-serif);
+
+  --a11y-charts-bar-color: var(--usa-data-rep-series-item-background, #1f4093);
+  --a11y-charts-bar-space: var(--usa-data-rep-series-group-padding-y, 1rem) var(--usa-data-rep-series-group-padding-x, 1.5rem);
+  --a11y-charts-bar-font-size: var(--usa-data-rep-container-content-font-size, 1rem);
+  --a11y-charts-bar-title-font-size: var(--usa-data-rep-title-font-size, 1.25rem);
+  --a11y-charts-bar-title-font-family: var(--usa-data-rep-title-font-family, 'Public Sans Web', system-ui, sans-serif);
+  --a11y-charts-bar-title-font-weight: var(--usa-data-rep-title-font-weight, 600);
+  --a11y-charts-bar-action-icon-display: inline-block;
+  --a11y-charts-bar-action-icon-color: var(--usa-data-rep-action-bar-button-color, #1f4093);
+  --a11y-charts-bar-action-icon-size: var(--usa-data-rep-action-bar-button-icon-size, 1.1em);
+  --a11y-charts-bar-action-icon-gap: var(--usa-data-rep-action-bar-item-gap, 0.35em);
+  --a11y-charts-bar-root-border-width: var(--usa-data-rep-container-border-width, 2px);
+  --a11y-charts-bar-line-height: var(--usa-data-rep-container-content-line-height, 1.5);
+  --a11y-charts-bar-gap: var(--usa-data-rep-series-item-gap, 0.5rem);
+  --a11y-charts-bar-row-gap: var(--usa-data-rep-series-group-gap, 1.5rem);
+  --a11y-charts-bar-border-radius: var(--usa-data-rep-container-border-radius, 0.5rem);
+  --a11y-charts-bar-track-radius: var(--usa-data-rep-series-item-border-radius, 0);
+  --a11y-charts-bar-track: transparent;
+  --a11y-charts-bar-button-radius: var(--usa-data-rep-action-bar-item-border-radius, 0.25rem);
+  --a11y-charts-bar-button-padding:
+    var(--usa-data-rep-action-bar-item-padding-y, 0.5rem)
+    var(--usa-data-rep-action-bar-item-padding-x, 1rem);
+  --a11y-charts-bar-control-min-size: 2.75rem;
+
+  --a11y-charts-bar-label-font-size: var(--usa-data-rep-series-label-font-size, 1rem);
+  --a11y-charts-bar-label-font-weight: var(--usa-data-rep-series-label-font-weight, 600);
+  --a11y-charts-bar-value-layout: column;
+  --a11y-charts-bar-value-gap: 0.5rem;
+  --a11y-charts-bar-value-font-size: var(--usa-data-rep-series-value-font-size, 1.25rem);
+  --a11y-charts-bar-count-font-weight: var(--usa-data-rep-series-value-font-weight, 600);
+  --a11y-charts-bar-value-width: auto;
+  --a11y-charts-bar-percentage-font-size: var(--usa-data-rep-series-percentage-font-size, 1rem);
+  --a11y-charts-bar-percentage-color: var(--usa-data-rep-container-ink, #1b1b1b);
+  --a11y-charts-bar-percentage-surface: var(--usa-data-rep-series-percentage-background, #dfe1e2);
+  --a11y-charts-bar-percentage-border: transparent;
+  --a11y-charts-bar-percentage-radius: 0;
+  --a11y-charts-bar-percentage-padding: 0 0.25rem;
+  --a11y-charts-bar-toolbar-surface: var(--usa-data-rep-container-background, #fff);
+  --a11y-charts-bar-toolbar-text: var(--usa-data-rep-action-bar-button-color, #1f4093);
+  --a11y-charts-bar-toolbar-border: var(--usa-data-rep-container-border-color, #dfe1e2);
+  --a11y-charts-bar-toolbar-hover: var(--usa-data-rep-series-percentage-background, #dfe1e2);
+
+  --a11y-charts-group-text: var(--usa-data-rep-container-ink, #1b1b1b);
+  --a11y-charts-group-muted: var(--usa-data-rep-container-ink, #565c65);
+  --a11y-charts-group-border: var(--usa-data-rep-container-border-color, #dfe1e2);
+  --a11y-charts-group-focus: var(--usa-data-rep-focus-outline-color, #2491ff);
+  --a11y-charts-group-accent: var(--usa-data-rep-action-bar-button-color, #1f4093);
+  --a11y-charts-group-container-background: var(--usa-data-rep-container-background, #fff);
+  --a11y-charts-group-container-border: var(--usa-data-rep-container-border-width, 1px) solid var(--usa-data-rep-container-border-color, #dfe1e2);
+  --a11y-charts-group-container-radius: var(--usa-data-rep-container-border-radius, 0.5rem);
+  --a11y-charts-group-selector-background: var(--usa-base-lighter, #dfe1e2);
+  --a11y-charts-group-selector-active-background: var(--usa-base-lighter, #dfe1e2);
+  --a11y-charts-group-control-background: var(--usa-data-rep-container-background, #fff);
+  --a11y-charts-group-chart-background: var(--usa-data-rep-container-background, #fff);
+  --a11y-charts-group-chart-border: var(--usa-data-rep-container-border-color, #dfe1e2);
+  --a11y-charts-group-padding: 1rem;
+  --a11y-charts-group-selector-padding: 0.75rem;
+  --a11y-charts-group-selector-radius: var(--usa-data-rep-container-border-radius, 0.25rem);
+}
+
+/* Same data under a deliberately distinct local theme, scoped to one card. */
+.theme-contrast {
+  --a11y-charts-text: #11262d;
+  --a11y-charts-muted: #354d55;
+  --a11y-charts-surface: #f3f0e8;
+  --a11y-charts-border: #87938b;
+  --a11y-charts-focus: #6b21a8;
+  --a11y-charts-font-family: Georgia, serif;
+  --a11y-charts-bar-color: #176b57;
+  --a11y-charts-bar-space: 1.5rem;
+  --a11y-charts-bar-font-size: 1rem;
+  --a11y-charts-bar-title-font-size: 1.375rem;
+  --a11y-charts-bar-title-font-family: Georgia, serif;
+  --a11y-charts-bar-title-font-weight: 700;
+  --a11y-charts-bar-root-border-width: 1px;
+  --a11y-charts-bar-line-height: 1.55;
+  --a11y-charts-bar-gap: 0.75rem;
+  --a11y-charts-bar-row-gap: 1.5rem;
+  --a11y-charts-bar-border-radius: 0.125rem;
+  --a11y-charts-bar-track-radius: 0;
+  --a11y-charts-bar-button-radius: 0.125rem;
+  --a11y-charts-bar-button-padding: 0.625rem 0.875rem;
+  --a11y-charts-bar-control-min-size: 2.75rem;
+  --a11y-charts-bar-label-font-size: 1rem;
+  --a11y-charts-bar-label-font-weight: 700;
+  --a11y-charts-bar-value-layout: row;
+  --a11y-charts-bar-value-gap: 0.5rem;
+  --a11y-charts-bar-value-font-size: 1.25rem;
+  --a11y-charts-bar-count-font-weight: 700;
+  --a11y-charts-bar-value-width: auto;
+  --a11y-charts-bar-percentage-font-size: 1rem;
+  --a11y-charts-bar-percentage-color: #11262d;
+  --a11y-charts-bar-percentage-surface: #dce8df;
+  --a11y-charts-bar-percentage-border: transparent;
+  --a11y-charts-bar-percentage-radius: 0;
+  --a11y-charts-bar-percentage-padding: 0 0.25rem;
+  --a11y-charts-bar-toolbar-surface: #f3f0e8;
+  --a11y-charts-bar-toolbar-text: #12503f;
+  --a11y-charts-bar-toolbar-border: #87938b;
+  --a11y-charts-bar-toolbar-hover: #dce8df;
+  --a11y-charts-group-text: #11262d;
+  --a11y-charts-group-muted: #354d55;
+  --a11y-charts-group-border: #87938b;
+  --a11y-charts-group-focus: #6b21a8;
+  --a11y-charts-group-accent: #176b57;
+  --a11y-charts-group-container-background: #f3f0e8;
+  --a11y-charts-group-container-border: 1px solid #87938b;
+  --a11y-charts-group-container-radius: 0.125rem;
+  --a11y-charts-group-selector-background: #e4e5dc;
+  --a11y-charts-group-selector-active-background: #dce8df;
+  --a11y-charts-group-control-background: #f3f0e8;
+  --a11y-charts-group-chart-background: #f3f0e8;
+  --a11y-charts-group-chart-border: #87938b;
+  --a11y-charts-group-padding: 1rem;
+  --a11y-charts-group-selector-padding: 0.75rem;
+  --a11y-charts-group-selector-radius: 0.125rem;
+}
+
+/* Local fixture values for --usa-data-rep-* in the gallery, since USWDS+ is
+   intentionally not installed or loaded here. Names remain overrideable. */
+.adapt-theme-fixture {
+  --usa-font-size-xl: 1.5rem;
+  --usa-font-size-body: 1rem;
+  --usa-primary-base: #1f4093;
+  --usa-primary-lightest: #c8d1ea;
+  --usa-focus-color: #d72d79;
+  --usa-base-lighter: #dfe1e2;
+  --usa-data-rep-container-ink: #1b1b1b;
+  --usa-data-rep-container-background: #fff;
+  --usa-data-rep-container-border-color: #dfe1e2;
+  --usa-data-rep-container-border-width: 2px;
+  --usa-data-rep-container-border-radius: 0.5rem;
+  --usa-data-rep-container-content-font-family: 'Public Sans Web', system-ui, sans-serif;
+  --usa-data-rep-container-content-font-size: var(--usa-font-size-body);
+  --usa-data-rep-container-content-line-height: 1.25;
+  --usa-data-rep-padding-y: 1.5rem;
+  --usa-data-rep-title-font-size: var(--usa-font-size-xl);
+  --usa-data-rep-title-font-family: 'Public Sans Web', system-ui, sans-serif;
+  --usa-data-rep-title-font-weight: 600;
+  --usa-data-rep-series-group-gap: 1.5rem;
+  --usa-data-rep-series-group-padding-y: 1rem;
+  --usa-data-rep-series-item-background: var(--usa-primary-base);
+  --usa-data-rep-series-item-gap: 0.5rem;
+  --usa-data-rep-series-item-border-radius: 0;
+  --usa-data-rep-series-label-font-size: 1rem;
+  --usa-data-rep-series-label-font-weight: 600;
+  --usa-data-rep-series-value-font-size: 1.25rem;
+  --usa-data-rep-series-percentage-font-size: 1rem;
+  --usa-data-rep-series-percentage-background: #dfe1e2;
+  --usa-data-rep-plain-language-background: var(--usa-primary-lightest);
+  --usa-data-rep-plain-language-padding-y: 1rem;
+  --usa-data-rep-plain-language-title-font-size: var(--usa-font-size-body);
+  --usa-data-rep-insight-font-size: var(--usa-font-size-body);
+  --usa-data-rep-insight-font-weight: 400;
+  --usa-data-rep-action-bar-item-border-radius: 0.25rem;
+  --usa-data-rep-action-bar-item-padding-y: 0.5rem;
+  --usa-data-rep-action-bar-item-padding-x: 1rem;
+  --usa-data-rep-action-bar-button-color: var(--usa-primary-base);
+  --usa-data-rep-focus-outline-color: var(--usa-focus-color);
+}
+
+/* Full-width report-shaped specimen: the styles opt into layout features the
+   compact three-column comparison intentionally leaves at component defaults. */
+.adapt-report-fullwidth {
+  --a11y-charts-bar-header-border: transparent;
+  --a11y-charts-bar-header-border-width: 0;
+  --a11y-charts-bar-header-padding: 0;
+  --a11y-charts-bar-toolbar-surface: transparent;
+  --a11y-charts-bar-toolbar-text: var(--usa-data-rep-action-bar-button-color, #1f4093);
+  --a11y-charts-bar-toolbar-border: var(--usa-data-rep-container-border-color, #dfe1e2);
+  --a11y-charts-bar-toolbar-hover: var(--usa-data-rep-container-border-color, #dfe1e2);
+  --a11y-charts-bar-toolbar-border-width: 0;
+  --a11y-charts-bar-toolbar-padding: 0.25rem 0.5rem;
+  --a11y-charts-bar-toolbar-radius: 0;
+  --a11y-charts-bar-toolbar-divider-width: var(--usa-data-rep-container-border-width, 2px);
+  --a11y-charts-bar-toolbar-divider-color: var(--usa-data-rep-container-border-color, #dfe1e2);
+  --a11y-charts-bar-toolbar-divider-inset: var(--usa-data-rep-padding-x, 1.5rem);
+  --a11y-charts-bar-total-border-width: 0;
+  --a11y-charts-bar-total-justify: flex-start;
+  --a11y-charts-bar-total-separator: ':';
+  --a11y-charts-bar-total-gap: 0.35rem;
+  --a11y-charts-bar-total-font-size: var(--usa-data-rep-insight-font-size, 1rem);
+  --a11y-charts-bar-total-label-font-weight: var(--usa-data-rep-insight-font-weight, 400);
+  --a11y-charts-bar-total-value-font-weight: 700;
+  --a11y-charts-bar-value-endpoint-gap: 0.5rem;
+  --a11y-charts-bar-plain-language-background: var(--usa-data-rep-plain-language-background, #c8d1ea);
+  --a11y-charts-bar-plain-language-inset: var(--usa-data-rep-series-group-padding-x, 1.5rem);
+  --a11y-charts-bar-plain-language-color: var(--usa-data-rep-plain-language-color, #1b1b1b);
+  --a11y-charts-bar-plain-language-border: var(--usa-data-rep-container-border-color, #dfe1e2);
+  --a11y-charts-bar-plain-language-border-width: 0;
+  --a11y-charts-bar-plain-language-padding: var(--usa-data-rep-plain-language-padding-y, 1rem) var(--usa-data-rep-padding-x, 1.5rem);
+  --a11y-charts-bar-plain-language-title-size: var(--usa-data-rep-plain-language-title-font-size, 1rem);
+}
+.adapt-report-fullwidth a11y-bar-chart { --a11y-charts-bar-value-layout: column; }
+.adapt-report-fullwidth a11y-bar-chart.a11y-bar-chart--endpoint-values { --a11y-charts-bar-value-endpoint-gap: 0.5rem; }

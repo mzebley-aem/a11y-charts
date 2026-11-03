@@ -1,0 +1,6 @@
+{
+  "name": "@a11y-charts/chart-core-source",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module"
+}

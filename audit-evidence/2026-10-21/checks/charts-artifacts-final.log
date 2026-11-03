@@ -1,0 +1,25 @@
+
+> @a11y-charts/line-chart@0.0.0 artifacts:test
+> playwright test --config playwright.artifacts.config.mjs
+
+[WebServer] (node:15747) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:15760) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] (node:15833) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 8 tests using 1 worker
+
+(node:15884) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 browser-tests/artifacts.spec.ts:33:5 › line works alone from packed standalone output (2.5s)
+  ✓  2 browser-tests/artifacts.spec.ts:33:5 › line works alone from packed ESM output (1.3s)
+  ✓  3 browser-tests/artifacts.spec.ts:33:5 › bar works alone from packed standalone output (1.8s)
+  ✓  4 browser-tests/artifacts.spec.ts:33:5 › bar works alone from packed ESM output (1.8s)
+  ✓  5 browser-tests/artifacts.spec.ts:49:1 › both standalone charts coexist and tolerate repeated registration (1.2s)
+  ✓  6 browser-tests/artifacts.spec.ts:62:1 › bar card preserves hover, pin, Escape, and narrow-layout access (2.8s)
+  ✓  7 browser-tests/artifacts.spec.ts:82:1 › line preserves its canvas across ordinary presentation and source updates (1.4s)
+  ✓  8 browser-tests/artifacts.spec.ts:96:1 › touch activation and forced-colors cards remain usable (1.2s)
+
+  8 passed (25.2s)

@@ -20,6 +20,26 @@
       <label><input type="checkbox" [checked]="showTargetValues()" (change)="toggle('targetValues')"> Target label</label>
       <label><input type="checkbox" [checked]="fillActual()" (change)="toggle('fillActual')"> Actual fill</label>
       <label><input type="checkbox" [checked]="fillTarget()" (change)="toggle('fillTarget')"> Target fill</label>
+  <!-- <label><input type="checkbox" [checked]="useActualPattern()" (change)="toggle('actualPattern')"> Actual pattern</label>
+  <label><input type="checkbox" [checked]="useTargetPattern()" (change)="toggle('targetPattern')"> Target pattern</label> -->
+  <div class="pattern-selects">
+    <label>Actual pattern type:
+      <select [value]="actualPatternTypeOverride()" (change)="onActualPatternChange($event)">
+        <option value="none">None</option>
+        <option value="diagonal">Diagonal</option>
+        <option value="dots">Dots</option>
+        <option value="horizontal">Horizontal</option>
+      </select>
+    </label>
+    <label>Target pattern type:
+      <select [value]="targetPatternTypeOverride()" (change)="onTargetPatternChange($event)">
+        <option value="none">None</option>
+        <option value="diagonal">Diagonal</option>
+        <option value="dots">Dots</option>
+        <option value="horizontal">Horizontal</option>
+      </select>
+    </label>
+  </div>
       <label><input type="checkbox" [checked]="showTooltipVisual()" (change)="toggle('tooltipVisual')"> Tooltip visible</label>
   <label><input type="checkbox" [checked]="showXAxisTitle()" (change)="toggleAxis('x')"> X axis title</label>
   <label><input type="checkbox" [checked]="showYAxisTitle()" (change)="toggleAxis('y')"> Y axis title</label>

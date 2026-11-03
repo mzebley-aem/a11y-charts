@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore accessible line and bar charts, compare configurations, and try the controls.">
+  <link rel="icon" href="data:,">
+  <title>Chart gallery · Accessible charts</title>
+</head>
+<body>
+  <a class="skip-link" href="#examples">Skip to examples</a>
+  <header class="site-header"><a href="#top" class="wordmark">Accessible charts <span>Component gallery</span></a><span class="preview-label">Design review</span></header>
+  <main id="top">
+    <section class="intro" aria-labelledby="page-title">
+      <p class="eyebrow">Explore. Adjust. Compare.</p>
+      <h1 id="page-title">The same data deserves<br>more than one view.</h1>
+      <p class="lede">Line charts for change over time. Bar charts for comparing categories. Explore fourteen examples and a scoped theme comparison, then adjust settings to see how they shape the story.</p>
+      <p class="data-notice">Examples use fictional demonstration data, except the clearly identified grouped views transcribed from supplied screenshots.</p>
+    </section>
+    <nav class="gallery-nav" aria-label="Chart examples">
+      <a href="#line-examples">Line charts <span>5 examples</span></a>
+      <a href="#bar-examples">Bar charts <span>5 examples</span></a>
+      <a href="#grouped-examples">Grouped populations <span>4 examples</span></a>
+      <a href="#theme-comparison">Theme comparison <span>adapter + scope</span></a>
+      <a href="#adapt-report-preview">Full-width report style <span>27 children · 2024</span></a>
+      <a href="#review-guide">Review guide</a>
+    </nav>
+    <aside class="review-guide" id="review-guide" aria-labelledby="guide-heading">
+      <h2 id="guide-heading">Try it as a reader, then as an author.</h2>
+      <div class="guide-grid">
+        <p><strong>Read the chart.</strong> Try its Data and Explain actions where available. On line charts, use the period navigator with the arrow keys.</p>
+        <p><strong>Change the presentation.</strong> Open “Customize this example” below a chart. Changes apply immediately to that example; Reset restores its starting point.</p>
+        <p><strong>Compare the details.</strong> Check labels, targets, hover cards, keyboard focus, and narrow layouts. The configuration disclosure shows your current option choices.</p>
+      </div>
+    </aside>
+    <div id="examples"></div>
+    <footer class="page-footer"><p>Built with the actual line and bar web components.</p><a href="#top">Back to top ↑</a></footer>
+  </main>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

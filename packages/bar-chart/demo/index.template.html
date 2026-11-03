@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title id="document-title">Accessible bar chart component</title>
+    <style>/* DEMO_STYLES */</style>
+  </head>
+  <body>
+    <a class="demo-skip-link" href="#reference-cases">Skip to reference cases</a>
+    <main class="demo-shell">
+      <header class="demo-header">
+        <p class="demo-kicker">Accessible reporting component</p>
+        <h1 id="page-heading">Horizontal bar chart</h1>
+        <p id="page-introduction">Each chart keeps its complete data, explanation and definitions available alongside the visual comparison.</p>
+      </header>
+      <section class="demo-controls" aria-labelledby="controls-heading">
+        <h2 id="controls-heading">Try the component</h2>
+        <div class="demo-control-grid">
+          <div class="demo-field"><label id="scale-label" for="scale-mode">Bar scale</label>
+            <select id="scale-mode"><option value="largest">Largest value</option><option value="population-share">Population share</option></select></div>
+          <div class="demo-field"><label id="data-view-label" for="data-view">Data view</label>
+            <select id="data-view"><option value="dialog">Dialog</option><option value="inline">Inline disclosure</option></select></div>
+          <div class="demo-field"><label id="locale-label" for="locale">Display language</label>
+            <select id="locale"><option value="en-US" lang="en-US">English</option><option value="fr-FR" lang="fr-FR">Français</option><option value="es-ES" lang="es-ES">Español</option></select></div>
+          <label class="demo-check" for="filtered"><input id="filtered" type="checkbox" /><span id="filtered-label">Filtered data</span></label>
+          <label class="demo-check" for="suppressed"><input id="suppressed" type="checkbox" /><span id="suppressed-label">Suppressed data</span></label>
+          <label class="demo-check" for="replace-data"><input id="replace-data" type="checkbox" /><span id="replace-data-label">Use alternate dataset</span></label>
+          <div class="demo-field"><label id="table-visibility-label" for="table-visibility">Full-data table visibility</label>
+            <select id="table-visibility"><option value="visible">Visible</option><option value="screen-reader">Screen-reader only</option><option value="hidden">Hidden</option></select></div>
+          <div class="demo-field"><label id="theme-label" for="theme">Chart theme</label>
+            <select id="theme"><option value="reference">Reference theme</option><option value="high-contrast">High contrast</option></select></div>
+          <div class="demo-field"><label id="texture-label" for="texture">Bar texture</label>
+            <select id="texture"><option value="none">Solid</option><option value="diagonal">Diagonal stripes</option><option value="dots">Dots</option><option value="horizontal">Horizontal lines</option></select></div>
+          <div class="demo-field"><label id="formatter-label" for="formatter">Value formatting</label>
+            <select id="formatter"><option value="locale">Locale defaults</option><option value="prefix">Custom value prefix</option></select></div>
+          <div class="demo-field"><label id="target-style-label" for="target-style">Target-based bar appearance</label>
+            <select id="target-style"><option value="none">Off</option><option value="color">Color only</option><option value="texture">Texture only</option><option value="color-and-texture">Color and texture</option></select></div>
+          <div class="demo-field"><label id="positive-direction-label" for="positive-direction">Numeric targets: positive direction</label>
+            <select id="positive-direction"><option value="above">At or above target</option><option value="below">At or below target</option></select></div>
+          <div class="demo-field"><label id="positive-color-label" for="positive-color">Positive bar color</label><input id="positive-color" type="color" value="#127c25" /></div>
+          <div class="demo-field"><label id="negative-color-label" for="negative-color">Negative bar color</label><input id="negative-color" type="color" value="#c62828" /></div>
+          <div class="demo-field"><label id="positive-texture-label" for="positive-texture">Positive bar texture</label>
+            <select id="positive-texture"><option value="none">Solid</option><option value="dots" selected>Dots</option><option value="diagonal">Diagonal stripes</option><option value="horizontal">Horizontal lines</option></select></div>
+          <div class="demo-field"><label id="negative-texture-label" for="negative-texture">Negative bar texture</label>
+            <select id="negative-texture"><option value="none">Solid</option><option value="dots">Dots</option><option value="diagonal" selected>Diagonal stripes</option><option value="horizontal">Horizontal lines</option></select></div>
+          <label class="demo-check" for="show-details"><input id="show-details" type="checkbox" checked /><span id="show-details-label">Explore hover and focus cards</span></label>
+          <label class="demo-check" for="show-summary"><input id="show-summary" type="checkbox" checked /><span id="show-summary-label">Show summary</span></label>
+          <label class="demo-check" for="show-context"><input id="show-context" type="checkbox" checked /><span id="show-context-label">Show context</span></label>
+          <label class="demo-check" for="show-actions"><input id="show-actions" type="checkbox" checked /><span id="show-actions-label">Show actions</span></label>
+          <label class="demo-check" for="show-explanation"><input id="show-explanation" type="checkbox" checked /><span id="show-explanation-label">Show explanation</span></label>
+          <label class="demo-check" for="show-glossary"><input id="show-glossary" type="checkbox" checked /><span id="show-glossary-label">Show definitions</span></label>
+          <label class="demo-check" for="show-export"><input id="show-export" type="checkbox" checked /><span id="show-export-label">Show CSV export</span></label>
+          <label class="demo-check" for="show-counts"><input id="show-counts" type="checkbox" checked /><span id="show-counts-label">Show counts</span></label>
+          <label class="demo-check" for="show-percentages"><input id="show-percentages" type="checkbox" checked /><span id="show-percentages-label">Show percentages</span></label>
+          <label class="demo-check" for="show-total"><input id="show-total" type="checkbox" checked /><span id="show-total-label">Show total</span></label>
+          <label class="demo-check" for="explanation-expanded"><input id="explanation-expanded" type="checkbox" /><span id="explanation-expanded-label">Open explanation by default</span></label>
+          <label class="demo-check" for="glossary-expanded"><input id="glossary-expanded" type="checkbox" /><span id="glossary-expanded-label">Open definitions by default</span></label>
+        </div>
+      </section>
+      <a11y-bar-chart id="population-example" data-interactive heading-level="2"></a11y-bar-chart>
+      <a11y-bar-chart id="target-range-example" data-interactive heading-level="2"></a11y-bar-chart>
+      <section id="reference-cases" class="demo-reference" aria-labelledby="reference-heading" tabindex="-1">
+        <h2 id="reference-heading">Reference cases</h2>
+        <p id="reference-introduction">These examples show the supplied reference cases and update with the selected language and display settings.</p>
+        <a11y-bar-chart id="sex-example" heading-level="3"></a11y-bar-chart>
+        <a11y-bar-chart id="settings-example" heading-level="3"></a11y-bar-chart>
+        <p id="reporting-notes" tabindex="-1" data-reporting-notes></p>
+      </section>
+      <footer><p id="demo-footer">Controls update the examples. Each chart keeps its own explanation and glossary disclosure state.</p></footer>
+    </main>
+    <script>/* DEMO_SCRIPT */</script>
+  </body>
+</html>

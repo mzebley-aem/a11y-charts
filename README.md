@@ -1,333 +1,302 @@
-# A11y Line Chart Component
+# A11y Charts
 
-**High‑contrast, keyboard and screen‑reader accessible, themable performance chart for Angular 18 (Standalone Components + Signals) built on ECharts 5.**
+Framework-free Light DOM chart components for accessible reporting:
 
-Actual vs. Target timeline visualization with rich accessibility affordances, dynamic responsive sizing, theming via CSS custom properties, outcome evaluation modes (labels or arrows), patterned fills, zoomable Y‑axis, and customizable HTML/ARIA tooltips.
+- [`packages/line-chart`](./packages/line-chart): actual-versus-target performance.
+- [`packages/bar-chart`](./packages/bar-chart): horizontal category counts and
+  population shares, with explanation, definitions, suppression, and CSV.
 
----
+The bar chart and the localization/data-view additions to both charts follow
+[`BAR-CHART-SPEC.md`](./BAR-CHART-SPEC.md).
 
-## Table of Contents
+The Angular replacement gap assessment and grouped-selection requirements are
+recorded in [`BAR-CHART-REPLACEMENT-PARITY.md`](./BAR-CHART-REPLACEMENT-PARITY.md).
+The grouped selector, shared scales, explicit suppression, authored explanations,
+and Excel export are implemented locally. The gallery includes four grouped
+compositions; production ADAPT integration remains separately unverified.
 
-1. Overview
-2. Feature Matrix
-3. Quick Start
-4. Basic Usage
-5. Data Model
-6. Accessibility (A11y) Architecture
-7. Keyboard Interaction Model
-8. Screen Reader & Live Regions
-9. Responsive & Dynamic Sizing System
-10. Y‑Axis Zoom & Base Range
-11. Outcome / Trend Evaluation Modes
-12. Tooltip System (Visual + SR)
-13. Theming & Design Tokens (CSS Variables)
-14. Patterned Fills
-15. Emphasis & Focus Styling
-16. Axis Titles
-17. Multiple Instances
-18. Reduced Motion Handling
-19. Gap / Missing Data Handling
-20. Configuration Reference
-21. Theme Reference
-22. CSS Variable Reference (Design Tokens)
-23. Extending the Component
-24. Performance Considerations
-25. Accessibility Testing Checklist
-26. Roadmap / Ideas
-27. FAQ & Troubleshooting
-28. License
+## Line chart
 
----
+A framework-free, Light DOM Web Component for one focused data question:
 
-## 1. Overview
+> Was the target met in the latest reported period?
 
-`A11yLineChartComponent` renders paired time‑series (Actual vs Target) percentages across years with layered visual encoding to maximize clarity while preserving semantic meaning for assistive technologies. It deliberately avoids ECharts’ default tooltip and legend behavior where necessary to produce tightly controlled ARIA output and keyboard navigation.
+The project is building an actual-versus-target line chart that is exceptionally
+usable with keyboards, screen readers, refreshable braille, magnification,
+forced colors, touch, and conventional visual interaction. ECharts 6 is an
+internal rendering detail; the public boundary is the standards-based
+`<a11y-line-chart>` custom element.
 
-## 2. Feature Matrix
+The first release is for a specific internal use case. Public open-source
+packaging will follow after the documented accessibility evidence gates are
+complete.
 
-| Category | Capability |
-|----------|------------|
-| Accessibility | Keyboard navigation (Left/Right/Home/End, optional wrap), live region announcements, off‑screen data table, configurable heading level, reduced motion, structural ARIA grouping, hidden but SR‑visible tooltip content, axis title toggles |
-| Visual Clarity | Layered area + outline + halo + main line strategy, white outlines to prevent alpha blending, optional pattern fills |
-| Outcome Evaluation | Label mode (default) or arrow symbol mode, positive direction semantics (above/below), customizable positive/negative/equal labels |
-| Tooltip | Custom HTML formatter hook + ARIA label builder, difference phrase, relation classification, optional visual suppression (still SR accessible) |
-| Theming | Extensive CSS custom properties with runtime dereferencing (works through canvas), symbol sizes, line widths, colors, opacities, emphasis styling |
-| Responsive | Intrinsic min/max width calculation, horizontal scroll viewport, automatic per‑point heuristic sizing, overflow detection with SR messaging |
-| Data Handling | Missing / future values gap detection, configurable textual substitute for missing data |
-| Zoom | Optional dynamic Y‑axis zoom with base range override + initial zoom config |
-| Patterns | Diagonal, horizontal, dots patterns for area fills |
-| Multiple Instances | Fully self‑contained — can mount multiple charts independently |
+## Project status
 
-## 3. Quick Start
+- The line implementation is [`packages/line-chart`](./packages/line-chart).
+- The bar chart implementation and shared capability contract are specified in
+  [`BAR-CHART-SPEC.md`](./BAR-CHART-SPEC.md).
+- The Angular application under [`src`](./src) is the frozen migration
+  reference, not the production direction.
+- The technical sequence lives in [`ROADMAP.md`](./ROADMAP.md).
+- Product and accessibility decisions live in
+  [`CHART-EXPERIENCE-PLAN.md`](./CHART-EXPERIENCE-PLAN.md).
+- The original project audit is recorded in [`AUDIT-2026-08-18.md`](./AUDIT-2026-08-18.md).
 
-Install dependencies (already present in this repo):
+Phase 1 has completed the semantic foundation, integrated latest-period
+summary, baseline reference, shared point narrative, and corresponding public
+contract. Phase 2 is underway with overflow-aware period controls sharing the
+existing keyboard selection model.
+
+## Run the Web Component
+
+Requires Node 24 or newer:
 
 ```bash
+cd packages/line-chart
 npm install
-npm start
+npm run dev
 ```
 
-Navigate to `http://localhost:4200/`.
-
-Add the component to another Angular project:
+Open the Vite URL printed by the command. To build the self-contained fixture
+that can also be opened directly with `file://`:
 
 ```bash
-npm install echarts ngx-echarts
+npm run demo:build
+open demo/index.html
 ```
 
-Then import your local component file and declare usage (standalone; no NgModule needed).
+## Verify the package
 
-## 4. Basic Usage
+```bash
+cd packages/line-chart
+npm test
+npm run typecheck
+npm run build
+npm run demo:build
+```
+
+The bar package uses the same install, development, verification, and
+self-contained demo commands from `packages/bar-chart`. Run the package suites
+independently; the root Angular application remains a reference.
+
+## Data views and text customization
+
+Both chart elements accept `config.dataView` as `dialog` (the default) or
+`inline`. Open data views update with new source data while retaining useful
+focus and disclosure state. Each package documents its own existing visibility
+options and their precedence.
+
+The shared options pass is specified in
+[SHARED-CHART-OPTIONS-SPEC.md](./SHARED-CHART-OPTIONS-SPEC.md): common rich
+context/data notes, summary/action/disclosure visibility, CSV, data-view and
+disclosure events, plus bar themes/formatting and explicit line-value
+suppression. The package READMEs describe the concrete property and event APIs.
+
+Both expose a `messages` property and JSON `messages` attribute for partial
+overrides of a complete English message catalog, including generated and
+assistive text. Use the separate locale setting for number formatting. See the
+[bar package](./packages/bar-chart/README.md) and
+[line package](./packages/line-chart/README.md) for keys and examples.
+
+For a language switch, supply the complete translated dictionary and update
+host-authored titles, data labels, context, and the document/chart `lang` too.
+Omitted message keys deliberately use English defaults; `locale` controls
+formatting rather than translating text. Both standalone demos include complete
+French and Spanish examples in their `demo/locales.ts` files and switch every
+chart together.
+
+## Direct consumption
+
+```ts
+import '@a11y-charts/line-chart/define';
+import '@a11y-charts/line-chart/styles.css';
+import type { A11yLineChartElement } from '@a11y-charts/line-chart';
+
+const chart = document.querySelector<A11yLineChartElement>('a11y-line-chart');
+
+chart.data = [
+  { x: 2015, actual: 40, target: 50 },
+  { x: 2020, actual: 83.92, target: 77.02 },
+  { x: 2021, actual: null, target: 78.27 }
+];
+
+chart.baseline = {
+  x: 2015,
+  value: 38,
+  explanation: 'A reporting-policy change defines the comparison boundary.'
+};
+
+chart.config = {
+  decimalPlaces: 2,
+  positiveDirection: 'above',
+  stepperVisibility: 'auto',
+  tableVisibility: 'screen-reader'
+};
+```
 
 ```html
-<app-a11y-line-chart
-  [data]="performanceData"
-  [a11y]="{ headingLevel: 2, initialZoomY: true }"
-  [theme]="{ actualPatternType: 'diagonal' }"
-  xAxisTitle="Year"
-  yAxisTitle="Completion"
-  [yAxisBaseMin]="50"
-  [yAxisBaseMax]="90"
-></app-a11y-line-chart>
+<a11y-line-chart
+  chart-title="Actual versus target performance"
+  subtitle="Reported results and planned targets"
+  value-preset="percent"
+></a11y-line-chart>
 ```
 
-```ts
-performanceData = [
-  { year: 2019, actual: 72.1, target: 78 },
-  { year: 2020, actual: 74.3, target: 79 },
-  { year: 2021, actual: 76.0, target: 80 },
-];
+Complex values and callbacks are assigned as properties. The component accepts
+ordered `{ x, actual, target }` rows; the compatibility layer also accepts the
+Angular-era `{ year, actual, target }` shape.
+
+Targets may also be inclusive ranges, for example
+`{ x: 2025, actual: 75, target: { min: 70, max: 80 } }`. Both endpoints meet
+the target; values outside the range do not. Numeric targets retain the
+configured `positiveDirection` behavior. Range boundaries, target fill,
+summary, tooltips, keyboard announcements, and data tables share the same
+interpretation. See the [range contract](./packages/line-chart/README.md#target-ranges).
+
+## Semantic contract
+
+One ECharts-independent semantic model produces:
+
+- the latest period containing an actual value;
+- target outcome for `above` or `below` positive direction;
+- percentage-point or generic numeric differences;
+- historical comparable-period counts;
+- missing and future-data states;
+- baseline change; and
+- canonical visible, tooltip, keyboard, table, and event language. Baseline
+  period/value context is attached once to the interactive chart rather than
+  repeated in each tooltip or keyboard announcement.
+
+An optional baseline is configured independently of the actual series. Its
+period must match the earliest displayed datum, and its reference line extends
+through the complete target horizon. Invalid baseline configuration emits an
+`a11y-line-chart-error` event while leaving the chart usable without baseline
+context.
+
+Consumers control titles, series names, locale and structured formatting, a
+baseline explanation, and an optional context note. The component retains core
+outcome and comparison sentences so visual and assistive representations do not
+contradict one another.
+
+## Events
+
+The component dispatches bubbling framework-neutral events:
+
+- `a11y-line-chart-ready`
+- `a11y-line-chart-error`
+- `a11y-line-chart-point-change`
+- `a11y-line-chart-display-change`
+
+The point-change detail contains selected source values, canonical
+announcement, outcome, outcome label, and structured target/baseline
+differences. No ECharts instance or internal action name is exposed.
+
+## Accessibility target
+
+WCAG 2.2 Level AA is the product release floor. Applicable Section 508 review
+is recorded separately. Automated scans are supporting evidence only: internal
+and public releases also require the hands-on assistive-technology and
+participant validation defined in the experience plan.
+
+WCAG conformance applies to complete pages, so eventual claims will name the
+tested demo and framework-consumer fixtures rather than claim that an isolated
+package conforms on behalf of every integration.
+
+## Styling
+
+All generated markup remains in Light DOM. Distributed selectors are scoped
+under `a11y-line-chart`, generated classes use the `a11y-line-chart__*`
+namespace, and documented `--a11y-line-chart-*` custom properties provide the
+theme surface. Internal classes are not a stable consumer API.
+
+See [`packages/line-chart/README.md`](./packages/line-chart/README.md) for the
+current package-level feature inventory and integration notes.
+
+## Audit fixes and verification
+
+The October 21 audit is in [AUDIT-2026-10-21.md](./AUDIT-2026-10-21.md).
+Use Node 24 and install the two active packages separately:
+
+```bash
+npm ci --prefix packages/line-chart
+npm ci --prefix packages/bar-chart
+npm run verify
+npm run browser:test
 ```
 
-## 5. Data Model
+The browser suite requires Playwright Chromium (`npx playwright install chromium`
+from `packages/line-chart`). To use an installed Chrome locally, set
+`PLAYWRIGHT_CHROMIUM_CHANNEL=chrome`. It checks real hidden-container layout,
+focus continuity, native dialog reconnection, and defensive event payloads.
+Package builds also smoke-test the built `./core` export in Node without DOM globals.
+CI runs package verification, demo builds, and browser regressions.
 
-```ts
-interface A11yLineChartDatum { year: number; actual?: number | null; target?: number | null; }
-```
+Vercel runs `npm run site:build` and publishes `dist/gallery`. The chart gallery
+is served at `/`; standalone demos are at `/demo/line-chart.html` and
+`/demo/bar-chart.html`. The existing `/demo/report-demo.html` URL remains available.
+The site build includes the current line, bar, grouped-population, and theme examples.
 
-Values are treated as percentages (0–100 by default base range, but configurable). Null or `undefined` are missing values.
+Root `start`, `build`, `test`, and `typecheck` now target the active chart packages.
+`start:bar` opens the bar demo. The frozen Angular reference remains available only
+through explicitly named `reference:start`, `reference:build`, and `reference:test`
+commands (or `ng`). Its old dependency tree still has audit findings; this work
+does not upgrade or claim to secure that reference application.
 
-## 6. Accessibility (A11y) Architecture
+Both packages expose `@a11y-charts/{line-chart|bar-chart}/core` for DOM-free
+semantic/validation/message helpers and CSV generation. Pass plain-text metadata
+as `contextText` and `dataNoteText` for server exports. These fields take
+precedence even when empty. HTML `context`/`dataNote` conversion requires a browser
+DOM; server callers receive an explicit error rather than different parsing.
+Browser elements and registration continue to use the normal package and
+`/define` entries.
 
-Core strategies:
 
-1. Dual representation (visual chart + off‑screen HTML table) for screen readers.
-2. Live region announces focused year context and changes (toggled series, zoom state, axis titles, etc.).
-3. Global heading level configurable to slot into page hierarchy.
-4. Tooltip group uses `role="group"` + ARIA label summarizing current point context.
-5. Hidden visual tooltip variant still announces content when `showTooltipVisual` is false.
-6. Optionally reduced motion based on user preference query.
+## Shared source, standalone outputs
 
-## 7. Keyboard Interaction Model
+Both chart packages use the private `packages/chart-core/src` library for shared
+utilities and card/dialog behavior. Each build embeds the code it needs; consumers
+do not load a shared library. Copy each chart's `dist/chart.js` and
+`dist/styles.css`, or use its ESM exports. The line script embeds ECharts; the bar
+script does not. See [distribution and architecture](SHARED-CORE-DISCUSSION.md)
+for an example and the boundaries between shared and chart-specific code.
 
-| Key | Action |
-|-----|--------|
-| Left Arrow | Previous year (wrap optional) |
-| Right Arrow | Next year (wrap optional) |
-| Home | First year |
-| End | Last year |
+Run `npm run artifacts:test` to build both packages and exercise their fresh npm
+archives in a browser. On a local machine using installed Chrome, prefix the
+command with `PLAYWRIGHT_CHROMIUM_CHANNEL=chrome`.
 
-Focus targets an invisible interaction layer. Each navigation updates tooltip and announces context.
+## Unified review gallery
 
-## 8. Screen Reader & Live Regions
+Run `npm run gallery:dev` and open `http://127.0.0.1:5191/` for line/bar/grouped
+examples, a full-width Adapt-shaped report specimen, and a scoped theme comparison. The comparison shows component defaults,
+the Adapt report token adapter, and a substantially different theme on standalone
+and grouped charts. Its `--usa-data-rep-*` values are local fixtures; it does not
+load USWDS+. Grouped examples identify screenshot-derived values separately from
+illustrative data. The chart's built-in reader controls remain available where
+enabled by the example.
 
-The component uses an assertive (short‑lived) live region to verbalize:
- 
-* Focused data point
-* Toggling of lines, fills, labels, tooltip visibility
-* Axis title enable/disable
-* Zoom on/off
+`npm run gallery:build` creates the static site in `dist/gallery/`.
+`npm run gallery:typecheck` checks the gallery source. The browser regression suite
+includes the gallery's settings, keyboard, and narrow-layout checks.
+`npm run browser:grouped` checks grouped selection, shared scales, state
+preservation, downloads, touch/reflow, and automated accessibility.
+`npm run browser:themes` checks token inheritance, nested chart surfaces, scoped
+theme isolation, the report fixture's values and interaction states, explanation
+placement, edge-to-edge band sizing, endpoint geometry, and 320px overflow. The
+comparison is a token integration demo rather than a claim of pixel parity with
+the Angular report.
 
-Missing data replaced with `describeMissingAs` (default "Missing").
+## Accessibility audit and regression checks
 
-## 9. Responsive & Dynamic Sizing System
+The October 21 audit targets WCAG 2.2 AAA wherever applicable. Findings, fixes,
+scope, evidence, and the spoken screen-reader release gate are in
+[ACCESSIBILITY-AUDIT-2026-10-21.md](ACCESSIBILITY-AUDIT-2026-10-21.md).
 
-Parameters:
- 
-* `dynamicMinWidth` / `dynamicMaxWidth` — toggle intrinsic min/max computation
-* `perPointMinWidth` / `perPointMaxWidth` — base heuristic factors
-* `autoPerPointMinWidth` / `autoPerPointMaxWidth` — derive width from label / value complexity
-* Horizontal scroll container wraps chart when intrinsic width > viewport.
-
-Overflow triggers an accessible message indicating scroll availability.
-
-## 10. Y‑Axis Zoom & Base Range
-
-Inputs: `yAxisBaseMin`, `yAxisBaseMax`, `a11y.initialZoomY`.
-
-Zoom mode derives min/max from existing values + 6% (≥1) padding, clamps to configured base range, and ensures a minimum visible span (≥4 units) for readability. Toggling announces state change. Non‑zoomed state always uses the base range.
-
-## 11. Outcome / Trend Evaluation Modes
-
-`a11y.trendMode`:
- 
-* `labels` (default): Displays status pill (Target met / Target not met / On target).
-* `arrows`: Displays arrow symbol (↑ ↓ =) colored by outcome.
-
-`positiveDirection`: `'above' | 'below'` defines which relational direction counts as positive.
-
-Custom labels: `positiveLabel`, `negativeLabel`, `equalLabel`.
-
-## 12. Tooltip System
-
-Tooltip shows: Year, actual, target, diff phrase, and either an evaluation label pill or arrow. Visual can be hidden while SR label persists. Two optional callback hooks:
-
-```ts
-buildTooltipHtml?: (ctx: A11yLineChartTooltipContext) => string;
-buildTooltipAriaLabel?: (ctx: A11yLineChartTooltipContext) => string;
-```
-
-`ctx` includes relation, diff, formatted values, and resolved theme. Return HTML or string; exceptions are caught and silently ignored (fallback used).
-
-## 13. Theming & Design Tokens
-
-Theme via `[theme]` input or override CSS variables (preferred for live design systems). All colors can reference CSS variables (`var(--token)`) which are dereferenced prior to passing to ECharts (canvas cannot resolve vars directly).
-
-## 14. Patterned Fills
-
-Optional area pattern types: `none | diagonal | dots | horizontal` per series. Colors (`actualPatternColor`, `targetPatternColor`) default to line colors. Patterns rendered on small in‑memory canvas; SSR gracefully falls back to solid color.
-
-## 15. Emphasis & Focus Styling
-
-Focus line pointer style via tokens: color, width, line type. Point emphasis changes fill/border colors and adds halo outlines.
-
-## 16. Axis Titles
-
-Optional hidden by default; toggle via UI checkboxes or set initial visibility programmatically by updating `showXAxisTitle` / `showYAxisTitle` signals in a wrapper or extending the component. Style independently (font size, weight, color tokens).
-
-## 17. Multiple Instances
-
-All state (signals) is instance‑local. You can render any number of charts side‑by‑side with independent tooltips, zoom, and announcements (live region messages remain scoped because each instance has its own element).
-
-## 18. Reduced Motion Handling
-
-Config: `a11y.reducedMotion`: `'auto' | 'always' | 'never'`.
-
-`auto` queries `prefers-reduced-motion`. When active, animations durations = 0 and easing simplified.
-
-## 19. Gap / Missing Data Handling
-
-`autoDetectGaps` truncates the actual series after the last non‑null value (treating future targets as existing while actuals are missing). Missing values use `describeMissingAs`.
-
-## 20. Configuration Reference (`a11y` Input)
-
-| Property | Type | Default | Description |
-|----------|------|---------|-------------|
-| announceChanges | boolean | true | Live region announcements for toggles & navigation |
-| showTable | boolean | true | Include off‑screen data table |
-| decimalPlaces | number | 0 | Value formatting precision |
-| axisDecimalPlaces | number | 0 | Y‑axis tick precision |
-| headingLevel | 1–6 | 2 | Heading level used for chart title wrapper |
-| autoDetectGaps | boolean | false | Nulls after last known actual treated as future/missing |
-| describeMissingAs | string | "Missing" | Replacement label for null values |
-| wrapAround | boolean | false | Keyboard navigation wrap |
-| reducedMotion | enum | 'auto' | Motion strategy |
-| trendMode | enum | 'labels' | Evaluation style |
-| positiveDirection | enum | 'above' | Direction considered positive outcome |
-| positiveLabel | string | 'Target met' | Positive pill label |
-| negativeLabel | string | 'Target not met' | Negative pill label |
-| equalLabel | string | 'On target' | Equal pill label |
-| initialZoomY | boolean | false | Start with Y‑axis zoom enabled |
-
-## 21. Theme Reference (`theme` Input)
-
-Key groups (see section 22 for CSS variable mapping):
- 
-* Series colors / fills / opacities
-* Pattern types & colors
-* Trend colors & symbols
-* Symbol sizes & outlines
-* Line widths & halo (outline) widths/colors
-* Label colors & font size
-* Focus pointer (color/width/style)
-* Axis title font size/weight/colors
-* Emphasis colors & border widths
-
-## 22. CSS Variable Reference (Excerpt)
-
-You can override globally (e.g., `:root { --a11y-line-chart-actual-color: #005fcc; }`).
-
-| Variable | Purpose |
-|----------|---------|
-| --a11y-line-chart-actual-color | Actual line/base color |
-| --a11y-line-chart-target-color | Target line/base color |
-| --a11y-line-chart-actual-fill | Actual area base color |
-| --a11y-line-chart-target-fill | Target area base color |
-| --a11y-line-chart-actual-fill-opacity | Actual area opacity |
-| --a11y-line-chart-target-fill-opacity | Target area opacity |
-| --a11y-line-chart-actual-pattern-type | Actual area pattern type |
-| --a11y-line-chart-target-pattern-type | Target area pattern type |
-| --a11y-line-chart-actual-pattern-color | Stroke for actual pattern |
-| --a11y-line-chart-target-pattern-color | Stroke for target pattern |
-| --a11y-line-chart-line-width | Line width for both series |
-| --a11y-line-chart-actual-line-outline-width | Halo width actual |
-| --a11y-line-chart-target-line-outline-width | Halo width target |
-| --a11y-line-chart-focus-line-color | Vertical focus line color |
-| --a11y-line-chart-focus-line-type | Focus line style |
-| --a11y-line-chart-label-font-size | Value label font size |
-| --a11y-line-chart-actual-label-color | Actual label color |
-| --a11y-line-chart-target-label-color | Target label color |
-| --a11y-line-chart-actual-symbol-size | Circle size |
-| --a11y-line-chart-target-symbol-size | Diamond size |
-| --a11y-line-chart-trend-up-color | Positive indicator color |
-| --a11y-line-chart-trend-down-color | Negative indicator color |
-| --a11y-line-chart-trend-equal-color | Equal indicator color |
-| --a11y-line-chart-x-axis-title-color | X axis title color |
-| --a11y-line-chart-y-axis-title-color | Y axis title color |
-| --a11y-line-chart-per-point-min-width | Override heuristic per-point min width |
-| --a11y-line-chart-per-point-max-width | Override heuristic per-point max width |
-
-## 23. Extending the Component
-
-Ideas:
- 
-* Add export (CSV/PNG) buttons by accessing chart instance in `onChartInit`.
-* Provide external legend control panel (call `toggle(...)`).
-* Wrap with parent component managing persisted preferences (zoom, axis titles, trend mode).
-* Swap percentage semantics: supply `yAxisBaseMin` / `yAxisBaseMax` for other numeric domains (e.g., 0–1000 counts). Adjust formatting function for non‑percent values (extend component or add an `@Input` for custom value formatter).
-
-## 24. Performance Considerations
-
-* Signals recompute chart options efficiently; only minimal object graph churn.
-* Pattern canvases are tiny (20×20) and cached per options build cycle.
-* For very large point counts (1000+), consider turning off value labels and halos to reduce DOM size & draw time.
-
-## 25. Accessibility Testing Checklist
-
-| Test | Expectation |
-|------|-------------|
-| Keyboard arrows | Moves focus & updates live region |
-| Wrap disabled | Stops at ends (unless `wrapAround` true) |
-| Screen reader | Announces year + actual + target + relation |
-| Tooltip hidden | No visual box; still announces content |
-| Reduced motion | When user preference set, animations disabled |
-| Missing data | Reads configured placeholder |
-| Zoom toggle | Announces state change & rescales axis |
-| High contrast (OS/Browser) | Lines & labels remain distinguishable |
-
-## 26. Roadmap / Ideas
-
-* Add keyboard shortcut (Z) to toggle zoom.
-* Add vertical panning or multi‑range selection.
-* Provide optional sparkline condensed variant.
-* Build an automated vitest + axe-core accessibility test harness.
-* Support non‑percent formatting via `valueFormatter` @Input.
-* Add legend focus management & ARIA roles for toggles.
-
-## 27. FAQ & Troubleshooting
-
-| Issue | Fix |
-|-------|-----|
-| Tooltip doesn’t show | Ensure chart instance loads & `showTooltipVisual` true (or rely on SR only). |
-| Colors not applying | If using CSS vars, ensure they’re defined before component renders (global stylesheet). |
-| Pattern invisible | Check contrast; pattern color defaults to line color; try darker stroke. |
-| Zoom starts disabled | Set `a11y.initialZoomY: true` or call `toggleZoomY()` after view init. |
-| Axis labels crowded | Enable dynamic min width or increase `perPointMinWidth`. |
-
-## 28. License
-
-MIT (adjust as appropriate for your project).
-
----
-
-Generated & maintained as part of an accessibility-focused Angular exploratory project. Contributions and suggestions welcome.
+`npm run browser:test` includes keyboard/card navigation, state/focus recovery,
+AAA target/contrast checks, all demo shells, and axe default/expanded scans.
+Regenerate both standalone demos before running the all-demo checks after source
+changes. Set `PLAYWRIGHT_BROWSER=firefox` or `PLAYWRIGHT_BROWSER=webkit` to run
+another installed engine; use `PLAYWRIGHT_CHROMIUM_CHANNEL=chrome` for local Chrome.
+For the full raw evidence sweep, serve the repo with the line package's
+`vite.audit.config.mjs`, then run `npm run a11y:audit --prefix packages/line-chart`.
+A clean automated scan does not certify spoken screen-reader behavior.

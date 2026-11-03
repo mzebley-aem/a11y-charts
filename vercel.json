@@ -1,0 +1,6 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npm ci --prefix packages/line-chart && npm ci --prefix packages/bar-chart",
+  "buildCommand": "npm run site:build",
+  "outputDirectory": "dist/gallery"
+}

@@ -1,0 +1,55 @@
+name: Chart verification
+on:
+  push:
+  pull_request:
+
+jobs:
+  packages:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        chart: [line-chart, bar-chart]
+    defaults:
+      run:
+        working-directory: packages/${{ matrix.chart }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: packages/${{ matrix.chart }}/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm run demo:build
+      - if: matrix.chart == 'line-chart'
+        run: npm run report:build
+  browser:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: [chromium, firefox, webkit]
+    env:
+      PLAYWRIGHT_BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm ci --prefix packages/line-chart
+      - run: npm ci --prefix packages/bar-chart
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+        working-directory: packages/line-chart
+      - run: npm run demo:build --prefix packages/line-chart
+      - run: npm run demo:build --prefix packages/bar-chart
+      - run: npm run browser:test
+      - run: npm run gallery:typecheck
+      - run: npm run site:build
+      - if: matrix.browser == 'chromium'
+        run: npm run browser:grouped && npm run browser:themes
+        env:
+          PLAYWRIGHT_CHROMIUM_CHANNEL: chromium
+      - if: matrix.browser == 'chromium'
+        run: npm run artifacts:test

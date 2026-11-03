@@ -126,6 +126,12 @@ export class A11yLineChartComponent implements OnChanges, AfterViewInit, OnDestr
   // Zoom (dynamic y-axis scaling) toggle
   zoomY = signal(false);
   private appliedInitialZoom = false;
+  // Pattern usage toggles (when false, force pattern type 'none')
+  useActualPattern = signal(false);
+  useTargetPattern = signal(false);
+  // Runtime pattern type overrides (controlled by selects)
+  actualPatternTypeOverride = signal<'none' | 'diagonal' | 'dots' | 'horizontal'>('none');
+  targetPatternTypeOverride = signal<'none' | 'diagonal' | 'dots' | 'horizontal'>('none');
 
   liveMessage = signal('');
 
@@ -165,6 +171,19 @@ export class A11yLineChartComponent implements OnChanges, AfterViewInit, OnDestr
       // Ensure logical ordering
       if (this.yAxisBaseMax <= this.yAxisBaseMin) {
         this.yAxisBaseMax = this.yAxisBaseMin + 1;
+      }
+    }
+    // Auto-init pattern toggles when theme supplies non-'none' types
+    if (changes['theme']) {
+      const aType = this.theme.actualPatternType ?? 'none';
+      const tType = this.theme.targetPatternType ?? 'none';
+      if (aType !== 'none') {
+        this.actualPatternTypeOverride.set(aType);
+        this.useActualPattern.set(true);
+      }
+      if (tType !== 'none') {
+        this.targetPatternTypeOverride.set(tType);
+        this.useTargetPattern.set(true);
       }
     }
   }
@@ -415,11 +434,14 @@ export class A11yLineChartComponent implements OnChanges, AfterViewInit, OnDestr
   // 4: actual main line (topmost for clarity)
     // Prepare patterned area fills (only in browser; SSR fallback uses solid color)
     const resolveAreaFill = (kind: 'actual' | 'target') => {
-      const patternType = kind === 'actual' ? t.actualPatternType : t.targetPatternType;
-      if (patternType === 'none') return kind === 'actual' ? t.actualFill : t.targetFill;
+      const enabled = kind === 'actual' ? this.useActualPattern() : this.useTargetPattern();
+      const override = kind === 'actual' ? this.actualPatternTypeOverride() : this.targetPatternTypeOverride();
+      const themeType = kind === 'actual' ? t.actualPatternType : t.targetPatternType;
+      const effectiveType = enabled ? (override !== 'none' ? override : themeType) : 'none';
+      if (effectiveType === 'none') return kind === 'actual' ? t.actualFill : t.targetFill;
       if (typeof document === 'undefined') return kind === 'actual' ? t.actualFill : t.targetFill;
       try {
-        return { image: this.createPattern(patternType, kind === 'actual' ? t.actualPatternColor : t.targetPatternColor, kind === 'actual' ? t.actualFill : t.targetFill, (kind === 'actual' ? t.actualFillOpacity : t.targetFillOpacity)), repeat: 'repeat' } as any;
+        return { image: this.createPattern(effectiveType, kind === 'actual' ? t.actualPatternColor : t.targetPatternColor, kind === 'actual' ? t.actualFill : t.targetFill, (kind === 'actual' ? t.actualFillOpacity : t.targetFillOpacity)), repeat: 'repeat' } as any;
       } catch { return kind === 'actual' ? t.actualFill : t.targetFill; }
     };
     if (this.showActualLine() && this.fillActual()) series.push({ name: 'Actual area', type: 'line', data: actual, connectNulls: false, symbol: 'none', lineStyle: { width: 0 }, areaStyle: { color: resolveAreaFill('actual'), opacity: t.actualFillOpacity }, blendMode: 'source-over', silent: true, tooltip: { show: false }, z: 1 });
@@ -524,11 +546,38 @@ export class A11yLineChartComponent implements OnChanges, AfterViewInit, OnDestr
     return `Year ${year}. Actual: ${fmt(a)}. Target: ${fmt(t)}.${diffPart}`;
   }
 
-  toggle(kind: 'actualValues' | 'targetValues' | 'fillActual' | 'fillTarget' | 'actualLine' | 'targetLine' | 'tooltipVisual') {
-    const map = { actualLine: this.showActualLine, targetLine: this.showTargetLine, actualValues: this.showActualValues, targetValues: this.showTargetValues, fillActual: this.fillActual, fillTarget: this.fillTarget, tooltipVisual: this.showTooltipVisual } as const;
+  toggle(kind: 'actualValues' | 'targetValues' | 'fillActual' | 'fillTarget' | 'actualLine' | 'targetLine' | 'tooltipVisual' | 'actualPattern' | 'targetPattern') {
+    const map = {
+      actualLine: this.showActualLine,
+      targetLine: this.showTargetLine,
+      actualValues: this.showActualValues,
+      targetValues: this.showTargetValues,
+      fillActual: this.fillActual,
+      fillTarget: this.fillTarget,
+      tooltipVisual: this.showTooltipVisual,
+      actualPattern: this.useActualPattern,
+      targetPattern: this.useTargetPattern,
+    } as const;
     const sig = map[kind]; sig.set(!sig());
+    // Assign default pattern type when enabling and no override/theme pattern yet
+    if (sig() && kind === 'actualPattern' && this.actualPatternTypeOverride() === 'none' && (this.theme.actualPatternType ?? 'none') === 'none') {
+      this.actualPatternTypeOverride.set('diagonal');
+    }
+    if (sig() && kind === 'targetPattern' && this.targetPatternTypeOverride() === 'none' && (this.theme.targetPatternType ?? 'none') === 'none') {
+      this.targetPatternTypeOverride.set('diagonal');
+    }
     if (this.a11y.announceChanges) {
-      const labelMap: Record<string, string> = { actualLine: 'Actual line', targetLine: 'Target line', actualValues: 'Actual value labels', targetValues: 'Target value labels', fillActual: 'Actual fill', fillTarget: 'Target fill', tooltipVisual: 'Tooltip visual display' };
+      const labelMap: Record<string, string> = {
+        actualLine: 'Actual line',
+        targetLine: 'Target line',
+        actualValues: 'Actual value labels',
+        targetValues: 'Target value labels',
+        fillActual: 'Actual fill',
+        fillTarget: 'Target fill',
+        tooltipVisual: 'Tooltip visual display',
+        actualPattern: 'Actual pattern',
+        targetPattern: 'Target pattern',
+      };
       this.announce(`${labelMap[kind]} ${sig() ? 'enabled' : 'disabled'}`);
     }
   }
@@ -546,6 +595,31 @@ export class A11yLineChartComponent implements OnChanges, AfterViewInit, OnDestr
   toggleZoomY() {
     this.zoomY.set(!this.zoomY());
     if (this.a11y.announceChanges) this.announce(`Y axis zoom ${this.zoomY() ? 'enabled' : 'disabled'}`);
+  }
+
+  changePattern(which: 'actual' | 'target', raw: string) {
+    const val = (['none','diagonal','dots','horizontal'].includes(raw) ? raw : 'none') as 'none' | 'diagonal' | 'dots' | 'horizontal';
+    if (which === 'actual') {
+      this.actualPatternTypeOverride.set(val);
+      if (val !== 'none' && !this.useActualPattern()) this.useActualPattern.set(true);
+      if (this.a11y.announceChanges) this.announce(`Actual pattern set to ${val}`);
+    } else {
+      this.targetPatternTypeOverride.set(val);
+      if (val !== 'none' && !this.useTargetPattern()) this.useTargetPattern.set(true);
+      if (this.a11y.announceChanges) this.announce(`Target pattern set to ${val}`);
+    }
+  }
+
+  onActualPatternChange(ev: Event) {
+    const sel = ev.target as HTMLSelectElement | null;
+    const value = sel?.value ?? 'none';
+    this.changePattern('actual', value);
+  }
+
+  onTargetPatternChange(ev: Event) {
+    const sel = ev.target as HTMLSelectElement | null;
+    const value = sel?.value ?? 'none';
+    this.changePattern('target', value);
   }
 
   private announce(msg: string) { this.liveMessage.set(msg); setTimeout(() => this.liveMessage.set(''), 2500); }

@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <title>SPP/APR interactive report prototype</title>
+    <script type="module" src="./report-demo.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#report-content">Skip to report content</a>
+
+    <div class="report-app">
+      <aside class="app-rail" aria-label="Static application navigation preview">
+        <div class="app-rail__menu-control">
+          <svg class="report-icon" aria-hidden="true">
+            <use href="./report-assets/report-icons.svg#open-menu"></use>
+          </svg>
+          <span>Menu preview</span>
+        </div>
+
+        <div class="app-rail__logo">
+          <img src="./report-assets/education-seal.svg" alt="" />
+        </div>
+
+        <ul class="app-rail__menu">
+          <li>
+            <svg class="report-icon" aria-hidden="true">
+              <use href="./report-assets/report-icons.svg#home"></use>
+            </svg>
+            <span>Home</span>
+          </li>
+          <li>
+            <svg class="report-icon" aria-hidden="true">
+              <use href="./report-assets/report-icons.svg#database"></use>
+            </svg>
+            <span>Data</span>
+          </li>
+          <li class="is-current" aria-current="page">
+            <svg class="report-icon" aria-hidden="true">
+              <use href="./report-assets/report-icons.svg#chart-line"></use>
+            </svg>
+            <span>Reports</span>
+          </li>
+          <li>
+            <svg class="report-icon" aria-hidden="true">
+              <use href="./report-assets/report-icons.svg#book"></use>
+            </svg>
+            <span>Glossary</span>
+          </li>
+          <li>
+            <svg class="report-icon" aria-hidden="true">
+              <use href="./report-assets/report-icons.svg#bell"></use>
+            </svg>
+            <span>Alerts</span>
+          </li>
+          <li>
+            <svg class="report-icon" aria-hidden="true">
+              <use href="./report-assets/report-icons.svg#settings"></use>
+            </svg>
+            <span>Settings</span>
+          </li>
+          <li class="app-rail__accessibility">
+            <svg class="report-icon" aria-hidden="true">
+              <use href="./report-assets/report-icons.svg#accessibility"></use>
+            </svg>
+            <span>Accessibility</span>
+          </li>
+          <li>
+            <svg class="report-icon" aria-hidden="true">
+              <use href="./report-assets/report-icons.svg#sign-out"></use>
+            </svg>
+            <span>Sign out</span>
+          </li>
+        </ul>
+        <p class="visually-hidden">Navigation is shown for context and is unavailable in this prototype.</p>
+      </aside>
+
+      <div class="report-pane">
+        <header class="official-banner" aria-label="Prototype notice">
+          <strong>Design prototype.</strong>
+          <span>This is not an official ADAPT website. Navigation and report actions are examples only.</span>
+        </header>
+
+        <div class="mobile-app-bar" aria-label="Application context">
+          <img src="./report-assets/education-seal.svg" alt="" />
+          <strong>Reports</strong>
+          <span>Menu</span>
+        </div>
+
+        <main id="report-content" tabindex="-1">
+          <div class="breadcrumbs" role="group" aria-label="Breadcrumb preview; items are not navigable">
+            <ol>
+              <li><span>Home</span></li>
+              <li><span>Reports</span></li>
+              <li><span>2023</span></li>
+              <li><span>Part C</span></li>
+              <li aria-current="page">State Performance Plan / Annual Performance Report</li>
+            </ol>
+          </div>
+          <header class="page-heading">
+            <h1>Hawaii Part C State Performance Plan / Annual Performance Report (FFY 2023)</h1>
+            <p>
+              Hawaii’s State Performance Plan/Annual Performance Report (SPP/APR) describes
+              the state’s progress implementing Part C of the Individuals with Disabilities
+              Education Act (IDEA). This view focuses on Child Find for infants from birth to
+              age one during federal fiscal year 2023.
+            </p>
+          </header>
+
+          <section class="status-actions" aria-label="Publication status and report actions">
+            <p class="status-actions__status">
+              <span>Example audience label:</span>
+              <strong>Public · illustrative</strong>
+            </p>
+            <div class="status-actions__list" role="group" aria-label="Static action preview">
+              <span class="status-action status-action--danger">
+                <svg class="report-icon" aria-hidden="true">
+                  <use href="./report-assets/report-icons.svg#unpublish"></use>
+                </svg>
+                <span>Un-publish</span>
+              </span>
+              <span class="status-action">
+                <svg class="report-icon" aria-hidden="true">
+                  <use href="./report-assets/report-icons.svg#share"></use>
+                </svg>
+                <span>Share</span>
+              </span>
+              <span class="status-action">
+                <svg class="report-icon" aria-hidden="true">
+                  <use href="./report-assets/report-icons.svg#print"></use>
+                </svg>
+                <span>Print</span>
+              </span>
+              <span class="status-action">
+                <svg class="report-icon" aria-hidden="true">
+                  <use href="./report-assets/report-icons.svg#clone"></use>
+                </svg>
+                <span>Clone</span>
+              </span>
+              <span class="status-action">
+                <svg class="report-icon" aria-hidden="true">
+                  <use href="./report-assets/report-icons.svg#edit"></use>
+                </svg>
+                <span>Edit</span>
+              </span>
+            </div>
+            <p class="visually-hidden">
+              Report actions are shown for context and are unavailable in this prototype.
+            </p>
+          </section>
+
+          <div class="report-layout">
+            <aside class="report-sections" aria-label="Report sections preview">
+              <details open>
+                <summary>Report Sections</summary>
+                <ol>
+                  <li>Introduction</li>
+                  <li>1 - Timely Services</li>
+                  <li>2 - Services in Natural Environments</li>
+                  <li>3 - Early Childhood Outcomes</li>
+                  <li>4 - Family Outcomes</li>
+                  <li class="is-current" aria-current="true">
+                    5 - Child Find (Birth to One)
+                  </li>
+                  <li>6 - Child Find (Birth to Three)</li>
+                  <li>7 - 45-Day Timeline</li>
+                  <li>8 - Early Childhood Transition</li>
+                </ol>
+              </details>
+            </aside>
+
+            <div class="report-sections-content">
+              <section class="report-card indicator-card" aria-labelledby="indicator-title">
+                <div class="report-card__header">
+                  <h2 id="indicator-title">Indicator 5: Child Find (Birth to One)</h2>
+                  <p>
+                    Child Find is the process of identifying, locating, and evaluating infants
+                    and toddlers who may need early intervention services. Indicator 5 reports
+                    the percentage of infants from birth to age one who have an Individualized
+                    Family Service Plan (IFSP).
+                  </p>
+                </div>
+
+                <details class="accordion" open>
+                  <summary>How is it measured?</summary>
+                  <div class="accordion__body">
+                    <p>
+                      Divide the number of infants from birth to age one with IFSPs by the
+                      state’s population of infants in that age range, then multiply by 100.
+                      Hawaii reports the statewide count; sampling is not used.
+                    </p>
+                  </div>
+                </details>
+              </section>
+
+              <section class="report-card quick-summary" aria-labelledby="quick-summary-title">
+                <h3 id="quick-summary-title">Quick Summary</h3>
+                <div class="quick-summary__columns">
+                  <div>
+                    <h4>Comparison to Target:</h4>
+                    <ul>
+                      <li>
+                        The <strong>FFY 2023 Child Find rate was 0.83%</strong>, which
+                        <strong>did not meet the 0.99% target</strong>. The rate decreased by
+                        <strong>0.20 percentage points</strong> from 1.03% in FFY 2022.
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4>Comparison to Baseline:</h4>
+                    <ul>
+                      <li>
+                        Hawaii selected <strong>FFY 2018</strong> as the baseline year, when
+                        the Child Find rate was <strong>0.85%</strong>. The FFY 2023 rate was
+                        <strong>0.02 percentage points below</strong> the baseline.
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <section class="report-card report-chart" aria-label="Interactive performance chart">
+                <a11y-line-chart
+                  chart-title="Indicator 5 Actual vs Target Performance"
+                  heading-level="3"
+                  value-preset="percent"
+                ></a11y-line-chart>
+              </section>
+
+              <section class="report-card how-to-read" aria-labelledby="how-to-read-title">
+                <h3 id="how-to-read-title">How to read this chart</h3>
+                <p><strong>Actual values:</strong> The percentage of Hawaii infants from birth to age one with an IFSP.</p>
+                <p>
+                  <strong>Target values:</strong> Hawaii’s minimum annual Child Find goals,
+                  established with stakeholder input. An actual value meets the target when it
+                  is equal to or greater than the target.
+                </p>
+                <p>
+                  <strong>Baseline value:</strong> Hawaii’s FFY 2018 starting point of 0.85%,
+                  used to assess improvement over time.
+                </p>
+              </section>
+
+              <section class="report-card current-rate" aria-labelledby="current-rate-title">
+                <p class="current-rate__eyebrow">FFY 2023 result</p>
+                <h3 id="current-rate-title">Child Find (Birth to One) rate</h3>
+                <p>
+                  Hawaii reported 125 infants from birth to age one with IFSPs out of an
+                  estimated population of 15,147. The resulting 0.83% rate was below both the
+                  0.99% target and the prior year’s 1.03% rate.
+                </p>
+
+                <div class="rate-comparison" role="group" aria-label="FFY 2023 Child Find rate comparison">
+                  <h4>Rate comparison</h4>
+                  <div class="rate-comparison__row">
+                    <strong>FFY 2022</strong>
+                    <span class="rate-comparison__bar rate-comparison__bar--previous" style="--bar-size: 93.6%"></span>
+                    <b>1.03%</b>
+                  </div>
+                  <div class="rate-comparison__row">
+                    <strong>Target</strong>
+                    <span class="rate-comparison__bar rate-comparison__bar--target" style="--bar-size: 90%"></span>
+                    <b>0.99%</b>
+                  </div>
+                  <div class="rate-comparison__row">
+                    <strong>Actual</strong>
+                    <span class="rate-comparison__bar rate-comparison__bar--actual" style="--bar-size: 75.5%"></span>
+                    <b>0.83%</b>
+                  </div>
+                  <p><strong>0.16 percentage points below target</strong></p>
+                </div>
+
+                <dl class="current-rate__status">
+                  <div>
+                    <dt>Status:</dt>
+                    <dd><span class="current-rate__badge current-rate__badge--not-met">Target not met</span></dd>
+                  </div>
+                  <div>
+                    <dt>Slippage:</dt>
+                    <dd><span class="current-rate__badge current-rate__badge--slippage">Slippage reported</span></dd>
+                  </div>
+                </dl>
+
+                <details class="slippage-details">
+                  <summary>Why did performance slip?</summary>
+                  <div class="slippage-details__body">
+                    <section aria-labelledby="slippage-explanation-title">
+                      <h4 id="slippage-explanation-title">Slippage explanation</h4>
+                      <blockquote>
+                        <p>
+                          Hawaii experienced a decrease in births from 15,272 in FFY 2022 to
+                          14,762 in FFY 2023; however, there was a slight increase in referrals
+                          from FFY 2022 and FFY 2023. In FFY 2023, less children were determined
+                          eligible. And of those found eligible, there was an increase in families
+                          who declined early intervention services even though their child was
+                          found eligible. Unfortunately, our current data system does not collect
+                          data on why families decline early intervention services. Furthermore,
+                          based on U.S. Census Bureau’s report, Hawaii’s population continues to
+                          fall in 2023, reflecting in a 0.3% population growth rate. It’s a decrease
+                          equivalent to 12 people per day.
+                        </p>
+                      </blockquote>
+
+                      <dl class="supporting-data" aria-label="Supporting birth trend reported by Hawaii">
+                        <div><dt>Births in FFY 2022</dt><dd>15,272</dd></div>
+                        <div><dt>Births in FFY 2023</dt><dd>14,762</dd></div>
+                        <div><dt>Change</dt><dd>510 fewer births</dd></div>
+                      </dl>
+                    </section>
+
+                  </div>
+                </details>
+              </section>
+
+              <details class="report-card past-targets">
+                <summary>Historical performance</summary>
+                <div class="past-targets__body">
+                  <p>
+                    Hawaii met or exceeded its Indicator 5 target in FFY 2019 and FFY 2022.
+                    The rate fell sharply in FFY 2020, recovered to 1.03% in FFY 2022, and
+                    then decreased to 0.83% in FFY 2023.
+                  </p>
+
+                  <div class="target-history" role="group" aria-label="Indicator 5 historical actual and target rates">
+                    <div class="target-history__row">
+                      <p><span>Fiscal Year:</span><strong>2018</strong></p>
+                      <div><span class="history-bar history-bar--actual" style="--bar-size: 77.3%"></span><span class="history-bar history-bar--target" style="--bar-size: 93.6%"></span></div>
+                      <dl><div><dt>Actual:</dt><dd>0.85%</dd></div><div><dt>Target:</dt><dd>1.03%</dd></div></dl>
+                    </div>
+                    <div class="target-history__row">
+                      <p><span>Fiscal Year:</span><strong>2019</strong></p>
+                      <div><span class="history-bar history-bar--actual" style="--bar-size: 90.9%"></span><span class="history-bar history-bar--target" style="--bar-size: 88.2%"></span></div>
+                      <dl><div><dt>Actual:</dt><dd>1.00%</dd></div><div><dt>Target:</dt><dd>0.97%</dd></div></dl>
+                    </div>
+                    <div class="target-history__row">
+                      <p><span>Fiscal Year:</span><strong>2020</strong></p>
+                      <div><span class="history-bar history-bar--actual" style="--bar-size: 2.7%"></span><span class="history-bar history-bar--target" style="--bar-size: 88.2%"></span></div>
+                      <dl><div><dt>Actual:</dt><dd>0.03%</dd></div><div><dt>Target:</dt><dd>0.97%</dd></div></dl>
+                    </div>
+                    <div class="target-history__row">
+                      <p><span>Fiscal Year:</span><strong>2021</strong></p>
+                      <div><span class="history-bar history-bar--actual" style="--bar-size: 84.5%"></span><span class="history-bar history-bar--target" style="--bar-size: 88.2%"></span></div>
+                      <dl><div><dt>Actual:</dt><dd>0.93%</dd></div><div><dt>Target:</dt><dd>0.97%</dd></div></dl>
+                    </div>
+                    <div class="target-history__row">
+                      <p><span>Fiscal Year:</span><strong>2022</strong></p>
+                      <div><span class="history-bar history-bar--actual" style="--bar-size: 93.6%"></span><span class="history-bar history-bar--target" style="--bar-size: 89.1%"></span></div>
+                      <dl><div><dt>Actual:</dt><dd>1.03%</dd></div><div><dt>Target:</dt><dd>0.98%</dd></div></dl>
+                    </div>
+                  </div>
+                </div>
+              </details>
+
+              <section class="report-card settings-card" aria-labelledby="settings-title">
+                <h3 id="settings-title">Settings</h3>
+                <p>Settings where the 125 infants primarily received early intervention services on their IFSP in FFY 2023.</p>
+                <ul class="settings-chart" aria-label="FFY 2023 primary service settings for 125 infants">
+                  <li>
+                    <h4>Home</h4>
+                    <div class="settings-chart__row">
+                      <span class="settings-chart__track" aria-hidden="true"><span style="--bar-size: 71.2%"></span></span>
+                      <p><span>71.2%</span><strong>89 infants</strong></p>
+                    </div>
+                  </li>
+                  <li>
+                    <h4>Community-based</h4>
+                    <div class="settings-chart__row">
+                      <span class="settings-chart__track" aria-hidden="true"><span style="--bar-size: 20%"></span></span>
+                      <p><span>20.0%</span><strong>25 infants</strong></p>
+                    </div>
+                  </li>
+                  <li>
+                    <h4>Other</h4>
+                    <div class="settings-chart__row">
+                      <span class="settings-chart__track" aria-hidden="true"><span style="--bar-size: 8.8%"></span></span>
+                      <p><span>8.8%</span><strong>11 infants</strong></p>
+                    </div>
+                  </li>
+                </ul>
+              </section>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

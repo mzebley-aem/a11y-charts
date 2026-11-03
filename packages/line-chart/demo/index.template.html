@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Accessible line chart examples</title>
+    <style>
+      /* DEMO_STYLES */
+    </style>
+  </head>
+  <body>
+    <a class="demo-skip-link" href="#chart-examples">Skip to chart examples</a>
+    <main>
+      <header class="demo-intro">
+        <h1 id="demo-title">Accessible line chart examples</h1>
+        <p id="demo-introduction">Compare reported results with goals, inspect a target range, and try the data views and language controls.</p>
+      </header>
+      <section class="demo-capabilities" aria-labelledby="demo-controls-heading">
+        <h2 id="demo-controls-heading">Demo controls</h2>
+        <div class="demo-capabilities__controls">
+          <label for="demo-locale">Language</label>
+          <select id="demo-locale" data-demo-locale>
+            <option value="en-US">English (United States)</option>
+            <option value="fr-FR">Français</option>
+            <option value="es-ES">Español</option>
+          </select>
+          <button type="button" data-demo-view="dialog">Use data dialog</button>
+          <button type="button" data-demo-view="inline">Use inline data</button>
+          <button type="button" data-demo-update>Update chart data</button>
+        </div>
+        <fieldset class="demo-options" aria-label="Shared chart options">
+          <legend data-demo-shared-legend>Shared chart options</legend>
+          <label><input type="checkbox" data-demo-option="showSummary" checked> <span data-demo-option-label="0">Show summary</span></label>
+          <label><input type="checkbox" data-demo-option="showContext" checked> <span data-demo-option-label="1">Show context</span></label>
+          <label><input type="checkbox" data-demo-option="showActions" checked> <span data-demo-option-label="2">Show action strip</span></label>
+          <label><input type="checkbox" data-demo-option="showExplanation" checked> <span data-demo-option-label="3">Show explanations</span></label>
+          <label><input type="checkbox" data-demo-option="showGlossary" checked> <span data-demo-option-label="4">Show glossary</span></label>
+          <label><input type="checkbox" data-demo-option="showExport" checked> <span data-demo-option-label="5">Show CSV export</span></label>
+          <label><input type="checkbox" data-demo-option="filtered"> <span data-demo-option-label="6">Mark data as filtered</span></label>
+          <label><input type="checkbox" data-demo-suppression> <span data-demo-option-label="7">Suppress a sample value</span></label>
+        </fieldset>
+        <p id="demo-update-help">Keep the data dialog open while updating the chart to hear one concise update and confirm focus stays on Close data.</p>
+      </section>
+      <section id="chart-examples" class="demo-chart-examples" aria-labelledby="chart-examples-heading" tabindex="-1">
+        <h2 id="chart-examples-heading">Chart examples</h2>
+        <a11y-line-chart chart-title="Actual vs Target Performance" heading-level="3" subtitle="Prototype accessible chart component" value-preset="percent"></a11y-line-chart>
+        <a11y-line-chart chart-title="Assessment Data (Historical + Targets)" heading-level="3" subtitle="Second instance proof of concept" value-preset="percent"></a11y-line-chart>
+        <a11y-line-chart chart-title="Performance within a target range" heading-level="3" subtitle="Dashed boundaries and shading show the inclusive target range" value-preset="percent"></a11y-line-chart>
+      </section>
+    </main>
+    <script>
+      /* DEMO_SCRIPT */
+    </script>
+  </body>
+</html>

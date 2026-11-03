@@ -1,0 +1,126 @@
+[
+  {
+    "engine": "chromium",
+    "line": {
+      "value": "2",
+      "ariaValueText": "2025, 3 of 3. Target met. Actual 69%. Target 60%. 9 percentage points above target.",
+      "ariaLabel": "Chart period navigation",
+      "describedBy": "a11y-line-chart-1-keyboard-help",
+      "describedText": [
+        "Keyboard guidance: focus the chart then use Left and Right Arrow keys to move through periods; Home jumps to first period; End jumps to last period. Tooltip content is announced as you navigate."
+      ],
+      "liveText": [
+        "2025, 3 of 3. Target met. Actual 69%. Target 60%. 9 percentage points above target."
+      ]
+    },
+    "lineSnapshot": "- slider \"Chart period navigation\": \"2\"",
+    "directRangeSnapshot": "- slider \"Native range\": \"2\"",
+    "directAriaSliderSnapshot": "- slider \"ARIA slider\"",
+    "lineTableSnapshot": "- table \"Underlying actual and target percentages by period.\":\n  - caption: Underlying actual and target percentages by period.\n  - rowgroup:\n    - row \"Year Actual % Target % Target outcome\":\n      - columnheader \"Year\"\n      - columnheader \"Actual %\"\n      - columnheader \"Target %\"\n      - columnheader \"Target outcome\"\n  - rowgroup:\n    - row \"2023 42% 50% Target not met\":\n      - rowheader \"2023\"\n      - cell \"42%\"\n      - cell \"50%\"\n      - cell \"Target not met\"\n    - row \"2024 58% 50% Target met\":\n      - rowheader \"2024\"\n      - cell \"58%\"\n      - cell \"50%\"\n      - cell \"Target met\"\n    - row \"2025 69% 60% Target met\":\n      - rowheader \"2025\"\n      - cell \"69%\"\n      - cell \"60%\"\n      - cell \"Target met\"",
+    "bar": {
+      "labelledBy": "a11y-bar-chart-1-category-0-label a11y-bar-chart-1-details-percentage-label-0 a11y-bar-chart-1-details-percentage-0 a11y-bar-chart-1-details-count-label-0 a11y-bar-chart-1-details-count-0 a11y-bar-chart-1-details-reading-0",
+      "labelledText": [
+        "First category",
+        "Percentage of total:",
+        "66.67%",
+        "Count:",
+        "4",
+        "Percentage of total:Count:First category is above the target (3). Target met Definition for First category: First definition. Details for First category"
+      ],
+      "description": "Hover or focus a bar to preview details. Use Arrow Up or Arrow Down to move between categories; Home and End go to the first and last. Click, tap, Enter, or Space to keep details open. Press Escape to dismiss; Tab moves through the chart normally.",
+      "ariaValueText": null
+    },
+    "barSnapshot": "- 'button \"First category Percentage of total: 66.67% Count: 4 First category is above the target (3). Target met Definition for First category: First definition. Details for First category\" [expanded]'",
+    "errors": [],
+    "chromeAx": {
+      "componentRange": {
+        "role": "slider",
+        "name": "Chart period navigation",
+        "value": 2,
+        "valueText": "2",
+        "description": "Keyboard guidance: focus the chart then use Left and Right Arrow keys to move through periods; Home jumps to first period; End jumps to last period. Tooltip content is announced as you navigate.",
+        "descriptionFor": "a11y-line-chart-1-keyboard-help"
+      },
+      "directNativeRange": {
+        "role": "slider",
+        "name": "Native range",
+        "value": 2,
+        "valueText": "2"
+      },
+      "directAriaSlider": {
+        "role": "slider",
+        "name": "ARIA slider",
+        "value": 2,
+        "valueText": ""
+      }
+    }
+  },
+  {
+    "engine": "firefox",
+    "line": {
+      "value": "2",
+      "ariaValueText": "2025, 3 of 3. Target met. Actual 69%. Target 60%. 9 percentage points above target.",
+      "ariaLabel": "Chart period navigation",
+      "describedBy": "a11y-line-chart-1-keyboard-help",
+      "describedText": [
+        "Keyboard guidance: focus the chart then use Left and Right Arrow keys to move through periods; Home jumps to first period; End jumps to last period. Tooltip content is announced as you navigate."
+      ],
+      "liveText": [
+        "2025, 3 of 3. Target met. Actual 69%. Target 60%. 9 percentage points above target."
+      ]
+    },
+    "lineSnapshot": "- slider \"Chart period navigation\": \"2\"",
+    "directRangeSnapshot": "- slider \"Native range\": \"2\"",
+    "directAriaSliderSnapshot": "- slider \"ARIA slider\"",
+    "lineTableSnapshot": "- table \"Underlying actual and target percentages by period.\":\n  - caption: Underlying actual and target percentages by period.\n  - rowgroup:\n    - row \"Year Actual % Target % Target outcome\":\n      - columnheader \"Year\"\n      - columnheader \"Actual %\"\n      - columnheader \"Target %\"\n      - columnheader \"Target outcome\"\n  - rowgroup:\n    - row \"2023 42% 50% Target not met\":\n      - rowheader \"2023\"\n      - cell \"42%\"\n      - cell \"50%\"\n      - cell \"Target not met\"\n    - row \"2024 58% 50% Target met\":\n      - rowheader \"2024\"\n      - cell \"58%\"\n      - cell \"50%\"\n      - cell \"Target met\"\n    - row \"2025 69% 60% Target met\":\n      - rowheader \"2025\"\n      - cell \"69%\"\n      - cell \"60%\"\n      - cell \"Target met\"",
+    "bar": {
+      "labelledBy": "a11y-bar-chart-1-category-0-label a11y-bar-chart-1-details-percentage-label-0 a11y-bar-chart-1-details-percentage-0 a11y-bar-chart-1-details-count-label-0 a11y-bar-chart-1-details-count-0 a11y-bar-chart-1-details-reading-0",
+      "labelledText": [
+        "First category",
+        "Percentage of total:",
+        "66.67%",
+        "Count:",
+        "4",
+        "Percentage of total:Count:First category is above the target (3). Target met Definition for First category: First definition. Details for First category"
+      ],
+      "description": "Hover or focus a bar to preview details. Use Arrow Up or Arrow Down to move between categories; Home and End go to the first and last. Click, tap, Enter, or Space to keep details open. Press Escape to dismiss; Tab moves through the chart normally.",
+      "ariaValueText": null
+    },
+    "barSnapshot": "- 'button \"First category Percentage of total: 66.67% Count: 4 First category is above the target (3). Target met Definition for First category: First definition. Details for First category\" [expanded]'",
+    "errors": []
+  },
+  {
+    "engine": "webkit",
+    "line": {
+      "value": "2",
+      "ariaValueText": "2025, 3 of 3. Target met. Actual 69%. Target 60%. 9 percentage points above target.",
+      "ariaLabel": "Chart period navigation",
+      "describedBy": "a11y-line-chart-1-keyboard-help",
+      "describedText": [
+        "Keyboard guidance: focus the chart then use Left and Right Arrow keys to move through periods; Home jumps to first period; End jumps to last period. Tooltip content is announced as you navigate."
+      ],
+      "liveText": [
+        "2025, 3 of 3. Target met. Actual 69%. Target 60%. 9 percentage points above target."
+      ]
+    },
+    "lineSnapshot": "- slider \"Chart period navigation\": \"2\"",
+    "directRangeSnapshot": "- slider \"Native range\": \"2\"",
+    "directAriaSliderSnapshot": "- slider \"ARIA slider\"",
+    "lineTableSnapshot": "- table \"Underlying actual and target percentages by period.\":\n  - caption: Underlying actual and target percentages by period.\n  - rowgroup:\n    - row \"Year Actual % Target % Target outcome\":\n      - columnheader \"Year\"\n      - columnheader \"Actual %\"\n      - columnheader \"Target %\"\n      - columnheader \"Target outcome\"\n  - rowgroup:\n    - row \"2023 42% 50% Target not met\":\n      - rowheader \"2023\"\n      - cell \"42%\"\n      - cell \"50%\"\n      - cell \"Target not met\"\n    - row \"2024 58% 50% Target met\":\n      - rowheader \"2024\"\n      - cell \"58%\"\n      - cell \"50%\"\n      - cell \"Target met\"\n    - row \"2025 69% 60% Target met\":\n      - rowheader \"2025\"\n      - cell \"69%\"\n      - cell \"60%\"\n      - cell \"Target met\"",
+    "bar": {
+      "labelledBy": "a11y-bar-chart-1-category-0-label a11y-bar-chart-1-details-percentage-label-0 a11y-bar-chart-1-details-percentage-0 a11y-bar-chart-1-details-count-label-0 a11y-bar-chart-1-details-count-0 a11y-bar-chart-1-details-reading-0",
+      "labelledText": [
+        "First category",
+        "Percentage of total:",
+        "66.67%",
+        "Count:",
+        "4",
+        "Percentage of total:Count:First category is above the target (3). Target met Definition for First category: First definition. Details for First category"
+      ],
+      "description": "Hover or focus a bar to preview details. Use Arrow Up or Arrow Down to move between categories; Home and End go to the first and last. Click, tap, Enter, or Space to keep details open. Press Escape to dismiss; Tab moves through the chart normally.",
+      "ariaValueText": null
+    },
+    "barSnapshot": "- 'button \"First category Percentage of total: 66.67% Count: 4 First category is above the target (3). Target met Definition for First category: First definition. Details for First category\" [expanded]'",
+    "errors": []
+  }
+]

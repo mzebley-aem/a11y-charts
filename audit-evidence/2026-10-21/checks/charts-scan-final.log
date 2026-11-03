@@ -1,0 +1,235 @@
+
+> @a11y-charts/line-chart@0.0.0 a11y:audit
+> node scripts/audit-accessibility.mjs
+
+{
+  "routes": [
+    {
+      "name": "gallery",
+      "charts": 10,
+      "errors": [],
+      "overflow": [],
+      "textSpacing": {
+        "width": 320,
+        "scrollWidth": 320
+      }
+    },
+    {
+      "name": "line-source",
+      "charts": 3,
+      "errors": [],
+      "overflow": [],
+      "textSpacing": {
+        "width": 320,
+        "scrollWidth": 320
+      }
+    },
+    {
+      "name": "line-standalone",
+      "charts": 3,
+      "errors": [],
+      "overflow": [],
+      "textSpacing": {
+        "width": 320,
+        "scrollWidth": 320
+      }
+    },
+    {
+      "name": "report",
+      "charts": 1,
+      "errors": [],
+      "overflow": [],
+      "textSpacing": {
+        "width": 320,
+        "scrollWidth": 320
+      }
+    },
+    {
+      "name": "bar-standalone",
+      "charts": 4,
+      "errors": [],
+      "overflow": [],
+      "textSpacing": {
+        "width": 320,
+        "scrollWidth": 320
+      }
+    }
+  ],
+  "scans": [
+    {
+      "route": "gallery",
+      "state": "default",
+      "violations": []
+    },
+    {
+      "route": "gallery",
+      "state": "dialog-1",
+      "violations": []
+    },
+    {
+      "route": "gallery",
+      "state": "dialog-2",
+      "violations": []
+    },
+    {
+      "route": "gallery",
+      "state": "dialog-3",
+      "violations": []
+    },
+    {
+      "route": "gallery",
+      "state": "dialog-4",
+      "violations": []
+    },
+    {
+      "route": "gallery",
+      "state": "dialog-5",
+      "violations": []
+    },
+    {
+      "route": "gallery",
+      "state": "dialog-6",
+      "violations": []
+    },
+    {
+      "route": "gallery",
+      "state": "dialog-7",
+      "violations": []
+    },
+    {
+      "route": "gallery",
+      "state": "dialog-8",
+      "violations": []
+    },
+    {
+      "route": "gallery",
+      "state": "expanded",
+      "violations": []
+    },
+    {
+      "route": "line-source",
+      "state": "default",
+      "violations": []
+    },
+    {
+      "route": "line-source",
+      "state": "dialog-1",
+      "violations": []
+    },
+    {
+      "route": "line-source",
+      "state": "dialog-2",
+      "violations": []
+    },
+    {
+      "route": "line-source",
+      "state": "dialog-3",
+      "violations": []
+    },
+    {
+      "route": "line-source",
+      "state": "expanded",
+      "violations": []
+    },
+    {
+      "route": "line-source",
+      "state": "locale-fr-FR",
+      "violations": []
+    },
+    {
+      "route": "line-source",
+      "state": "locale-es-ES",
+      "violations": []
+    },
+    {
+      "route": "line-standalone",
+      "state": "default",
+      "violations": []
+    },
+    {
+      "route": "line-standalone",
+      "state": "dialog-1",
+      "violations": []
+    },
+    {
+      "route": "line-standalone",
+      "state": "dialog-2",
+      "violations": []
+    },
+    {
+      "route": "line-standalone",
+      "state": "dialog-3",
+      "violations": []
+    },
+    {
+      "route": "line-standalone",
+      "state": "expanded",
+      "violations": []
+    },
+    {
+      "route": "line-standalone",
+      "state": "locale-fr-FR",
+      "violations": []
+    },
+    {
+      "route": "line-standalone",
+      "state": "locale-es-ES",
+      "violations": []
+    },
+    {
+      "route": "report",
+      "state": "default",
+      "violations": []
+    },
+    {
+      "route": "report",
+      "state": "dialog-1",
+      "violations": []
+    },
+    {
+      "route": "report",
+      "state": "expanded",
+      "violations": []
+    },
+    {
+      "route": "bar-standalone",
+      "state": "default",
+      "violations": []
+    },
+    {
+      "route": "bar-standalone",
+      "state": "dialog-1",
+      "violations": []
+    },
+    {
+      "route": "bar-standalone",
+      "state": "dialog-2",
+      "violations": []
+    },
+    {
+      "route": "bar-standalone",
+      "state": "dialog-3",
+      "violations": []
+    },
+    {
+      "route": "bar-standalone",
+      "state": "dialog-4",
+      "violations": []
+    },
+    {
+      "route": "bar-standalone",
+      "state": "expanded",
+      "violations": []
+    },
+    {
+      "route": "bar-standalone",
+      "state": "locale-fr-FR",
+      "violations": []
+    },
+    {
+      "route": "bar-standalone",
+      "state": "locale-es-ES",
+      "violations": []
+    }
+  ]
+}
