@@ -1,4 +1,4 @@
-import { LineChart, ScatterChart } from 'echarts/charts';
+import { CustomChart, LineChart, ScatterChart } from 'echarts/charts';
 import {
   GridComponent,
   LegendComponent,
@@ -12,8 +12,9 @@ import {
   type EChartsType
 } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
+import { LabelLayout } from 'echarts/features';
 
-use([LineChart, ScatterChart, GridComponent, LegendComponent, TitleComponent, TooltipComponent, CanvasRenderer]);
+use([CustomChart, LineChart, ScatterChart, GridComponent, LegendComponent, TitleComponent, TooltipComponent, CanvasRenderer, LabelLayout]);
 
 export class EchartsAdapter {
   #chart: EChartsType;

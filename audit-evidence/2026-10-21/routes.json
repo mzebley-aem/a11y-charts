@@ -1,0 +1,781 @@
+[
+  {
+    "name": "gallery",
+    "url": "http://127.0.0.1:5189/demo-gallery/index.html",
+    "status": 200,
+    "errors": [],
+    "structure": {
+      "title": "Chart gallery · Accessible charts",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "charts": 10,
+      "headings": [
+        {
+          "level": "H1",
+          "text": "The same data deservesmore than one view."
+        },
+        {
+          "level": "H2",
+          "text": "Try it as a reader, then as an author."
+        },
+        {
+          "level": "H2",
+          "text": "Line charts"
+        },
+        {
+          "level": "H3",
+          "text": "Preventive care visits"
+        },
+        {
+          "level": "H4",
+          "text": "Preventive care visits"
+        },
+        {
+          "level": "H3",
+          "text": "Chart explanation"
+        },
+        {
+          "level": "H4",
+          "text": "Chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Water service interruptions"
+        },
+        {
+          "level": "H4",
+          "text": "Water service interruptions"
+        },
+        {
+          "level": "H3",
+          "text": "Chart explanation"
+        },
+        {
+          "level": "H4",
+          "text": "Chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Community response time"
+        },
+        {
+          "level": "H4",
+          "text": "Community response time"
+        },
+        {
+          "level": "H3",
+          "text": "Chart explanation"
+        },
+        {
+          "level": "H4",
+          "text": "Chart data"
+        },
+        {
+          "level": "H3",
+          "text": "School meal participation"
+        },
+        {
+          "level": "H4",
+          "text": "School meal participation"
+        },
+        {
+          "level": "H3",
+          "text": "Chart explanation"
+        },
+        {
+          "level": "H4",
+          "text": "Chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Library program attendance"
+        },
+        {
+          "level": "H4",
+          "text": "Library program attendance"
+        },
+        {
+          "level": "H3",
+          "text": "Chart glossary"
+        },
+        {
+          "level": "H2",
+          "text": "Bar charts"
+        },
+        {
+          "level": "H3",
+          "text": "Requests completed on time"
+        },
+        {
+          "level": "H4",
+          "text": "Requests completed on time"
+        },
+        {
+          "level": "H2",
+          "text": "Complete chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Household energy sources"
+        },
+        {
+          "level": "H4",
+          "text": "Household energy sources"
+        },
+        {
+          "level": "H2",
+          "text": "Complete chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Neighborhood tree coverage"
+        },
+        {
+          "level": "H4",
+          "text": "Neighborhood tree coverage"
+        },
+        {
+          "level": "H2",
+          "text": "Complete chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Community clinic referrals"
+        },
+        {
+          "level": "H4",
+          "text": "Community clinic referrals"
+        },
+        {
+          "level": "H2",
+          "text": "Complete chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Public improvement commitments"
+        },
+        {
+          "level": "H4",
+          "text": "Public improvement commitments"
+        }
+      ],
+      "badReferences": [],
+      "positiveTabindex": 0,
+      "links": [
+        {
+          "text": "Skip to examples",
+          "href": "http://127.0.0.1:5189/demo-gallery/index.html#examples"
+        },
+        {
+          "text": "Accessible charts Component gallery",
+          "href": "http://127.0.0.1:5189/demo-gallery/index.html#top"
+        },
+        {
+          "text": "Line charts 5 examples",
+          "href": "http://127.0.0.1:5189/demo-gallery/index.html#line-examples"
+        },
+        {
+          "text": "Bar charts 5 examples",
+          "href": "http://127.0.0.1:5189/demo-gallery/index.html#bar-examples"
+        },
+        {
+          "text": "Review guide",
+          "href": "http://127.0.0.1:5189/demo-gallery/index.html#review-guide"
+        },
+        {
+          "text": "Back to top ↑",
+          "href": "http://127.0.0.1:5189/demo-gallery/index.html#top"
+        }
+      ]
+    },
+    "viewports": [
+      {
+        "width": 320,
+        "scrollWidth": 320,
+        "overflow": 0
+      },
+      {
+        "width": 375,
+        "scrollWidth": 375,
+        "overflow": 0
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390,
+        "overflow": 0
+      },
+      {
+        "width": 480,
+        "scrollWidth": 480,
+        "overflow": 0
+      },
+      {
+        "width": 640,
+        "scrollWidth": 640,
+        "overflow": 0
+      },
+      {
+        "width": 768,
+        "scrollWidth": 768,
+        "overflow": 0
+      },
+      {
+        "width": 1024,
+        "scrollWidth": 1024,
+        "overflow": 0
+      },
+      {
+        "width": 1280,
+        "scrollWidth": 1280,
+        "overflow": 0
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "overflow": 0
+      }
+    ],
+    "textSpacing": {
+      "width": 320,
+      "scrollWidth": 320
+    },
+    "dialogCount": 8
+  },
+  {
+    "name": "line-source",
+    "url": "http://127.0.0.1:5189/packages/line-chart/demo/dev.html",
+    "status": 200,
+    "errors": [],
+    "structure": {
+      "title": "Accessible line chart Web Component parity fixture",
+      "lang": "en-US",
+      "h1": 1,
+      "main": 1,
+      "charts": 3,
+      "headings": [
+        {
+          "level": "H1",
+          "text": "Accessible line chart examples"
+        },
+        {
+          "level": "H2",
+          "text": "Demo controls"
+        },
+        {
+          "level": "H2",
+          "text": "Chart examples"
+        },
+        {
+          "level": "H3",
+          "text": "Actual vs Target Performance"
+        },
+        {
+          "level": "H3",
+          "text": "Chart explanation"
+        },
+        {
+          "level": "H3",
+          "text": "Chart glossary"
+        },
+        {
+          "level": "H3",
+          "text": "Chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Assessment Data (Historical + Targets)"
+        },
+        {
+          "level": "H3",
+          "text": "Chart explanation"
+        },
+        {
+          "level": "H3",
+          "text": "Chart glossary"
+        },
+        {
+          "level": "H3",
+          "text": "Chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Performance within a target range"
+        },
+        {
+          "level": "H3",
+          "text": "Chart explanation"
+        },
+        {
+          "level": "H3",
+          "text": "Chart glossary"
+        },
+        {
+          "level": "H3",
+          "text": "Chart data"
+        }
+      ],
+      "badReferences": [],
+      "positiveTabindex": 0,
+      "links": [
+        {
+          "text": "Skip to chart examples",
+          "href": "http://127.0.0.1:5189/packages/line-chart/demo/dev.html#chart-examples"
+        }
+      ]
+    },
+    "viewports": [
+      {
+        "width": 320,
+        "scrollWidth": 320,
+        "overflow": 0
+      },
+      {
+        "width": 375,
+        "scrollWidth": 375,
+        "overflow": 0
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390,
+        "overflow": 0
+      },
+      {
+        "width": 480,
+        "scrollWidth": 480,
+        "overflow": 0
+      },
+      {
+        "width": 640,
+        "scrollWidth": 640,
+        "overflow": 0
+      },
+      {
+        "width": 768,
+        "scrollWidth": 768,
+        "overflow": 0
+      },
+      {
+        "width": 1024,
+        "scrollWidth": 1024,
+        "overflow": 0
+      },
+      {
+        "width": 1280,
+        "scrollWidth": 1280,
+        "overflow": 0
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "overflow": 0
+      }
+    ],
+    "textSpacing": {
+      "width": 320,
+      "scrollWidth": 320
+    },
+    "dialogCount": 3
+  },
+  {
+    "name": "line-standalone",
+    "url": "http://127.0.0.1:5189/packages/line-chart/demo/index.html",
+    "status": 200,
+    "errors": [],
+    "structure": {
+      "title": "Accessible line chart Web Component parity fixture",
+      "lang": "en-US",
+      "h1": 1,
+      "main": 1,
+      "charts": 3,
+      "headings": [
+        {
+          "level": "H1",
+          "text": "Accessible line chart examples"
+        },
+        {
+          "level": "H2",
+          "text": "Demo controls"
+        },
+        {
+          "level": "H2",
+          "text": "Chart examples"
+        },
+        {
+          "level": "H3",
+          "text": "Actual vs Target Performance"
+        },
+        {
+          "level": "H3",
+          "text": "Chart explanation"
+        },
+        {
+          "level": "H3",
+          "text": "Chart glossary"
+        },
+        {
+          "level": "H3",
+          "text": "Chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Assessment Data (Historical + Targets)"
+        },
+        {
+          "level": "H3",
+          "text": "Chart explanation"
+        },
+        {
+          "level": "H3",
+          "text": "Chart glossary"
+        },
+        {
+          "level": "H3",
+          "text": "Chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Performance within a target range"
+        },
+        {
+          "level": "H3",
+          "text": "Chart explanation"
+        },
+        {
+          "level": "H3",
+          "text": "Chart glossary"
+        },
+        {
+          "level": "H3",
+          "text": "Chart data"
+        }
+      ],
+      "badReferences": [],
+      "positiveTabindex": 0,
+      "links": [
+        {
+          "text": "Skip to chart examples",
+          "href": "http://127.0.0.1:5189/packages/line-chart/demo/index.html#chart-examples"
+        }
+      ]
+    },
+    "viewports": [
+      {
+        "width": 320,
+        "scrollWidth": 320,
+        "overflow": 0
+      },
+      {
+        "width": 375,
+        "scrollWidth": 375,
+        "overflow": 0
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390,
+        "overflow": 0
+      },
+      {
+        "width": 480,
+        "scrollWidth": 480,
+        "overflow": 0
+      },
+      {
+        "width": 640,
+        "scrollWidth": 640,
+        "overflow": 0
+      },
+      {
+        "width": 768,
+        "scrollWidth": 768,
+        "overflow": 0
+      },
+      {
+        "width": 1024,
+        "scrollWidth": 1024,
+        "overflow": 0
+      },
+      {
+        "width": 1280,
+        "scrollWidth": 1280,
+        "overflow": 0
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "overflow": 0
+      }
+    ],
+    "textSpacing": {
+      "width": 320,
+      "scrollWidth": 320
+    },
+    "dialogCount": 3
+  },
+  {
+    "name": "report",
+    "url": "http://127.0.0.1:5189/packages/line-chart/demo/report-demo.html",
+    "status": 200,
+    "errors": [],
+    "structure": {
+      "title": "SPP/APR interactive report prototype",
+      "lang": "en",
+      "h1": 1,
+      "main": 1,
+      "charts": 1,
+      "headings": [
+        {
+          "level": "H1",
+          "text": "Hawaii Part C State Performance Plan / Annual Performance Report (FFY 2023)"
+        },
+        {
+          "level": "H2",
+          "text": "Indicator 5: Child Find (Birth to One)"
+        },
+        {
+          "level": "H3",
+          "text": "Quick Summary"
+        },
+        {
+          "level": "H4",
+          "text": "Comparison to Target:"
+        },
+        {
+          "level": "H4",
+          "text": "Comparison to Baseline:"
+        },
+        {
+          "level": "H3",
+          "text": "Indicator 5 Actual vs Target Performance"
+        },
+        {
+          "level": "H3",
+          "text": "Chart explanation"
+        },
+        {
+          "level": "H3",
+          "text": "Chart data"
+        },
+        {
+          "level": "H3",
+          "text": "How to read this chart"
+        },
+        {
+          "level": "H3",
+          "text": "Child Find (Birth to One) rate"
+        },
+        {
+          "level": "H4",
+          "text": "Rate comparison"
+        },
+        {
+          "level": "H4",
+          "text": "Slippage explanation"
+        },
+        {
+          "level": "H3",
+          "text": "Settings"
+        },
+        {
+          "level": "H4",
+          "text": "Home"
+        },
+        {
+          "level": "H4",
+          "text": "Community-based"
+        },
+        {
+          "level": "H4",
+          "text": "Other"
+        }
+      ],
+      "badReferences": [],
+      "positiveTabindex": 0,
+      "links": [
+        {
+          "text": "Skip to report content",
+          "href": "http://127.0.0.1:5189/packages/line-chart/demo/report-demo.html#report-content"
+        }
+      ]
+    },
+    "viewports": [
+      {
+        "width": 320,
+        "scrollWidth": 320,
+        "overflow": 0
+      },
+      {
+        "width": 375,
+        "scrollWidth": 375,
+        "overflow": 0
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390,
+        "overflow": 0
+      },
+      {
+        "width": 480,
+        "scrollWidth": 480,
+        "overflow": 0
+      },
+      {
+        "width": 640,
+        "scrollWidth": 640,
+        "overflow": 0
+      },
+      {
+        "width": 768,
+        "scrollWidth": 768,
+        "overflow": 0
+      },
+      {
+        "width": 1024,
+        "scrollWidth": 1024,
+        "overflow": 0
+      },
+      {
+        "width": 1280,
+        "scrollWidth": 1280,
+        "overflow": 0
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "overflow": 0
+      }
+    ],
+    "textSpacing": {
+      "width": 320,
+      "scrollWidth": 320
+    },
+    "dialogCount": 1
+  },
+  {
+    "name": "bar-standalone",
+    "url": "http://127.0.0.1:5189/packages/bar-chart/demo/index.html",
+    "status": 200,
+    "errors": [],
+    "structure": {
+      "title": "Accessible bar chart component",
+      "lang": "en-US",
+      "h1": 1,
+      "main": 1,
+      "charts": 4,
+      "headings": [
+        {
+          "level": "H1",
+          "text": "Horizontal bar chart"
+        },
+        {
+          "level": "H2",
+          "text": "Try the component"
+        },
+        {
+          "level": "H2",
+          "text": "Reported population by group"
+        },
+        {
+          "level": "H2",
+          "text": "Complete chart data"
+        },
+        {
+          "level": "H2",
+          "text": "Reporting status"
+        },
+        {
+          "level": "H2",
+          "text": "Complete chart data"
+        },
+        {
+          "level": "H2",
+          "text": "Reference cases"
+        },
+        {
+          "level": "H3",
+          "text": "Reported population by sex"
+        },
+        {
+          "level": "H2",
+          "text": "Complete chart data"
+        },
+        {
+          "level": "H3",
+          "text": "Reported setting counts"
+        },
+        {
+          "level": "H2",
+          "text": "Complete chart data"
+        }
+      ],
+      "badReferences": [],
+      "positiveTabindex": 0,
+      "links": [
+        {
+          "text": "Skip to reference cases",
+          "href": "http://127.0.0.1:5189/packages/bar-chart/demo/index.html#reference-cases"
+        },
+        {
+          "text": "reporting notes",
+          "href": "http://127.0.0.1:5189/packages/bar-chart/demo/index.html#reporting-notes"
+        },
+        {
+          "text": "reporting notes",
+          "href": "http://127.0.0.1:5189/packages/bar-chart/demo/index.html#reporting-notes"
+        }
+      ]
+    },
+    "viewports": [
+      {
+        "width": 320,
+        "scrollWidth": 320,
+        "overflow": 0
+      },
+      {
+        "width": 375,
+        "scrollWidth": 375,
+        "overflow": 0
+      },
+      {
+        "width": 390,
+        "scrollWidth": 390,
+        "overflow": 0
+      },
+      {
+        "width": 480,
+        "scrollWidth": 480,
+        "overflow": 0
+      },
+      {
+        "width": 640,
+        "scrollWidth": 640,
+        "overflow": 0
+      },
+      {
+        "width": 768,
+        "scrollWidth": 768,
+        "overflow": 0
+      },
+      {
+        "width": 1024,
+        "scrollWidth": 1024,
+        "overflow": 0
+      },
+      {
+        "width": 1280,
+        "scrollWidth": 1280,
+        "overflow": 0
+      },
+      {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "overflow": 0
+      }
+    ],
+    "textSpacing": {
+      "width": 320,
+      "scrollWidth": 320
+    },
+    "dialogCount": 4
+  }
+]

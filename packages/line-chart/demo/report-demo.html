@@ -11,12 +11,12 @@
     <a class="skip-link" href="#report-content">Skip to report content</a>
 
     <div class="report-app">
-      <aside class="app-rail" aria-label="Application navigation preview">
+      <aside class="app-rail" aria-label="Static application navigation preview">
         <div class="app-rail__menu-control">
           <svg class="report-icon" aria-hidden="true">
             <use href="./report-assets/report-icons.svg#open-menu"></use>
           </svg>
-          <span>Open Menu</span>
+          <span>Menu preview</span>
         </div>
 
         <div class="app-rail__logo">
@@ -77,12 +77,10 @@
       </aside>
 
       <div class="report-pane">
-        <div class="official-banner">
-          <img src="./report-assets/adapt-wordmark.svg" alt="ADAPT" />
-          <span>This is an official ADAPT website</span>
-          <span class="official-banner__explanation">Here’s how you know</span>
-          <span aria-hidden="true">⌄</span>
-        </div>
+        <header class="official-banner" aria-label="Prototype notice">
+          <strong>Design prototype.</strong>
+          <span>This is not an official ADAPT website. Navigation and report actions are examples only.</span>
+        </header>
 
         <div class="mobile-app-bar" aria-label="Application context">
           <img src="./report-assets/education-seal.svg" alt="" />
@@ -90,17 +88,16 @@
           <span>Menu</span>
         </div>
 
-        <nav class="breadcrumbs" aria-label="Breadcrumb">
-          <ol>
-            <li><span>Home</span></li>
-            <li><span>Reports</span></li>
-            <li><span>2023</span></li>
-            <li><span>Part C</span></li>
-            <li aria-current="page">State Performance Plan / Annual Performance Report</li>
-          </ol>
-        </nav>
-
-        <main id="report-content">
+        <main id="report-content" tabindex="-1">
+          <div class="breadcrumbs" role="group" aria-label="Breadcrumb preview; items are not navigable">
+            <ol>
+              <li><span>Home</span></li>
+              <li><span>Reports</span></li>
+              <li><span>2023</span></li>
+              <li><span>Part C</span></li>
+              <li aria-current="page">State Performance Plan / Annual Performance Report</li>
+            </ol>
+          </div>
           <header class="page-heading">
             <h1>Hawaii Part C State Performance Plan / Annual Performance Report (FFY 2023)</h1>
             <p>
@@ -113,11 +110,10 @@
 
           <section class="status-actions" aria-label="Publication status and report actions">
             <p class="status-actions__status">
-              <span>Published on April 22, 2025 to</span>
-              <strong>Public</strong>
-              <span>viewers.</span>
+              <span>Example audience label:</span>
+              <strong>Public · illustrative</strong>
             </p>
-            <div class="status-actions__list" aria-label="Static action preview">
+            <div class="status-actions__list" role="group" aria-label="Static action preview">
               <span class="status-action status-action--danger">
                 <svg class="report-icon" aria-hidden="true">
                   <use href="./report-assets/report-icons.svg#unpublish"></use>
@@ -255,7 +251,7 @@
                   0.99% target and the prior year’s 1.03% rate.
                 </p>
 
-                <div class="rate-comparison" aria-label="FFY 2023 Child Find rate comparison">
+                <div class="rate-comparison" role="group" aria-label="FFY 2023 Child Find rate comparison">
                   <h4>Rate comparison</h4>
                   <div class="rate-comparison__row">
                     <strong>FFY 2022</strong>
@@ -313,25 +309,11 @@
                       </dl>
                     </section>
 
-                    <aside class="root-cause-preview" aria-labelledby="root-cause-title">
-                      <h4 id="root-cause-title">Root cause analysis</h4>
-                      <p>
-                        Staff shortages limited community outreach. Program managers who
-                        would normally lead outreach activities were providing direct services
-                        to cover vacancies, and Hawaii heard anecdotally that some physicians
-                        were directing families to private services because of early
-                        intervention staffing shortages.
-                      </p>
-                      <p>
-                        Hawaii planned to seek technical assistance from ECTA and DaSy to
-                        identify additional data points and strengthen future Child Find analysis.
-                      </p>
-                    </aside>
                   </div>
                 </details>
               </section>
 
-              <details class="report-card past-targets" open>
+              <details class="report-card past-targets">
                 <summary>Historical performance</summary>
                 <div class="past-targets__body">
                   <p>
@@ -340,7 +322,7 @@
                     then decreased to 0.83% in FFY 2023.
                   </p>
 
-                  <div class="target-history" aria-label="Indicator 5 historical actual and target rates">
+                  <div class="target-history" role="group" aria-label="Indicator 5 historical actual and target rates">
                     <div class="target-history__row">
                       <p><span>Fiscal Year:</span><strong>2018</strong></p>
                       <div><span class="history-bar history-bar--actual" style="--bar-size: 77.3%"></span><span class="history-bar history-bar--target" style="--bar-size: 93.6%"></span></div>
@@ -370,19 +352,32 @@
                 </div>
               </details>
 
-              <section class="report-card calculation-card" aria-labelledby="calculation-title">
-                <h3 id="calculation-title">FFY 2023 data calculation</h3>
-                <div class="calculation-card__formula" aria-label="125 divided by 15,147, multiplied by 100, equals 0.83 percent">
-                  <span><strong>125</strong><small>infants birth to one with IFSPs</small></span>
-                  <b aria-hidden="true">÷</b>
-                  <span><strong>15,147</strong><small>infants in the state population</small></span>
-                  <b aria-hidden="true">× 100 =</b>
-                  <strong>0.83%</strong>
-                </div>
-                <p>
-                  Child-count data come from Hawaii’s early intervention reporting; the
-                  population estimate supplies the denominator.
-                </p>
+              <section class="report-card settings-card" aria-labelledby="settings-title">
+                <h3 id="settings-title">Settings</h3>
+                <p>Settings where the 125 infants primarily received early intervention services on their IFSP in FFY 2023.</p>
+                <ul class="settings-chart" aria-label="FFY 2023 primary service settings for 125 infants">
+                  <li>
+                    <h4>Home</h4>
+                    <div class="settings-chart__row">
+                      <span class="settings-chart__track" aria-hidden="true"><span style="--bar-size: 71.2%"></span></span>
+                      <p><span>71.2%</span><strong>89 infants</strong></p>
+                    </div>
+                  </li>
+                  <li>
+                    <h4>Community-based</h4>
+                    <div class="settings-chart__row">
+                      <span class="settings-chart__track" aria-hidden="true"><span style="--bar-size: 20%"></span></span>
+                      <p><span>20.0%</span><strong>25 infants</strong></p>
+                    </div>
+                  </li>
+                  <li>
+                    <h4>Other</h4>
+                    <div class="settings-chart__row">
+                      <span class="settings-chart__track" aria-hidden="true"><span style="--bar-size: 8.8%"></span></span>
+                      <p><span>8.8%</span><strong>11 infants</strong></p>
+                    </div>
+                  </li>
+                </ul>
               </section>
             </div>
           </div>

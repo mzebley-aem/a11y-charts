@@ -1,13 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "npm ci --prefix packages/line-chart",
-  "buildCommand": "npm run report:build --prefix packages/line-chart",
-  "outputDirectory": "packages/line-chart/demo/report-build",
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/demo/report-demo.html",
-      "permanent": false
-    }
-  ]
+  "installCommand": "npm ci --prefix packages/line-chart && npm ci --prefix packages/bar-chart",
+  "buildCommand": "npm run site:build",
+  "outputDirectory": "dist/gallery"
 }

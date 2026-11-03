@@ -1,0 +1,119 @@
+/* Group tokens preserve inherited chart themes while exposing grouped surfaces independently. */
+a11y-bar-chart-group {
+  --a11y-bar-chart-group-text: var(--a11y-charts-group-text, var(--a11y-charts-bar-text, var(--a11y-charts-text, var(--a11y-bar-chart-text, #172b3a))));
+  --a11y-bar-chart-group-muted: var(--a11y-charts-group-muted, var(--a11y-charts-bar-muted, var(--a11y-charts-muted, var(--a11y-bar-chart-muted, #4b5b68))));
+  --a11y-bar-chart-group-border: var(--a11y-charts-group-border, var(--a11y-charts-bar-border, var(--a11y-charts-border, var(--a11y-bar-chart-border, #9aa9b4))));
+  --a11y-bar-chart-group-focus: var(--a11y-charts-group-focus, var(--a11y-charts-bar-focus, var(--a11y-charts-focus, var(--a11y-bar-chart-focus, #005ea8))));
+  --a11y-bar-chart-group-accent: var(--a11y-charts-group-accent, var(--a11y-charts-bar-color, var(--a11y-bar-chart-color, #176b87)));
+  --a11y-bar-chart-group-container-background: var(--a11y-charts-group-container-background, transparent);
+  --a11y-bar-chart-group-container-border: var(--a11y-charts-group-container-border, none);
+  --a11y-bar-chart-group-container-radius: var(--a11y-charts-group-container-radius, 0);
+  --a11y-bar-chart-group-selector-background: var(--a11y-charts-group-selector-background, transparent);
+  --a11y-bar-chart-group-control-background: var(--a11y-charts-group-control-background, var(--a11y-charts-surface, var(--a11y-bar-chart-surface, #fff)));
+  --a11y-bar-chart-group-selector-active-background: var(--a11y-charts-group-selector-active-background, color-mix(in srgb, var(--a11y-bar-chart-group-accent) 8%, var(--a11y-bar-chart-group-control-background)));
+  display: block;
+  container-type: inline-size;
+  color: var(--a11y-bar-chart-group-text);
+  font: var(--a11y-bar-chart-font, inherit);
+  font-family: var(--a11y-charts-group-font-family, var(--a11y-charts-font-family, inherit));
+  line-height: var(--a11y-bar-chart-line-height, 1.5);
+}
+
+.a11y-bar-chart-group {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.32fr) minmax(0, 1fr);
+  grid-template-areas: "selector status" "selector chart";
+  align-items: start;
+  column-gap: 1.5rem;
+  row-gap: 0.5rem;
+  min-width: 0;
+  padding: var(--a11y-charts-group-padding, 0);
+  border: var(--a11y-bar-chart-group-container-border);
+  border-radius: var(--a11y-bar-chart-group-container-radius);
+  background: var(--a11y-bar-chart-group-container-background);
+}
+
+.a11y-bar-chart-group__selector { grid-area: selector; min-width: 0; padding: var(--a11y-charts-group-selector-padding, 0); border-radius: var(--a11y-charts-group-selector-radius, 0); background: var(--a11y-bar-chart-group-selector-background); }
+.a11y-bar-chart-group__status { grid-area: status; min-width: 0; margin: 0; color: var(--a11y-bar-chart-group-muted); }
+.a11y-bar-chart-group > a11y-bar-chart {
+  grid-area: chart;
+  min-width: 0;
+  --a11y-bar-chart-text: var(--a11y-bar-chart-group-text);
+  --a11y-bar-chart-muted: var(--a11y-bar-chart-group-muted);
+  --a11y-bar-chart-focus: var(--a11y-bar-chart-group-focus);
+  font-family: var(--a11y-charts-group-font-family, var(--a11y-charts-font-family, inherit));
+}
+.a11y-bar-chart-group > a11y-bar-chart .a11y-bar-chart__root {
+  background: var(--a11y-charts-group-chart-background, var(--a11y-charts-bar-surface, var(--a11y-charts-surface, var(--a11y-bar-chart-surface, #fff))));
+  border-color: var(--a11y-charts-group-chart-border, var(--a11y-charts-bar-border, var(--a11y-charts-border, var(--a11y-bar-chart-border, #c5d0d8))));
+}
+.a11y-bar-chart-group__section + .a11y-bar-chart-group__section { margin-block-start: 0.75rem; }
+.a11y-bar-chart-group__section-toggle {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--a11y-bar-chart-group-border);
+  border-radius: var(--a11y-bar-chart-button-radius, 0.25rem);
+  background: var(--a11y-bar-chart-group-control-background);
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.a11y-bar-chart-group__chevron { width: 0.55rem; height: 0.55rem; margin: 0.15rem 0.2rem 0; flex: none; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); }
+.a11y-bar-chart-group__section-toggle[aria-expanded="true"] .a11y-bar-chart-group__chevron { margin-top: 0.45rem; transform: rotate(225deg); }
+.a11y-bar-chart-group__section-toggle:hover { background: color-mix(in srgb, var(--a11y-bar-chart-group-control-background) 90%, var(--a11y-bar-chart-group-border)); }
+.a11y-bar-chart-group__section-toggle:active { transform: translateY(1px); }
+.a11y-bar-chart-group__section-toggle:focus-visible,
+.a11y-bar-chart-group__option input:focus-visible {
+  outline: 3px solid var(--a11y-bar-chart-group-focus);
+  outline-offset: 2px;
+  position: relative;
+  z-index: 1;
+}
+.a11y-bar-chart-group__section.is-active > .a11y-bar-chart-group__section-toggle { border-inline-start: 0.25rem solid var(--a11y-bar-chart-group-accent); background: var(--a11y-bar-chart-group-selector-active-background); font-weight: 700; }
+.a11y-bar-chart-group__fieldset { min-width: 0; margin: 0; padding: 0.75rem; border: 1px solid var(--a11y-bar-chart-group-border); border-top: 0; background: var(--a11y-bar-chart-group-control-background); }
+.a11y-bar-chart-group__fieldset[hidden] { display: none; }
+.a11y-bar-chart-group__fieldset legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.a11y-bar-chart-group__description { margin: 0 0 0.75rem; color: var(--a11y-bar-chart-group-muted); overflow-wrap: anywhere; }
+.a11y-bar-chart-group__option { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: baseline; gap: 0.4rem 0.6rem; padding-block: 0.3rem; }
+.a11y-bar-chart-group__option input { margin: 0; accent-color: var(--a11y-bar-chart-group-accent); }
+.a11y-bar-chart-group__option label { display: flex; align-items: center; min-height: 2.75rem; padding: 0.25rem 0.5rem; margin-inline-start: -0.5rem; border: 1px solid transparent; cursor: pointer; overflow-wrap: anywhere; }
+.a11y-bar-chart-group__option input:checked + label { border-inline-start: 0.25rem solid var(--a11y-bar-chart-group-accent); background: var(--a11y-bar-chart-group-selector-active-background); font-weight: 700; }
+.a11y-bar-chart-group__option input:focus-visible + label { outline: 3px solid var(--a11y-bar-chart-group-focus); outline-offset: 2px; }
+.a11y-bar-chart-group__definition { grid-column: 2; margin: 0; color: var(--a11y-bar-chart-group-muted); font-size: 0.9em; overflow-wrap: anywhere; }
+.a11y-bar-chart-group__empty,
+.a11y-bar-chart-group__error { margin: 0; padding: 0.75rem; border-inline-start: 0.25rem solid var(--a11y-bar-chart-group-border); overflow-wrap: anywhere; }
+.a11y-bar-chart-group__error { border-inline-start-color: var(--a11y-charts-group-error, #b50909); }
+
+@media (max-width: 42rem) {
+  .a11y-bar-chart-group {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "selector" "status" "chart";
+    row-gap: 0.75rem;
+  }
+}
+
+@container (max-width: 42rem) {
+  .a11y-bar-chart-group {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "selector" "status" "chart";
+    row-gap: 0.75rem;
+  }
+}
+
+@media (forced-colors: active) {
+  .a11y-bar-chart-group__section-toggle,
+  .a11y-bar-chart-group__fieldset { border-color: ButtonText; }
+  .a11y-bar-chart-group__section-toggle { color: ButtonText; background: Canvas; }
+  .a11y-bar-chart-group__section.is-active > .a11y-bar-chart-group__section-toggle { border-inline-start-color: Highlight; }
+  .a11y-bar-chart-group__option input { accent-color: Highlight; }
+  .a11y-bar-chart-group__section-toggle:focus-visible,
+  .a11y-bar-chart-group__option input:focus-visible { outline-color: Highlight; }
+  .a11y-bar-chart-group__option input:checked + label { border-color: ButtonText; border-inline-start-color: Highlight; background: Canvas; }
+  .a11y-bar-chart-group__error { border-inline-start-color: Mark; }
+}

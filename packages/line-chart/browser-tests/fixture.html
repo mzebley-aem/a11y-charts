@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chart contract regression fixture</title>
+  <style>body { margin: 16px; } #fixture { max-width: 100%; }</style>
+</head>
+<body>
+  <main id="fixture"></main>
+  <button id="outside" type="button">Outside chart</button>
+  <script type="module">
+    import '../src/define.ts';
+    import '../src/styles.css';
+    import '../../bar-chart/src/define.ts';
+    import '../../bar-chart/src/styles.css';
+  </script>
+</body>
+</html>

@@ -3,10 +3,24 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "start": "npm run dev --prefix packages/line-chart",
+    "start:bar": "npm run dev --prefix packages/bar-chart",
+    "build": "npm run build --prefix packages/line-chart && npm run build --prefix packages/bar-chart",
+    "watch": "npm run dev --prefix packages/line-chart",
+    "test": "npm test --prefix packages/line-chart && npm test --prefix packages/bar-chart",
+    "typecheck": "npm run typecheck --prefix packages/line-chart && npm run typecheck --prefix packages/bar-chart",
+    "verify": "npm test && npm run typecheck && npm run build",
+    "browser:test": "npm run browser:test --prefix packages/line-chart",
+    "reference:start": "ng serve",
+    "reference:build": "ng build",
+    "reference:test": "ng test",
+    "artifacts:test": "npm run build && npm run artifacts:test --prefix packages/line-chart",
+    "gallery:dev": "npm run gallery:dev --prefix packages/line-chart",
+    "gallery:build": "npm run gallery:build --prefix packages/line-chart",
+    "site:build": "npm run gallery:build && npm run demo:build --prefix packages/line-chart && npm run demo:build --prefix packages/bar-chart && npm run report:build --prefix packages/line-chart && node scripts/assemble-demo-site.mjs",
+    "gallery:typecheck": "packages/line-chart/node_modules/.bin/tsc -p demo-gallery/tsconfig.json",
+    "browser:grouped": "npm run browser:grouped --prefix packages/line-chart",
+    "browser:themes": "npm run browser:themes --prefix packages/line-chart"
   },
   "private": true,
   "dependencies": {

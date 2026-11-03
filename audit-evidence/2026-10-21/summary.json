@@ -1,0 +1,15 @@
+{
+  "routes": 5,
+  "chartInstances": 21,
+  "automatedStateScans": 35,
+  "automaticViolations": 0,
+  "brokenAriaReferences": 0,
+  "pageErrors": 0,
+  "viewportChecks": 45,
+  "pageOverflowFailures": 0,
+  "textSpacingOverflowFailures": 0,
+  "incompleteRuleIds": [
+    "aria-valid-attr-value",
+    "color-contrast"
+  ]
+}

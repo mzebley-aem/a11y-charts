@@ -9,6 +9,10 @@ import type {
   A11yLineChartTooltipRenderer,
   A11yLineChartXValue
 } from './model.js';
+import { copyTarget, isTargetRange } from './target.js';
+import { ENGLISH_LINE_CHART_MESSAGES, formatLineMessage } from './messages.js';
+import { normalizeLineData } from './semantic-model.js';
+import { renderCardHtml } from '../../chart-core/src/ui/card-content.js';
 
 interface TooltipParameter {
   dataIndex?: number;
@@ -36,6 +40,7 @@ export interface ChartOptionContext {
   getVisibleViewport?: () => A11yLineChartVisibleViewport;
   legendSelection?: Record<string, boolean>;
   model: A11yLineChartSemanticModel;
+  message?: (key: string, values?: Record<string, unknown>) => string;
   reducedMotion: boolean;
   renderTooltip?: A11yLineChartTooltipRenderer;
   subtitle?: string;
@@ -69,31 +74,78 @@ export function calculateTooltipPosition(
   return [Math.round(x), Math.round(y)];
 }
 
-function calculateYBounds(
-  data: A11yLineChartDatum[],
-  config: ResolvedA11yLineChartConfig,
-  model: A11yLineChartSemanticModel
-): { max: number; min: number } {
-  if (!config.initialZoomY) return { min: config.yAxisBaseMin, max: config.yAxisBaseMax };
-  const values = data.flatMap((item) => [item.actual, item.target].filter((value): value is number => typeof value === 'number'));
-  if (model.baseline) values.push(model.baseline.value);
-  if (!values.length) return { min: config.yAxisBaseMin, max: config.yAxisBaseMax };
+type YBounds = { max: number; min: number };
 
-  let valueMin = Math.min(...values);
-  let valueMax = Math.max(...values);
+function semanticYValues(model: A11yLineChartSemanticModel): number[] {
+  const values: number[] = [];
+  for (const point of model.points) {
+    if (!point.actualSuppressed && typeof point.actualValue === 'number') values.push(point.actualValue);
+    const target = point.targetSuppressed ? null : point.targetValue;
+    if (isTargetRange(target)) values.push(target.min, target.max);
+    else if (typeof target === 'number') values.push(target);
+  }
+  if (model.baseline && Number.isFinite(model.baseline.value)) values.push(model.baseline.value);
+  return values.filter(Number.isFinite);
+}
+
+function minMax(values: number[]): { min: number; max: number } | undefined {
+  if (values.length === 0) return undefined;
+  let min = values[0]!;
+  let max = min;
+  for (let index = 1; index < values.length; index += 1) {
+    min = Math.min(min, values[index]!);
+    max = Math.max(max, values[index]!);
+  }
+  return { min, max };
+}
+
+function calculateZoomBounds(values: number[], config: ResolvedA11yLineChartConfig): YBounds | undefined {
+  const fullRange = config.yAxisBaseMax - config.yAxisBaseMin;
+  if (!Number.isFinite(fullRange) || fullRange <= 0 || values.length === 0) return undefined;
+  const extent = minMax(values);
+  if (!extent) return undefined;
+  let { min: valueMin, max: valueMax } = extent;
+  // Never zoom a value outside the caller's domain or return clipped/invalid bounds.
+  if (valueMin < config.yAxisBaseMin || valueMax > config.yAxisBaseMax) return undefined;
   if (valueMin === valueMax) {
-    valueMin -= 1;
-    valueMax += 1;
+    const halfSpan = Math.max(Math.abs(valueMin), 1) * 0.1;
+    valueMin = Math.max(config.yAxisBaseMin, valueMin - halfSpan);
+    valueMax = Math.min(config.yAxisBaseMax, valueMax + halfSpan);
   }
-  const padding = Math.max(1, (valueMax - valueMin) * 0.06);
-  let min = Math.max(config.yAxisBaseMin, Math.floor(valueMin - padding));
-  let max = Math.min(config.yAxisBaseMax, Math.ceil(valueMax + padding));
-  if (max - min < 4) {
-    const extra = (4 - (max - min)) / 2;
-    min = Math.max(config.yAxisBaseMin, Math.floor(min - extra));
-    max = Math.min(config.yAxisBaseMax, Math.ceil(max + extra));
-  }
-  return max > min ? { min, max } : { min, max: min + 1 };
+  const range = valueMax - valueMin;
+  if (!Number.isFinite(range) || range <= 0) return undefined;
+  const roughStep = range / 5;
+  const exponent = Math.floor(Math.log10(roughStep));
+  const magnitude = 10 ** exponent;
+  if (!Number.isFinite(roughStep) || roughStep <= 0 || !Number.isFinite(magnitude) || magnitude <= 0) return undefined;
+  const fraction = roughStep / magnitude;
+  const niceFraction = fraction <= 1 ? 1 : fraction <= 2 ? 2 : fraction <= 2.5 ? 2.5 : fraction <= 5 ? 5 : 10;
+  const step = niceFraction * magnitude;
+  const padding = range * 0.06;
+  const round = (value: number): number => Number(value.toPrecision(12));
+  const min = Math.max(config.yAxisBaseMin, round(Math.floor((valueMin - padding) / step) * step));
+  const max = Math.min(config.yAxisBaseMax, round(Math.ceil((valueMax + padding) / step) * step));
+  if (!Number.isFinite(min) || !Number.isFinite(max) || max <= min) return undefined;
+  return { min, max };
+}
+
+/** Offer a zoom only for a real spread that would use at most half the configured domain. */
+export function shouldSuggestYAxisZoom(config: ResolvedA11yLineChartConfig, model: A11yLineChartSemanticModel): boolean {
+  const values = semanticYValues(model);
+  if (values.length < 2) return false;
+  const extent = minMax(values);
+  if (!extent) return false;
+  const { min: valueMin, max: valueMax } = extent;
+  if (!Number.isFinite(valueMax - valueMin) || valueMax <= valueMin) return false;
+  const bounds = calculateZoomBounds(values, config);
+  const fullRange = config.yAxisBaseMax - config.yAxisBaseMin;
+  return bounds !== undefined && Number.isFinite(fullRange) && (bounds.max - bounds.min) / fullRange <= 0.5;
+}
+
+function calculateYBounds(config: ResolvedA11yLineChartConfig, model: A11yLineChartSemanticModel): YBounds {
+  const full = { min: config.yAxisBaseMin, max: config.yAxisBaseMax };
+  if (!config.initialZoomY) return full;
+  return calculateZoomBounds(semanticYValues(model), config) ?? full;
 }
 
 function applyOpacity(color: string, opacity: number): string {
@@ -158,17 +210,29 @@ function tooltipContext(index: number, context: ChartOptionContext): A11yLineCha
   if (!datum || !interpretation) return undefined;
   const differenceLabel = interpretation.targetDifference
     ? interpretation.targetDifference.relation === 'equal'
-      ? `${context.config.actualSeriesLabel} equals ${context.config.targetSeriesLabel.toLocaleLowerCase()}`
-      : `${context.config.actualSeriesLabel} is ${interpretation.targetDifference.description}`
+      ? context.message?.('tooltipDifferenceEqual', { actual: context.config.actualSeriesLabel, target: context.config.targetSeriesLabel.toLocaleLowerCase() }) ?? `${context.config.actualSeriesLabel} equals ${context.config.targetSeriesLabel.toLocaleLowerCase()}`
+      : context.message?.('tooltipDifference', { actual: context.config.actualSeriesLabel, description: interpretation.targetDifference.description }) ?? `${context.config.actualSeriesLabel} is ${interpretation.targetDifference.description}`
     : '';
+  const copiedDatum = { ...datum, x: datum.x instanceof Date ? new Date(datum.x.getTime()) : datum.x, target: copyTarget(datum.target) };
+  const copiedInterpretation = {
+    ...interpretation,
+    x: interpretation.x instanceof Date ? new Date(interpretation.x.getTime()) : interpretation.x,
+    targetValue: copyTarget(interpretation.targetValue),
+    targetDifference: interpretation.targetDifference ? { ...interpretation.targetDifference } : null,
+    baseline: interpretation.baseline ? {
+      ...interpretation.baseline,
+      x: interpretation.baseline.x instanceof Date ? new Date(interpretation.baseline.x.getTime()) : interpretation.baseline.x,
+      difference: interpretation.baseline.difference ? { ...interpretation.baseline.difference } : null
+    } : null
+  };
   return {
-    datum,
+    datum: copiedDatum,
     index,
-    interpretation,
+    interpretation: copiedInterpretation,
     xLabel: interpretation.xLabel,
     year: datum.x instanceof Date ? interpretation.xLabel : datum.x,
     actualValue: interpretation.actualValue,
-    targetValue: interpretation.targetValue,
+    targetValue: copyTarget(interpretation.targetValue),
     actualFormatted: interpretation.actualFormatted,
     targetFormatted: interpretation.targetFormatted,
     actualLabel: interpretation.actualFormatted,
@@ -178,7 +242,9 @@ function tooltipContext(index: number, context: ChartOptionContext): A11yLineCha
     differenceLabel,
     relation: interpretation.relation,
     relationLabel: interpretation.outcome === 'unavailable' ? '' : interpretation.outcomeLabel,
-    theme: context.theme
+    actualSuppressed: datum.actualSuppressed === true,
+    targetSuppressed: datum.targetSuppressed === true,
+    theme: { ...context.theme }
   };
 }
 
@@ -192,46 +258,77 @@ function defaultTooltip(ctx: A11yLineChartTooltipContext, context: ChartOptionCo
   const { config, theme } = context;
   const hasBoth = ctx.relation !== 'incomplete';
   const direction = ctx.relation === 'above' ? 'up' : ctx.relation === 'below' ? 'down' : 'equal';
-  const trendColor = ctx.interpretation.outcome === 'met'
-    ? theme.trendUpColor
-    : ctx.interpretation.outcome === 'not-met'
-      ? theme.trendDownColor
-      : theme.trendEqualColor;
   const trendSymbol = direction === 'up' ? theme.trendUpSymbol : direction === 'down' ? theme.trendDownSymbol : theme.trendEqualSymbol;
-  const headerExtra = !hasBoth
-    ? ''
-    : config.trendMode === 'arrows'
-      ? `<span class="perf-tooltip__trend perf-tooltip__trend--${direction}" aria-hidden="true" style="color:${escapeHtml(trendColor)}">${escapeHtml(trendSymbol)}</span>`
-      : `<span class="perf-tooltip__status" style="background:${escapeHtml(trendColor)};color:#fff" aria-hidden="true">${escapeHtml(ctx.relationLabel)}</span>`;
   const defaultAria = ctx.interpretation.narrative;
   let aria = defaultAria;
   try { aria = context.buildTooltipAriaLabel?.(ctx) || defaultAria; } catch { /* use default */ }
-  const hiddenClass = config.showTooltipVisual ? '' : ' perf-tooltip--visually-hidden';
-  return `<div class="perf-tooltip${hiddenClass}" role="group" aria-label="${escapeHtml(aria)}">
-    <div class="perf-tooltip__year">${escapeHtml(ctx.xLabel)} ${headerExtra}</div>
-    <div class="perf-tooltip__row"><span class="perf-tooltip__label">${escapeHtml(config.actualSeriesLabel)}:</span> <span class="perf-tooltip__value">${escapeHtml(ctx.actualFormatted)}</span></div>
-    <div class="perf-tooltip__row"><span class="perf-tooltip__label">${escapeHtml(config.targetSeriesLabel)}:</span> <span class="perf-tooltip__value">${escapeHtml(ctx.targetFormatted)}</span></div>
-    ${ctx.interpretation.baseline ? `<div class="perf-tooltip__row"><span class="perf-tooltip__label">${escapeHtml(config.baselineSeriesLabel)} (${escapeHtml(ctx.interpretation.baseline.xLabel)}):</span> <span class="perf-tooltip__value">${escapeHtml(ctx.interpretation.baseline.formatted)}</span></div>` : ''}
-    ${ctx.differenceLabel ? `<span class="perf-tooltip__diff">${escapeHtml(ctx.differenceLabel)}.</span>` : ''}
-    ${ctx.interpretation.baseline?.difference ? `<span class="perf-tooltip__diff">Change from ${escapeHtml(config.baselineSeriesLabel.toLocaleLowerCase())}: ${escapeHtml(ctx.interpretation.baseline.difference.description)}.</span>` : ''}
-  </div>`;
+  const message = (key: keyof typeof ENGLISH_LINE_CHART_MESSAGES, values: Record<string, unknown>): string =>
+    context.message?.(key, values) ?? formatLineMessage(ENGLISH_LINE_CHART_MESSAGES[key], values);
+  const status = !hasBoth ? undefined : config.trendMode === 'arrows'
+    ? { text: trendSymbol, className: `perf-tooltip__trend perf-tooltip__trend--${direction}`, ariaHidden: true }
+    : { text: ctx.relationLabel, className: 'perf-tooltip__status', ariaHidden: true };
+  return renderCardHtml({
+    heading: message('tooltipHeader', { period: ctx.xLabel }),
+    role: 'group', ariaLabel: aria, titleTag: 'div',
+    rows: [
+      { text: message('tooltipActual', { series: config.actualSeriesLabel, value: ctx.actualFormatted }) },
+      { text: message('tooltipTarget', { series: config.targetSeriesLabel, value: ctx.targetFormatted }) }
+    ],
+    ...(ctx.differenceLabel ? { description: message('tooltipDifferenceText', { description: ctx.differenceLabel }) } : {}),
+    ...(status ? { status } : {}),
+    visuallyHidden: !config.showTooltipVisual
+  }, {
+    root: 'perf-tooltip', visuallyHidden: 'perf-tooltip--visually-hidden',
+    header: 'perf-tooltip__year', heading: 'perf-tooltip__heading', title: 'perf-tooltip__title',
+    status: '', values: 'perf-tooltip__values', row: 'perf-tooltip__row', description: 'perf-tooltip__diff'
+  });
 }
 
 export function buildChartOptions(context: ChartOptionContext): EChartsCoreOption {
-  const { config, data, formatValue, formatXValue, reducedMotion, theme } = context;
+  const data = normalizeLineData(context.data);
+  const points = context.model.points.map((point, index) => {
+    const datum = data[index];
+    if (!datum || (!datum.actualSuppressed && !datum.targetSuppressed)) return point;
+    const actualSuppressed = datum.actualSuppressed === true;
+    const targetSuppressed = datum.targetSuppressed === true;
+    const outcomeLabel = context.message?.('outcomeUnavailable') ?? 'Target outcome unavailable';
+    const protectedLabel = context.message?.('suppressed') ?? 'Suppressed';
+    return {
+      ...point,
+      actualValue: actualSuppressed ? null : point.actualValue,
+      actualFormatted: actualSuppressed ? protectedLabel : point.actualFormatted,
+      actualSuppressed,
+      targetValue: targetSuppressed ? null : point.targetValue,
+      targetFormatted: targetSuppressed ? protectedLabel : point.targetFormatted,
+      targetSuppressed,
+      outcome: 'unavailable' as const,
+      outcomeLabel,
+      relation: 'incomplete' as const,
+      targetDifference: null,
+      baseline: point.baseline ? { ...point.baseline, difference: null } : null,
+      narrative: `${point.xLabel}: ${actualSuppressed ? protectedLabel : point.actualFormatted}; ${targetSuppressed ? protectedLabel : point.targetFormatted}. ${outcomeLabel}.`
+    };
+  });
+  const safeContext = { ...context, data, model: { ...context.model, points } };
+  const { config, formatValue, formatXValue, reducedMotion, theme } = context;
   const categories = data.map((item) => formatXValue(item.x));
   let actual = data.map((item) => item.actual ?? null);
-  const target = data.map((item) => item.target ?? null);
+  const target = data.map((item) => isTargetRange(item.target) ? item.target.min : item.target ?? null);
+  const scalarTarget = data.map((item) => isTargetRange(item.target) ? null : item.target ?? null);
+  const rangeUpper = data.map((item) => isTargetRange(item.target) ? item.target.max : null);
+  const hasRanges = data.some((item) => isTargetRange(item.target));
   if (config.autoDetectGaps) {
     let last = -1;
     actual.forEach((value, index) => { if (value !== null) last = index; });
     actual = actual.map((value, index) => index > last && last >= 0 ? null : value);
   }
-  const bounds = calculateYBounds(data, config, context.model);
+  const bounds = calculateYBounds(config, safeContext.model);
   const series: Array<Record<string, unknown>> = [];
   const labelFormatter = (kind: 'actual' | 'target') => (parameter: { data?: number | null; dataIndex?: number }) => {
     const item = data[parameter.dataIndex ?? -1];
-    return item ? formatValue(parameter.data ?? null, kind, item.x) : '';
+    return item ? kind === 'target'
+      ? safeContext.model.points[parameter.dataIndex ?? -1]?.targetFormatted ?? ''
+      : formatValue(parameter.data ?? null, kind, item.x) : '';
   };
 
   if (context.model.baseline) {
@@ -283,10 +380,56 @@ export function buildChartOptions(context: ChartOptionContext): EChartsCoreOptio
   }
 
   if (config.fillTarget) series.push({
-    id: 'target-area', name: config.targetSeriesLabel, type: 'line', data: target, symbol: 'none',
+    id: 'target-area', name: config.targetSeriesLabel, type: 'line', data: scalarTarget, connectNulls: false, symbol: 'none',
     lineStyle: { width: 0 }, areaStyle: { color: areaColor('target', config, theme), opacity: theme.targetFillOpacity },
     silent: true, tooltip: { show: false }, z: 0
   });
+  if (hasRanges) {
+    const fill = areaColor('target', config, theme);
+    series.push({
+      id: 'target-range', name: config.targetSeriesLabel, type: 'custom',
+      data: data.map((item, index) => isTargetRange(item.target) ? [index, item.target.min, item.target.max] : [index, null, null]),
+      encode: { x: 0, y: [1, 2] }, clip: true,
+      renderItem: (parameters: { dataIndex: number }, api: { coord: (value: number[]) => number[] }) => {
+        const index = parameters.dataIndex;
+        const range = data[index]?.target;
+        if (!isTargetRange(range)) return;
+        const lower = api.coord([index, range.min]);
+        const upper = api.coord([index, range.max]);
+        const next = data[index + 1]?.target;
+        const children: Array<Record<string, unknown>> = [];
+        // Only adjacent range rows form a band; missing and scalar rows break it.
+        if (config.fillTarget && isTargetRange(next)) {
+          children.push({
+            type: 'polygon', transition: ['shape'], shape: { points: [lower, api.coord([index + 1, next.min]), api.coord([index + 1, next.max]), upper] },
+            style: { fill, opacity: theme.targetFillOpacity }
+          });
+        }
+        // A whisker also exposes both bounds for isolated or single-period ranges.
+        children.push({
+          type: 'line', transition: ['shape'], shape: { x1: lower[0], y1: lower[1], x2: upper[0], y2: upper[1] },
+          style: { stroke: theme.targetColor, lineWidth: 2, lineDash: [4, 4] }
+        });
+        return { type: 'group', children };
+      },
+      itemStyle: { color: theme.targetColor }, silent: true, tooltip: { show: false }, z: 2
+    });
+    if (theme.targetLineOutlineWidth > theme.lineWidth) series.push({
+      id: 'target-upper-outline', name: config.targetSeriesLabel, type: 'line', data: rangeUpper, connectNulls: false, symbol: 'none',
+      lineStyle: { width: theme.targetLineOutlineWidth, color: theme.targetLineOutlineColor, cap: 'round', join: 'round' },
+      silent: true, tooltip: { show: false }, z: 2
+    });
+    series.push({
+      id: 'target-upper', name: config.targetSeriesLabel, type: 'line', data: rangeUpper, connectNulls: false,
+      symbol: 'diamond', symbolSize: theme.targetSymbolSize,
+      lineStyle: { color: theme.targetColor, type: 'dashed', width: theme.lineWidth },
+      itemStyle: { color: theme.targetColor, borderColor: theme.pointBorderColor, borderWidth: theme.pointBorderWidth },
+      label: { show: config.showTargetValues, formatter: labelFormatter('target'), position: 'top', color: theme.targetLabelColor, fontSize: theme.labelFontSize },
+      labelLayout: ({ dataIndex }: { dataIndex?: number }) => ({
+        align: dataIndex === 0 ? 'left' : dataIndex === data.length - 1 ? 'right' : 'center', hideOverlap: true
+      }), z: 4
+    });
+  }
   if (config.fillActual) series.push({
     id: 'actual-area', name: config.actualSeriesLabel, type: 'line', data: actual, connectNulls: false, symbol: 'none',
     lineStyle: { width: 0 }, areaStyle: { color: areaColor('actual', config, theme), opacity: theme.actualFillOpacity },
@@ -302,7 +445,7 @@ export function buildChartOptions(context: ChartOptionContext): EChartsCoreOptio
     lineStyle: { color: theme.targetColor, type: 'dashed', width: theme.lineWidth },
     itemStyle: { color: theme.targetColor, borderColor: theme.pointBorderColor, borderWidth: theme.pointBorderWidth, shadowBlur: theme.pointShadowBlur, shadowColor: theme.pointShadowColor },
     emphasis: { scale: !reducedMotion, itemStyle: { borderColor: theme.targetEmphasisBorderColor, borderWidth: theme.emphasisBorderWidth, color: theme.targetEmphasisFillColor } },
-    label: { show: config.showTargetValues, formatter: labelFormatter('target'), position: 'top', color: theme.targetLabelColor, fontSize: theme.labelFontSize }, z: 4
+    label: { show: config.showTargetValues, formatter: (parameter: { data?: number | null; dataIndex?: number }) => isTargetRange(data[parameter.dataIndex ?? -1]?.target) ? '' : labelFormatter('target')(parameter), position: 'top', color: theme.targetLabelColor, fontSize: theme.labelFontSize }, z: 4
   });
   if (theme.actualLineOutlineWidth > theme.lineWidth) series.push({
     id: 'actual-outline', name: config.actualSeriesLabel, type: 'line', data: actual, connectNulls: false, symbol: 'none',
@@ -327,7 +470,9 @@ export function buildChartOptions(context: ChartOptionContext): EChartsCoreOptio
     grid: { left: config.showYAxisTitle ? 70 : 42, right: 16, top: 54, bottom: config.showXAxisTitle ? 120 : 90 },
     legend: {
       top: 4,
-      data: [config.actualSeriesLabel, config.targetSeriesLabel, ...(context.model.baseline ? [config.baselineSeriesLabel] : [])],
+      data: [hasRanges ? { name: config.actualSeriesLabel, icon: 'circle', itemStyle: { color: theme.actualColor } } : config.actualSeriesLabel, hasRanges ? {
+        name: config.targetSeriesLabel, icon: 'diamond', itemStyle: { color: theme.targetColor }
+      } : config.targetSeriesLabel, ...(context.model.baseline ? [config.baselineSeriesLabel] : [])],
       textStyle: { fontSize: theme.legendFontSize },
       selected: {
         [config.actualSeriesLabel]: context.legendSelection?.[config.actualSeriesLabel] ?? config.showActualLine,
@@ -354,7 +499,7 @@ export function buildChartOptions(context: ChartOptionContext): EChartsCoreOptio
         const list = Array.isArray(parameters) ? parameters : [parameters];
         const main = list.find((parameter) => parameter.seriesId === 'actual-main' || parameter.seriesName === config.actualSeriesLabel)
           ?? list.find((parameter) => parameter.seriesId === 'target-main' || parameter.seriesName === config.targetSeriesLabel);
-        const ctx = tooltipContext(main?.dataIndex ?? -1, context);
+        const ctx = tooltipContext(main?.dataIndex ?? -1, safeContext);
         if (!ctx) return '';
         if (context.renderTooltip) {
           try { return context.renderTooltip(ctx); } catch { /* use string renderer */ }
@@ -374,7 +519,11 @@ export function buildChartOptions(context: ChartOptionContext): EChartsCoreOptio
       type: 'value', min: bounds.min, max: bounds.max,
       axisLabel: {
         fontSize: theme.axisLabelFontSize,
-        formatter: (value: number) => `${Number(value).toFixed(config.axisDecimalPlaces)}${config.valuePreset === 'percent' ? '%' : ''}`
+        formatter: (value: number) => new Intl.NumberFormat(config.locale, {
+          ...(config.valuePreset === 'percent' ? { style: 'percent' as const } : {}),
+          minimumFractionDigits: config.axisDecimalPlaces,
+          maximumFractionDigits: config.axisDecimalPlaces
+        }).format(config.valuePreset === 'percent' ? Number(value) / 100 : Number(value))
       },
       name: config.showYAxisTitle ? config.yAxisTitle : undefined, nameLocation: 'middle', nameGap: 48, nameRotate: 90,
       nameTextStyle: { fontSize: theme.yAxisTitleFontSize, fontWeight: theme.yAxisTitleFontWeight, color: theme.yAxisTitleColor }

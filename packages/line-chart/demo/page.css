@@ -12,3 +12,82 @@ main {
   max-width: 1200px;
   width: 100%;
 }
+ .demo-capabilities { margin: 2rem 0; padding: 1rem; border: 1px solid #777; }
+ .demo-capabilities__controls { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+ .demo-capabilities button { cursor: pointer; font: inherit; padding: 0.5rem 0.75rem; }
+ .demo-capabilities button:focus-visible { outline: 3px solid #005fcc; outline-offset: 2px; }
+
+.demo-intro,
+.demo-capabilities {
+  box-sizing: border-box;
+  margin: 1.5rem 1rem 0;
+  max-width: 70rem;
+  width: calc(100% - 2rem);
+}
+
+.demo-intro h1,
+.demo-capabilities h2 {
+  margin-block: 0 0.5rem;
+}
+
+.demo-intro p,
+.demo-capabilities p {
+  line-height: 1.5;
+  margin-block: 0.5rem 0;
+}
+
+.demo-capabilities {
+  border: 1px solid #767676;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+.demo-capabilities__controls {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block-start: 0.75rem;
+}
+
+.demo-capabilities label {
+  font-weight: 600;
+}
+
+.demo-capabilities select,
+.demo-capabilities button {
+  cursor: pointer;
+  font: inherit;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.demo-capabilities button:hover,
+.demo-capabilities select:hover {
+  background-color: #f0f0f0;
+}
+
+.demo-capabilities button:active {
+  transform: translateY(1px);
+}
+
+.demo-capabilities :focus-visible {
+  outline: 3px solid #005fcc;
+  outline-offset: 2px;
+}
+
+.demo-options { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-block: 1rem 0; }
+.demo-options label { align-items: center; display: inline-flex; gap: 0.35rem; min-height: 44px; padding-inline: 0.25rem; }
+.demo-options input { min-height: 1.25rem; min-width: 1.25rem; }
+.demo-chart-examples { scroll-margin-top: 1rem; }
+.demo-chart-examples { align-self: stretch; min-width: 0; }
+.demo-chart-examples a11y-line-chart { min-width: 0; width: 100%; }
+.demo-chart-examples > h2 { font-size: 1.25rem; }
+.demo-skip-link { background: #fff; border: 2px solid #005fcc; color: #004b9b; left: 0.75rem; padding: 0.75rem 1rem; position: fixed; top: 0.75rem; transform: translateY(-200%); z-index: 100; }
+.demo-skip-link:focus { transform: translateY(0); }
+
+@media (max-width: 36rem) {
+  .demo-capabilities__controls > * {
+    flex: 1 1 100%;
+  }
+}

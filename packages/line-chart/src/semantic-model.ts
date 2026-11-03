@@ -10,8 +10,12 @@ import type {
   A11yLineChartSemanticDifference,
   A11yLineChartSemanticModel,
   A11yLineChartSeries,
+  A11yLineChartTarget,
   A11yLineChartXValue
 } from './model.js';
+import { copyTarget, formatTarget, isTargetRange } from './target.js';
+import { compareToNumericOrRange } from '../../chart-core/src/target.js';
+import { ENGLISH_LINE_CHART_MESSAGES, formatLineMessage, pluralLineMessage } from './messages.js';
 
 export interface A11yLineChartSemanticContext {
   baseline?: A11yLineChartBaseline;
@@ -24,30 +28,71 @@ export interface A11yLineChartSemanticContext {
     x: A11yLineChartXValue
   ) => string;
   formatXValue: (value: A11yLineChartXValue) => string;
+  message?: (key: string, values?: Record<string, unknown>) => string;
 }
 
-function relation(actual: number | null, target: number | null): A11yLineChartRelation {
+/** Defensive normalized copy for callers of exported pure helpers. */
+export function normalizeLineData(data: readonly A11yLineChartDatum[]): A11yLineChartDatum[] {
+  return data.map((datum) => ({
+    x: datum.x instanceof Date ? new Date(datum.x.getTime()) : datum.x,
+    actual: datum.actualSuppressed === true ? null : datum.actual ?? null,
+    actualSuppressed: datum.actualSuppressed === true,
+    target: datum.targetSuppressed === true ? null : copyTarget(datum.target),
+    targetSuppressed: datum.targetSuppressed === true
+  }));
+}
+
+function message(context: A11yLineChartSemanticContext, key: string, values: Record<string, unknown> = {}): string {
+  if (context.message) return context.message(key, values);
+  if (key === 'summaryPeriods') return pluralLineMessage({}, 'summaryPeriods', Number(values.total) || 0, context.config.locale, values);
+  const template = ENGLISH_LINE_CHART_MESSAGES[key as keyof typeof ENGLISH_LINE_CHART_MESSAGES];
+  return formatLineMessage(typeof template === 'string' ? template : key, values);
+}
+
+function relation(actual: number | null, target: A11yLineChartTarget | null): A11yLineChartRelation {
   if (actual === null || target === null) return 'incomplete';
-  if (actual === target) return 'equal';
-  return actual > target ? 'above' : 'below';
+  return compareToNumericOrRange(actual, target);
 }
 
 function outcome(
   actual: number | null,
-  target: number | null,
+  target: A11yLineChartTarget | null,
   positiveDirection: ResolvedA11yLineChartConfig['positiveDirection']
 ): A11yLineChartOutcome {
   if (actual === null || target === null) return 'unavailable';
+  if (isTargetRange(target)) return actual >= target.min && actual <= target.max ? 'met' : 'not-met';
   if (actual === target) return 'met-equal';
   const met = positiveDirection === 'above' ? actual > target : actual < target;
   return met ? 'met' : 'not-met';
 }
 
-function outcomeLabel(value: A11yLineChartOutcome): string {
-  if (value === 'met') return 'Target met';
-  if (value === 'met-equal') return 'Target met — on target';
-  if (value === 'not-met') return 'Target not met';
-  return 'Target outcome unavailable';
+function createTargetDifference(
+  actual: number,
+  target: A11yLineChartTarget,
+  x: A11yLineChartXValue,
+  context: A11yLineChartSemanticContext
+): A11yLineChartSemanticDifference {
+  const label = lowercaseInitial(context.config.targetSeriesLabel);
+  if (!isTargetRange(target)) return createDifference(actual, target, 'target', x, label, context);
+  if (actual >= target.min && actual <= target.max) {
+    return {
+      absoluteValue: 0,
+      description: message(context, 'rangeWithin', { series: label }),
+      formatted: context.formatDifference({ comparison: 'target', locale: context.config.locale, value: 0, valuePreset: context.config.valuePreset, x }),
+      relation: 'within',
+      signedValue: 0
+    };
+  }
+  const below = actual < target.min;
+  return createDifference(actual, below ? target.min : target.max, 'target', x,
+    message(context, below ? 'rangeLowerBound' : 'rangeUpperBound', { series: label }), context);
+}
+
+function outcomeLabel(value: A11yLineChartOutcome, context: A11yLineChartSemanticContext): string {
+  if (value === 'met') return message(context, 'outcomeMet');
+  if (value === 'met-equal') return message(context, 'outcomeMetEqual');
+  if (value === 'not-met') return message(context, 'outcomeNotMet');
+  return message(context, 'outcomeUnavailable');
 }
 
 function lowercaseInitial(value: string): string {
@@ -73,8 +118,8 @@ function createDifference(
     x
   });
   const description = relationValue === 'equal'
-    ? `equal to ${comparisonLabel}`
-    : `${formatted} ${relationValue} ${comparisonLabel}`;
+    ? message(context, 'differenceEqual', { comparison: comparisonLabel })
+    : message(context, 'differenceRelative', { formatted, relation: message(context, `relation${relationValue.charAt(0).toUpperCase()}${relationValue.slice(1)}`), comparison: comparisonLabel });
   return {
     absoluteValue,
     description,
@@ -103,30 +148,31 @@ function pointNarrative(
   point: Omit<A11yLineChartPointInterpretation, 'narrative'>,
   context: A11yLineChartSemanticContext
 ): string {
-  const parts = [`${point.xLabel}, ${point.position} of ${point.total}.`];
+  const parts = [message(context, 'narrativePeriod', { period: point.xLabel, position: point.position, total: point.total })];
   const actualName = context.config.actualSeriesLabel;
   const targetName = context.config.targetSeriesLabel;
 
   if (point.actualValue === null) {
-    parts.push(`No ${lowercaseInitial(actualName)} value has been reported.`);
-    if (point.targetValue === null) parts.push(`No ${lowercaseInitial(targetName)} value has been reported.`);
-    else parts.push(`${targetName} ${point.targetFormatted}.`);
-    parts.push('Target outcome unavailable.');
+    parts.push(message(context, point.actualSuppressed ? 'actualSuppressed' : 'noActual', { series: lowercaseInitial(actualName) }));
+    if (point.targetValue === null) parts.push(message(context, point.targetSuppressed ? 'targetSuppressed' : 'noTarget', { series: lowercaseInitial(targetName) }));
+    else parts.push(message(context, 'targetValue', { series: targetName, value: point.targetFormatted }));
+    parts.push(message(context, 'outcomeUnavailableSentence'));
     return parts.join(' ');
   }
 
   if (point.targetValue === null) {
-    parts.push(`${actualName} ${point.actualFormatted}.`);
-    parts.push(`No ${lowercaseInitial(targetName)} value has been reported.`);
-    parts.push('Target outcome unavailable.');
+    parts.push(message(context, 'actualValueSentence', { series: actualName, value: point.actualFormatted }));
+    parts.push(message(context, point.targetSuppressed ? 'targetSuppressed' : 'noTarget', { series: lowercaseInitial(targetName) }));
+    parts.push(message(context, 'outcomeUnavailableSentence'));
   } else {
-    parts.push(`${point.outcomeLabel}.`);
-    parts.push(`${actualName} ${point.actualFormatted}.`);
-    parts.push(`${targetName} ${point.targetFormatted}.`);
-    if (point.targetDifference) parts.push(`${point.targetDifference.description}.`);
+    parts.push(message(context, 'narrativeOutcome', { outcome: point.outcomeLabel }));
+    parts.push(message(context, 'actualValueSentence', { series: actualName, value: point.actualFormatted }));
+    parts.push(message(context, 'targetValue', { series: targetName, value: point.targetFormatted }));
+    if (point.targetDifference) parts.push(point.relation === 'within'
+      ? message(context, 'withinNarrative', { series: actualName, description: point.targetDifference.description })
+      : message(context, 'differenceSentence', { description: point.targetDifference.description }));
   }
 
-  if (point.baseline?.difference) parts.push(`${point.baseline.difference.description}.`);
   return parts.join(' ');
 }
 
@@ -146,34 +192,52 @@ function summaryFor(
   const comparable = points.filter((point) => point.actualValue !== null && point.targetValue !== null);
   const metCount = comparable.filter((point) => point.outcome === 'met' || point.outcome === 'met-equal').length;
   const supporting: string[] = [];
-  let primary = 'No reported result yet.';
+  let primary = message(context, 'summaryNone');
 
   if (latestActualIndex !== null) {
     const latest = points[latestActualIndex]!;
     if (latest.targetValue === null) {
-      primary = `Target outcome cannot be determined for ${latest.xLabel}.`;
-      supporting.push(`${context.config.actualSeriesLabel} was ${latest.actualFormatted}, but no ${lowercaseInitial(context.config.targetSeriesLabel)} value was reported.`);
+      primary = message(context, 'summaryCannotDetermine', { period: latest.xLabel });
+      supporting.push(latest.targetSuppressed
+        ? message(context, 'summaryTargetSuppressed', { series: context.config.targetSeriesLabel, period: latest.xLabel })
+        : message(context, 'summaryMissingTarget', { actual: context.config.actualSeriesLabel, value: latest.actualFormatted, target: lowercaseInitial(context.config.targetSeriesLabel) }));
     } else {
       primary = latest.outcome === 'met-equal'
-        ? `Target met in ${latest.xLabel} — on target.`
-        : `${latest.outcomeLabel} in ${latest.xLabel}.`;
+        ? message(context, 'summaryMetEqual', { period: latest.xLabel })
+        : latest.relation === 'within'
+          ? message(context, 'summaryWithin', { period: latest.xLabel })
+        : message(context, 'summaryOutcome', { outcome: latest.outcomeLabel, period: latest.xLabel });
       const comparison = latest.targetDifference?.relation === 'equal'
-        ? `${context.config.actualSeriesLabel} equaled ${lowercaseInitial(context.config.targetSeriesLabel)} at ${latest.actualFormatted}.`
-        : `${context.config.actualSeriesLabel} was ${latest.actualFormatted}. ${context.config.targetSeriesLabel} was ${latest.targetFormatted}—${latest.targetDifference?.description}.`;
+        ? message(context, 'summaryEqual', { actual: context.config.actualSeriesLabel, target: lowercaseInitial(context.config.targetSeriesLabel), value: latest.actualFormatted })
+        : message(context, 'summaryComparison', { actual: context.config.actualSeriesLabel, actualValue: latest.actualFormatted, target: context.config.targetSeriesLabel, targetValue: latest.targetFormatted, description: latest.targetDifference?.description ?? '' });
       supporting.push(comparison);
     }
 
     if (latest.baseline?.difference) {
-      supporting.push(`${context.config.actualSeriesLabel} was ${latest.baseline.difference.description} of ${latest.baseline.formatted}.`);
+      supporting.push(message(context, 'summaryBaseline', { actual: context.config.actualSeriesLabel, description: latest.baseline.difference.description, value: latest.baseline.formatted }));
     }
     if (comparable.length) {
-      supporting.push(`The target was met in ${metCount} of ${comparable.length} comparable reported ${comparable.length === 1 ? 'period' : 'periods'}.`);
+      supporting.push(context.message
+        ? message(context, 'summaryPeriods', { met: metCount, total: comparable.length })
+        : `${comparable.length === 1 ? 'The target was met' : 'The target was met'} in ${metCount} of ${comparable.length} comparable reported ${comparable.length === 1 ? 'period' : 'periods'}.`);
     }
-    if (latestActualIndex < points.length - 1) {
-      supporting.push(`No ${lowercaseInitial(context.config.actualSeriesLabel)} data has been reported after ${latest.xLabel}.`);
+    if (latestActualIndex < points.length - 1 && !points.slice(latestActualIndex + 1).some((point) => point.actualSuppressed)) {
+      supporting.push(message(context, 'summaryNoLater', { series: lowercaseInitial(context.config.actualSeriesLabel), period: latest.xLabel }));
     }
-  } else if (baseline) {
-    supporting.push(`${context.config.baselineSeriesLabel} is ${baseline.xLabel} at ${baseline.formatted}.`);
+  } else {
+    const protectedPoint = [...points].reverse().find((point) => point.actualSuppressed || point.targetSuppressed);
+    if (protectedPoint) {
+      primary = protectedPoint.actualSuppressed
+        ? message(context, 'summaryAllSuppressed', { period: protectedPoint.xLabel })
+        : message(context, 'summaryTargetSuppressed', { series: context.config.targetSeriesLabel, period: protectedPoint.xLabel });
+      supporting.push(message(context, 'outcomeUnavailableSentence'));
+    }
+    if (baseline) supporting.push(message(context, 'summaryBaselineOnly', { series: context.config.baselineSeriesLabel, period: baseline.xLabel, value: baseline.formatted }));
+  }
+
+  if (latestActualIndex !== null) {
+    const protectedLater = points.slice(latestActualIndex + 1).reverse().find((point) => point.actualSuppressed);
+    if (protectedLater) supporting.push(message(context, 'summaryLatestSuppressed', { series: context.config.actualSeriesLabel, period: protectedLater.xLabel }));
   }
 
   const text = [primary, ...supporting].join(' ');
@@ -189,14 +253,17 @@ function summaryFor(
 
 export function buildSemanticModel(context: A11yLineChartSemanticContext): A11yLineChartSemanticModel {
   const baseline = createBaselineInterpretation(context.baseline, context);
-  const points = context.data.map((datum, index) => {
+  const data = normalizeLineData(context.data);
+  const points = data.map((datum, index) => {
     const actualValue = datum.actual ?? null;
-    const targetValue = datum.target ?? null;
+    const actualSuppressed = datum.actualSuppressed === true;
+    const targetSuppressed = datum.targetSuppressed === true;
+    const targetValue = copyTarget(datum.target);
     const relationValue = relation(actualValue, targetValue);
     const outcomeValue = outcome(actualValue, targetValue, context.config.positiveDirection);
     const targetDifference = actualValue === null || targetValue === null
       ? null
-      : createDifference(actualValue, targetValue, 'target', datum.x, lowercaseInitial(context.config.targetSeriesLabel), context);
+      : createTargetDifference(actualValue, targetValue, datum.x, context);
     const pointBaseline = baseline
       ? {
           ...baseline,
@@ -207,24 +274,26 @@ export function buildSemanticModel(context: A11yLineChartSemanticContext): A11yL
                 baseline.value,
                 'baseline',
                 datum.x,
-                `the ${baseline.xLabel} ${lowercaseInitial(context.config.baselineSeriesLabel)}`,
+                message(context, 'baselineDifference', { period: baseline.xLabel, series: lowercaseInitial(context.config.baselineSeriesLabel) }),
                 context
               )
         }
       : null;
     const pointWithoutNarrative: Omit<A11yLineChartPointInterpretation, 'narrative'> = {
-      actualFormatted: context.formatValue(actualValue, 'actual', datum.x),
+      actualFormatted: actualSuppressed ? message(context, 'suppressed') : context.formatValue(actualValue, 'actual', datum.x),
       actualValue,
+      actualSuppressed,
       baseline: pointBaseline,
       index,
       outcome: outcomeValue,
-      outcomeLabel: outcomeLabel(outcomeValue),
+      outcomeLabel: outcomeLabel(outcomeValue, context),
       position: index + 1,
       relation: relationValue,
       targetDifference,
-      targetFormatted: context.formatValue(targetValue, 'target', datum.x),
+      targetFormatted: targetSuppressed ? message(context, 'suppressed') : formatTarget(targetValue, (value) => context.formatValue(value, 'target', datum.x), message(context, 'rangeSeparator')),
       targetValue,
-      total: context.data.length,
+      targetSuppressed,
+      total: data.length,
       x: datum.x,
       xLabel: context.formatXValue(datum.x)
     };

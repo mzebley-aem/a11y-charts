@@ -47,7 +47,7 @@ without actual results.
 | Summary customization | Structured labels and formatters plus a separate context note; the component retains canonical outcome and comparison language |
 | Interaction order | Title/subtitle, narrative summary, chart explorer, display settings, then complete data view |
 | Display settings | Separate native disclosure after the chart, collapsed by default and consumer-configurable to begin open |
-| Complete data view | Separate clearly named disclosure after display settings, collapsed by default |
+| Complete data view | Consumer-configurable dialog or inline native disclosure; dialog is the default, with explicit existing hidden/screen-reader configuration retained |
 | Initial point | Latest period containing an actual value is selected by default; consumers may override the initial explorer selection |
 | Selection behavior | Hover previews; click/tap and keyboard commit; committed selection remains visible after details close |
 | Point announcements | Concise, complete point narrative on navigation; keyboard instructions only on entry; do not repeat the full chart summary |
@@ -132,9 +132,12 @@ override. Structured labels and formatter results are applied consistently to
 the visible summary, point details, announcements, data view, and semantic
 events, with safe fallback behavior for invalid values.
 
-Future localization should replace a complete versioned message catalog so
-grammar and meaning remain coherent. It should not rely on consumer overrides
-of isolated sentence fragments.
+Localization uses a complete English message catalog with consumer-supplied
+key/value overrides for visible and assistive text. Generated sentences use
+whole templates, named placeholders, and locale-aware plural variants. Missing
+overrides fall back to English. Numeric locale configuration is separate.
+The October 19 bar-chart and shared-capability contract is recorded in
+[`BAR-CHART-SPEC.md`](./BAR-CHART-SPEC.md).
 
 ## Baseline-period requirement
 
@@ -152,7 +155,10 @@ baseline adds a separate “change from baseline” interpretation.
 ### Required baseline communication
 
 - Identify the baseline period and value in the visible summary.
-- Include change from baseline in point details and applicable announcements.
+- Attach the baseline period, value, and explanation to the interactive chart's
+  accessible description so assistive technology announces it on entry.
+- Do not repeat baseline values or change-from-baseline content in point cards
+  or point-by-point announcements.
 - Identify the baseline in the chart without presenting it as a repeated annual
   measurement.
 - Include baseline meaning in the chart's explanatory content.
@@ -192,9 +198,9 @@ case.
 > percentage points above the 2015 baseline of 38%. The target was met in 1 of
 > 5 reported years. No actual data has been reported after 2020.
 
-Point details should use unambiguous labels such as “Baseline (2015): 38%” and
-“Change from baseline: 45.92 percentage points,” rather than “Baseline year:
-38%.”
+The chart-level accessible description should use an unambiguous label such as
+“Baseline: 2015, 38%.” Point details do not repeat the baseline or change from
+baseline.
 
 ## Experience architecture
 
@@ -253,7 +259,8 @@ type A11yLineChartInitialSelection =
 ### 3. Investigate deeply
 
 - Complete structured data view using the same formatting and outcome model.
-- Optional labels, fills, patterns, axis titles, and data-fit zoom.
+- Optional labels, fills, patterns, axis titles, and magnitude-aware data-fit
+  zoom that remains useful for tightly grouped fractional values.
 - Display preferences remain available without blocking access to the chart.
 - Potential future navigation to noteworthy events such as first target met,
   largest gap, or first missing result.
@@ -277,7 +284,8 @@ These ideas are captured but are not all approved for implementation.
 - Place a native **Chart display settings** disclosure after the chart. Keep it
   collapsed by default, describe the available adjustments, and allow consumers
   to configure it to begin open.
-- Place a separate **View chart data** disclosure after display settings.
+- Place a separate **View chart data** action after display settings. Open the
+  configured dialog by default, or a native disclosure in inline mode.
   Changing presentation and reading source values are different intentions and
   should not be combined into one control group.
 
@@ -321,8 +329,9 @@ These ideas are captured but are not all approved for implementation.
 - On first focus, announce short keyboard instructions followed by the current
   point's complete narrative.
 - On Arrow, Home, or End navigation, announce only the newly selected point.
-- Include period, position in the series, target outcome, actual, target,
-  difference from target, and change from baseline when those values exist.
+- Include period, position in the series, target outcome, actual, target, and
+  difference from target when those values exist. Announce baseline context
+  once when entering the interactive chart, not on each point.
 - State missing actual or target values explicitly and never imply failure when
   an outcome cannot be determined.
 - Do not repeat the full chart summary during point-by-point exploration.
@@ -337,7 +346,7 @@ These ideas are captured but are not all approved for implementation.
 Example for a comparable reported period:
 
 > 2020, 6 of 11. Target met. Actual 83.92%. Target 77.02%. 6.90 percentage
-> points above target; 45.92 percentage points above the 2015 baseline.
+> points above target.
 
 Example for a future target-only period:
 

@@ -43,7 +43,7 @@ summary {
 
 .skip-link {
   background: #fff;
-  border: 2px solid #3e4ded;
+  border: 2px solid #202b9e;
   color: #222fbf;
   font-weight: 700;
   left: 0.75rem;
@@ -68,7 +68,7 @@ summary {
   align-self: start;
   background: #fff;
   box-shadow: inset -1px 0 0 rgb(0 0 0 / 10%);
-  color: #3e4ded;
+  color: #202b9e;
   height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
@@ -141,7 +141,7 @@ summary {
 }
 
 .app-rail__menu li.is-current {
-  background: #3e4ded;
+  background: #202b9e;
   color: #f9f9f9;
   font-weight: 700;
 }
@@ -159,10 +159,10 @@ summary {
   background: #2e2e2e;
   color: #fbfcfd;
   display: flex;
-  font-size: 12px;
+  font-size: 14px;
   gap: 8px;
-  min-height: 23px;
-  padding: 3px 16px 4px;
+  min-height: 44px;
+  padding: 8px 16px;
 }
 
 .official-banner img {
@@ -214,9 +214,8 @@ summary {
 }
 
 .breadcrumbs li:not(:last-child) span {
-  color: #3e4ded;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  color: #202b9e;
+  text-decoration: none;
 }
 
 .breadcrumbs li:last-child {
@@ -271,7 +270,7 @@ summary {
 }
 
 .status-actions__status strong {
-  background: #538200;
+  background: #375700;
   border-radius: 2px;
   color: #fff;
   font-weight: 400;
@@ -280,7 +279,7 @@ summary {
 
 .status-actions__list {
   align-items: center;
-  color: #3e4ded;
+  color: #202b9e;
   display: flex;
   flex: 0 0 auto;
   gap: 8px;
@@ -308,7 +307,7 @@ summary {
 }
 
 .status-action--danger {
-  color: #e41b3c;
+  color: #a10e22;
 }
 
 .report-layout {
@@ -379,7 +378,7 @@ summary {
 }
 
 .report-sections li {
-  color: #3e4ded;
+  color: #202b9e;
   font-size: 13px;
   font-weight: 700;
   line-height: 1.25;
@@ -409,7 +408,7 @@ summary {
 .quick-summary,
 .how-to-read,
 .current-rate,
-.calculation-card {
+.settings-card {
   padding: 24px;
 }
 
@@ -474,7 +473,7 @@ summary {
 
 summary:focus-visible,
 .skip-link:focus-visible {
-  outline: 3px solid #3e4ded;
+  outline: 3px solid #202b9e;
   outline-offset: 2px;
 }
 
@@ -498,7 +497,7 @@ summary:focus-visible,
 }
 
 .report-chart a11y-line-chart {
-  --a11y-line-chart-focus-color: #3e4ded;
+  --a11y-line-chart-focus-color: #202b9e;
   --a11y-line-chart-per-point-min-width: 70;
   font-family: "Source Sans 3", "Source Sans Pro", system-ui, sans-serif;
   min-width: 0;
@@ -622,12 +621,12 @@ summary:focus-visible,
 }
 
 .report-chart a11y-line-chart .a11y-line-chart__controls input[type="checkbox"]:checked {
-  background-color: #3e4ded;
+  background-color: #202b9e;
   background-image: url("./report-assets/chart-checkbox-checked.svg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: 20px 20px;
-  border-color: #3e4ded;
+  border-color: #202b9e;
 }
 
 .report-chart a11y-line-chart .a11y-line-chart__controls label:hover input[type="checkbox"] {
@@ -639,7 +638,7 @@ summary:focus-visible,
 }
 
 .report-chart a11y-line-chart .a11y-line-chart__controls input[type="checkbox"]:focus-visible {
-  outline: 3px solid #3e4ded;
+  outline: 3px solid #202b9e;
   outline-offset: 2px;
 }
 
@@ -673,7 +672,7 @@ summary:focus-visible,
 }
 
 .report-chart a11y-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"]:checked {
-  background: #3e4ded;
+  background: #202b9e;
   background-image: none;
 }
 
@@ -690,7 +689,7 @@ summary:focus-visible,
 .report-chart-pattern-control select {
   appearance: none;
   background-color: #fff;
-  background-image: linear-gradient(45deg, transparent 50%, #3e4ded 50%), linear-gradient(135deg, #3e4ded 50%, transparent 50%);
+  background-image: linear-gradient(45deg, transparent 50%, #202b9e 50%), linear-gradient(135deg, #202b9e 50%, transparent 50%);
   background-position: calc(100% - 15px) 50%, calc(100% - 10px) 50%;
   background-repeat: no-repeat;
   background-size: 5px 5px, 5px 5px;
@@ -705,7 +704,7 @@ summary:focus-visible,
 }
 
 .report-chart-pattern-control select:focus-visible {
-  outline: 3px solid #3e4ded;
+  outline: 3px solid #202b9e;
   outline-offset: 2px;
 }
 
@@ -773,7 +772,7 @@ summary:focus-visible,
 }
 
 .current-rate__eyebrow {
-  color: #565c65 !important;
+  color: #3e4b52 !important;
   font-family: "Public Sans", system-ui, sans-serif;
   font-size: 14px !important;
   font-weight: 700;
@@ -867,11 +866,11 @@ summary:focus-visible,
 }
 
 .current-rate__badge--slippage {
-  background: #b50909;
+  background: #a30b0b;
 }
 
 .current-rate__badge--not-met {
-  background: #b50909;
+  background: #a30b0b;
 }
 
 .slippage-details {
@@ -898,7 +897,7 @@ summary:focus-visible,
 }
 
 .slippage-details summary::after {
-  color: #3e4ded;
+  color: #202b9e;
   content: "+  Expand";
   font-size: 12px;
   font-weight: 400;
@@ -916,7 +915,7 @@ summary:focus-visible,
 }
 
 .slippage-details blockquote {
-  border-left: 6px solid #e41b3c;
+  border-left: 6px solid #a10e22;
   margin: 8px 0 20px;
   padding: 4px 0 4px 20px;
 }
@@ -934,7 +933,7 @@ summary:focus-visible,
 }
 
 .supporting-data dt {
-  color: #565c65;
+  color: #3e4b52;
   font-size: 14px;
   line-height: 1.3;
 }
@@ -946,33 +945,18 @@ summary:focus-visible,
   margin: 4px 0 0;
 }
 
-.root-cause-preview {
-  background: #f0f0f0;
-  border-radius: 4px;
-  display: grid;
-  gap: 8px;
-  padding: 20px;
-}
-
-.root-cause-preview h4 {
-  margin: 0;
-}
-
-.root-cause-preview p + p {
-  margin-top: 4px;
-}
-
 .past-targets summary {
   font-family: "Public Sans", system-ui, sans-serif;
-  font-size: 16px;
+  font-size: 22px;
   font-weight: 700;
   justify-content: space-between;
+  line-height: 1.15;
   min-height: 68px;
   padding: 12px 24px;
 }
 
 .past-targets summary::after {
-  color: #3e4ded;
+  color: #202b9e;
   content: "+  Expand";
   font-family: "Public Sans", system-ui, sans-serif;
   font-size: 12px;
@@ -1064,40 +1048,64 @@ summary:focus-visible,
   margin: 0;
 }
 
-.calculation-card {
+.settings-card {
   display: grid;
-  gap: 16px;
+  gap: 8px;
 }
 
-.calculation-card h3 {
+.settings-card h3 {
   margin: 0;
 }
 
-.calculation-card__formula {
+.settings-card > p {
+  margin: 0;
+}
+
+.settings-chart {
+  display: grid;
+  gap: 20px;
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.settings-chart h4 {
+  font-size: 16px;
+  margin: 0 0 6px;
+}
+
+.settings-chart__row {
   align-items: center;
-  background: #f0f0f0;
-  border-radius: 4px;
   display: grid;
-  gap: 16px;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto auto;
-  padding: 20px;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) 88px;
 }
 
-.calculation-card__formula span {
+.settings-chart__track {
+  background: #e6e6e6;
+  display: block;
+  height: 32px;
+  overflow: hidden;
+}
+
+.settings-chart__track > span {
+  background: #2837c7;
+  display: block;
+  height: 100%;
+  width: var(--bar-size);
+}
+
+.settings-chart__row p {
   display: grid;
-  gap: 4px;
+  font-size: 13px;
+  gap: 2px;
+  line-height: 1.2;
+  margin: 0;
 }
 
-.calculation-card__formula span strong,
-.calculation-card__formula > strong {
-  font-family: "Public Sans", system-ui, sans-serif;
-  font-size: 24px;
-}
-
-.calculation-card__formula small {
-  color: #565c65;
-  font-size: 14px;
-  line-height: 1.3;
+.settings-chart__row strong {
+  color: #1b1b1b;
+  font-size: 15px;
 }
 
 @media (max-width: 900px) {
@@ -1127,7 +1135,7 @@ summary:focus-visible,
   }
 
   .mobile-app-bar span {
-    color: #3e4ded;
+    color: #202b9e;
     font-size: 14px;
     font-weight: 700;
   }
@@ -1157,7 +1165,7 @@ summary:focus-visible,
   }
 
   .breadcrumbs li:last-child::before {
-    color: #3e4ded;
+    color: #202b9e;
     content: "‹";
     font-size: 22px;
     margin-right: 6px;
@@ -1208,15 +1216,6 @@ summary:focus-visible,
     gap: 32px;
   }
 
-  .calculation-card__formula {
-    align-items: stretch;
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .calculation-card__formula > b {
-    font-size: 20px;
-  }
-
   .target-history__row {
     align-items: start;
     grid-template-columns: 57px minmax(0, 1fr);
@@ -1258,7 +1257,7 @@ summary:focus-visible,
   .quick-summary,
   .how-to-read,
   .current-rate,
-  .calculation-card {
+  .settings-card {
     padding: 20px 16px;
   }
 
@@ -1281,10 +1280,6 @@ summary:focus-visible,
 
   .slippage-details blockquote {
     padding-left: 16px;
-  }
-
-  .root-cause-preview {
-    padding: 16px;
   }
 
   .supporting-data {
@@ -1354,7 +1349,8 @@ summary:focus-visible,
   .current-rate__badge,
   .rate-comparison__bar,
   .history-bar,
-  .calculation-card__formula {
+  .settings-chart__track,
+  .settings-chart__track > span {
     border: 1px solid CanvasText;
     forced-color-adjust: auto;
   }
