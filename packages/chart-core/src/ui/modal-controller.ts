@@ -7,10 +7,18 @@ export interface ModalControllerOptions {
   onStateChange?: (open: boolean) => void;
 }
 
+// Symbol.for shares opening order across separately bundled chart packages.
+const modalStackKey = Symbol.for('@a11y-charts/modal-stack');
+type ModalDocument = Document & { [modalStackKey]?: HTMLDialogElement[] };
+function modalStack(document: ModalDocument): HTMLDialogElement[] {
+  return document[modalStackKey] ??= [];
+}
+
 /** Owns one native modal's open state, focus containment, and reconnect lifecycle. */
 export class ModalController {
   #options: ModalControllerOptions;
   #abort = new AbortController();
+  #keyAbort: AbortController | undefined;
   #reopenOnConnect = false;
   #suppressClose = false;
   #open = false;
@@ -23,13 +31,9 @@ export class ModalController {
       // Native close is queued. Ignore an old close notification after reconnect/showModal.
       if (this.#suppressClose || dialog.open || this.#reopenOnConnect) return;
       if (!this.#open) return;
-      this.#open = false; options.onStateChange?.(false);
+      this.#publish(false);
       if (options.host.isConnected) this.#focusOpener();
     }, { signal });
-    // Capture at document level as some engines can let focus fall to the
-    // document when dialog contents are replaced. A dialog-local listener
-    // cannot recover focus once Tab is already outside the dialog.
-    document.addEventListener('keydown', (event) => this.#trapFocus(event), { capture: true, signal });
   }
 
   get isOpen(): boolean { return this.#open; }
@@ -65,6 +69,7 @@ export class ModalController {
     this.#reopenOnConnect = reopenOnConnect;
     if (this.#options.dialog.open) this.#closeNative();
     if (this.#open) this.#publish(false);
+    this.#stopListening();
   }
 
   reconnect(focusTarget?: HTMLElement): ModalOpenResult | 'not-requested' {
@@ -76,7 +81,27 @@ export class ModalController {
 
   destroy(): void { this.disconnect(false); this.#abort.abort(); }
 
-  #publish(open: boolean): void { this.#open = open; this.#options.onStateChange?.(open); }
+  #publish(open: boolean): void {
+    this.#open = open;
+    if (open) {
+      const { dialog } = this.#options;
+      const document = dialog.ownerDocument;
+      this.#stopListening();
+      modalStack(document).push(dialog);
+      this.#keyAbort = new AbortController();
+      // Capture only while open, including when content replacement loses focus.
+      document.addEventListener('keydown', (event) => this.#trapFocus(event), { capture: true, signal: this.#keyAbort.signal });
+    } else this.#stopListening();
+    this.#options.onStateChange?.(open);
+  }
+
+  #stopListening(): void {
+    this.#keyAbort?.abort();
+    this.#keyAbort = undefined;
+    const stack = modalStack(this.#options.dialog.ownerDocument);
+    const index = stack.indexOf(this.#options.dialog);
+    if (index >= 0) stack.splice(index, 1);
+  }
 
   #closeNative(): boolean {
     this.#suppressClose = true;
@@ -110,7 +135,7 @@ export class ModalController {
     if (!dialog.open || !dialog.isConnected || !this.#isCurrentModal(dialog)) return;
     const focusable = [...dialog.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]')]
       .filter((element) => this.#isVisible(element) && (element.tabIndex >= 0));
-    const active = document.activeElement;
+    const active = dialog.ownerDocument.activeElement;
     if (!focusable.length) { event.preventDefault(); dialog.focus(); return; }
     // Advance explicitly instead of delegating to native Tab traversal. WebKit
     // can skip dialog buttons under its full-keyboard-access preference, and
@@ -125,10 +150,14 @@ export class ModalController {
   }
 
   #isCurrentModal(dialog: HTMLDialogElement): boolean {
-    const openDialogs = [...document.querySelectorAll<HTMLDialogElement>('dialog')].filter((candidate) => {
-      if (!candidate.open) return false;
+    const document = dialog.ownerDocument;
+    const openDialogs = modalStack(document).filter((candidate) => {
+      if (!candidate.open || !candidate.isConnected) return false;
       try { return candidate.matches(':modal'); } catch { return candidate.open; }
     });
+    // Leave another native modal's focused controls to its own keyboard handler.
+    const focusedDialog = document.activeElement?.closest('dialog');
+    if (focusedDialog && focusedDialog !== dialog && !openDialogs.includes(focusedDialog)) return false;
     if (openDialogs.length === 0) return dialog.open;
     return openDialogs[openDialogs.length - 1] === dialog;
   }

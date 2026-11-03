@@ -26,8 +26,9 @@ const server = createServer(async (request, response) => {
   if (['/line', '/bar', '/both', '/'].includes(route)) {
     const kinds = route === '/line' ? ['line'] : route === '/bar' ? ['bar'] : ['line', 'bar'];
     const esm = url.searchParams.get('esm') === '1';
+    const entry = esm ? (url.searchParams.has('root') ? 'index.js' : 'define.js') : 'chart.js';
     response.setHeader('Content-Type', 'text/html; charset=utf-8');
-    response.end(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Packed charts</title>${kinds.map(kind => `<link rel="stylesheet" href="/${kind}/styles.css"><script ${esm ? 'type="module"' : 'defer'} src="/${kind}/${esm ? 'define.js' : 'chart.js'}"></script>`).join('')}<style>body{margin:16px}main{max-width:100%}</style></head><body><main>${kinds.map(kind => `<a11y-${kind}-chart chart-title="${kind} chart"></a11y-${kind}-chart>`).join('')}</main><button id="outside">Outside</button></body></html>`);
+    response.end(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Packed charts</title>${kinds.map(kind => `<link rel="stylesheet" href="/${kind}/styles.css"><script ${esm ? 'type="module"' : 'defer'} src="/${kind}/${entry}"></script>`).join('')}<style>body{margin:16px}main{max-width:100%}</style></head><body><main>${kinds.map(kind => `<a11y-${kind}-chart chart-title="${kind} chart"></a11y-${kind}-chart>`).join('')}</main><button id="outside">Outside</button></body></html>`);
     return;
   }
   const match = /^\/(line|bar)\/(.+)$/.exec(route);

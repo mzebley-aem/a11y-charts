@@ -59,6 +59,51 @@ test('both standalone charts coexist and tolerate repeated registration', async 
   await expect(page.locator('a11y-bar-chart .a11y-bar-chart__bar').first()).toBeVisible();
 });
 
+for (const kind of ['line', 'bar']) {
+  for (const rootFirst of [false, true]) {
+    test(`${kind} packed ESM shares constructor identity with root imported ${rootFirst ? 'first' : 'last'}`, async ({ page }) => {
+      await page.goto(`/${kind}?esm=1${rootFirst ? '&root=1' : ''}`);
+      const identities = await page.evaluate(async kind => {
+        const rootUrl = `/${kind}/index.js`;
+        const defineUrl = `/${kind}/define.js`;
+        const root = await import(rootUrl);
+        await import(defineUrl);
+        const names = kind === 'line'
+          ? [['a11y-line-chart', 'A11yLineChartElement']]
+          : [['a11y-bar-chart', 'A11yBarChartElement'], ['a11y-bar-chart-group', 'A11yBarChartGroupElement']];
+        return names.map(([tag, name]) => ({
+          same: customElements.get(tag) === root[name],
+          instance: document.createElement(tag) instanceof root[name],
+          constructed: new root[name]() instanceof root[name]
+        }));
+      }, kind);
+      expect(identities.every(result => result.same && result.instance && result.constructed)).toBe(true);
+    });
+  }
+}
+
+test('packed chart modals follow opening order across packages and restore the underlying trap', async ({ page }) => {
+  await page.goto('/both');
+  await populate(page, ['line', 'bar']);
+  const line = page.locator('a11y-line-chart');
+  const bar = page.locator('a11y-bar-chart');
+  await bar.getByRole('button', { name: 'View complete data', exact: true }).click();
+  // The earlier DOM sibling opens last and is now above the bar modal.
+  await line.getByRole('button', { name: 'Data', exact: true }).evaluate(button => button.click());
+  for (const chart of [line, bar]) {
+    const dialog = chart.locator('dialog');
+    await expect(dialog).toHaveJSProperty('open', true);
+    const buttons = dialog.locator('button:visible:not([disabled])');
+    await buttons.last().focus();
+    await page.keyboard.press('Tab');
+    await expect(buttons.first()).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(buttons.last()).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+  }
+});
+
 test('bar card preserves hover, pin, Escape, and narrow-layout access', async ({ page }) => {
   await page.goto('/bar');
   await populate(page, ['bar']);

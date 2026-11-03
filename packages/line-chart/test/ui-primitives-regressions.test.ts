@@ -4,6 +4,32 @@ import { FloatingCardController } from '../../chart-core/src/ui/floating-card-co
 import { ModalController } from '../../chart-core/src/ui/modal-controller.js';
 
 describe('shared chart UI primitives', () => {
+  it('releases document handlers on close and disconnect and reinstalls them on reconnect', () => {
+    const host = document.createElement('div'); const dialog = document.createElement('dialog');
+    host.append(dialog); document.body.append(host);
+    Object.defineProperty(dialog, 'open', { configurable: true, writable: true, value: false });
+    dialog.showModal = vi.fn(() => { dialog.open = true; });
+    dialog.close = vi.fn(() => { dialog.open = false; });
+    const listener = vi.spyOn(document, 'addEventListener');
+    const controller = new ModalController({ dialog, host, getOpener: () => undefined });
+    const signals = () => listener.mock.calls.filter(([type]) => type === 'keydown')
+      .map(([, , options]) => (options as AddEventListenerOptions).signal!);
+    try {
+      expect(signals()).toHaveLength(0);
+      for (let index = 0; index < 3; index++) {
+        controller.open();
+        expect(signals().filter(signal => !signal.aborted)).toHaveLength(1);
+        controller.disconnect(true); host.remove();
+        expect(signals().every(signal => signal.aborted)).toBe(true);
+        document.body.append(host); controller.reconnect();
+        expect(signals().filter(signal => !signal.aborted)).toHaveLength(1);
+        controller.close();
+        expect(signals().every(signal => signal.aborted)).toBe(true);
+      }
+      controller.open(); dialog.close(); dialog.dispatchEvent(new Event('close'));
+      expect(signals().every(signal => signal.aborted)).toBe(true);
+    } finally { controller.destroy(); host.remove(); listener.mockRestore(); }
+  });
   it('keeps DOM and formatter card structures equivalent and text-safe', () => {
     const model = {
       heading: '<period>', role: 'group' as const, ariaLabel: 'chart tooltip',

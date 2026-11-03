@@ -29,6 +29,26 @@ async function mount(page: Page, kind = 'line', config = {}) {
   }, { kind, config });
 }
 
+test('modal Tab handling follows opening order instead of DOM order', async ({ page }) => {
+  await mount(page, 'line');
+  await mount(page, 'bar');
+  const line = page.locator('a11y-line-chart');
+  const bar = page.locator('a11y-bar-chart');
+  await bar.getByRole('button', { name: 'View complete data', exact: true }).click();
+  await line.getByRole('button', { name: 'Data', exact: true }).evaluate(button => button.click());
+  for (const chart of [line, bar]) {
+    const dialog = chart.locator('dialog');
+    const buttons = dialog.locator('button:visible:not([disabled])');
+    await buttons.last().focus();
+    await page.keyboard.press('Tab');
+    await expect(buttons.first()).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(buttons.last()).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(dialog).not.toBeVisible();
+  }
+});
+
 test('line initializes when revealed, including after a hidden reconnect', async ({ page }) => {
   await page.locator('#fixture').evaluate(el => (el as HTMLElement).style.display = 'none');
   await mount(page);

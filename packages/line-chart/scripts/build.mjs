@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { copyFile, mkdir, rm } from 'node:fs/promises';
+import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { build } from 'vite';
@@ -18,11 +18,15 @@ await rm(resolve(dist, 'types/chart-core'), { recursive: true, force: true });
 for (const [entry, fileName] of [
   ['src/index.ts', 'index.js'],
   ['src/core.ts', 'core.js'],
-  ['src/define.ts', 'define.js'],
   ['src/define.ts', 'chart.js']
 ]) {
   await build(createLibraryConfig({ root, entry, fileName, format: fileName === 'chart.js' ? 'iife' : 'es' }));
 }
+// ESM registration must share the constructors exported by the package root.
+await writeFile(resolve(dist, 'define.js'), `export { A11Y_LINE_CHART_TAG_NAME, defineA11yLineChart } from './index.js';
+import { defineA11yLineChart } from './index.js';
+defineA11yLineChart();
+`);
 await build(createStylesConfig({ root }));
 const licenses = [
   ['node_modules/echarts/LICENSE', 'ECHARTS-LICENSE'],
@@ -34,4 +38,4 @@ const licenses = [
 for (const [source, target] of licenses) {
   await copyFile(resolve(root, source), resolve(dist, target));
 }
-console.log('Built independent line ESM entries, standalone browser bundle, declarations, and stylesheet.');
+console.log('Built shared-identity line ESM entries, standalone browser bundle, declarations, and stylesheet.');
