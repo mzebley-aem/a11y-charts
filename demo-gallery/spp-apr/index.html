@@ -11,7 +11,7 @@
     <title>SPP/APR · Hawaii Part B · Report mockup</title>
   </head>
   <body>
-    <a class="skip-link" href="#report">Skip to report</a>
+    <a class="skip-link" href="#indicator-title">Skip to report</a>
     <div class="prototype-banner">
       <strong>Interactive mockup</strong
       ><span
@@ -36,6 +36,7 @@
           ><button id="share" type="button">Copy link to this view</button
           ><button id="print" type="button">Print report view</button>
         </div>
+        <a class="review-link" href="#feedback">Add review notes</a>
         <p id="share-status" role="status"></p>
         <label id="share-fallback" hidden
           >Copy this view’s link<input type="text" readonly
@@ -57,13 +58,13 @@
             ><a href="#feedback">Review notes</a>
           </div>
         </aside>
-        <div id="report" class="report-content" tabindex="-1">
+        <div id="report" class="report-content">
           <section aria-labelledby="indicator-title">
             <div class="section-topline">
               <p class="eyebrow" id="indicator-number"></p>
               <span>Federal fiscal year 2023</span>
             </div>
-            <h2 id="indicator-title"></h2>
+            <h2 id="indicator-title" tabindex="-1"></h2>
             <p id="indicator-description" class="section-description"></p>
             <details class="measurement">
               <summary>How is it measured?</summary>
@@ -82,7 +83,17 @@
               role="group"
               aria-label="Choose a measure"
             ></div>
-            <div id="measure-content"></div>
+            <div
+              id="measure-content"
+              role="region"
+              aria-label="Selected measure"
+            ></div>
+            <p
+              id="report-status"
+              class="sr-only"
+              role="status"
+              aria-atomic="true"
+            ></p>
           </section>
           <section
             class="population-panel"
@@ -99,7 +110,34 @@
             ></a11y-bar-chart>
             <p id="population-note" class="data-note"></p>
           </section>
-          <details id="source-notes" class="source-notes">
+          <details id="terms" class="source-notes">
+            <summary>Report terms</summary>
+            <dl>
+              <dt>IDEA</dt>
+              <dd>Individuals with Disabilities Education Act.</dd>
+              <dt>Part B</dt>
+              <dd>
+                The part of IDEA that supports special education for eligible
+                children and youth ages 3–21.
+              </dd>
+              <dt>IEP</dt>
+              <dd>
+                Individualized education program: a written plan for a child’s
+                special education and related services.
+              </dd>
+              <dt>FFY</dt>
+              <dd>
+                Federal fiscal year, the reporting period used in these
+                examples.
+              </dd>
+              <dt>Percentage point</dt>
+              <dd>
+                The difference between two percentages. A change from 10% to 8%
+                is a decrease of 2 percentage points.
+              </dd>
+            </dl>
+          </details>
+          <details id="source-notes" class="source-notes" tabindex="-1">
             <summary>Source & data notes</summary>
             <p>
               Reference examples: Ind2.pdf, Ind5.pdf, and Ind6.pdf, supplied for
@@ -116,6 +154,7 @@
           </details>
           <section
             id="feedback"
+            tabindex="-1"
             class="feedback"
             aria-labelledby="feedback-heading"
           >
@@ -124,23 +163,26 @@
               <h2 id="feedback-heading">
                 What would make this report clearer?
               </h2>
-              <p>
-                Notes stay in this browser when storage is available. Download
-                them to share with the team; nothing is submitted automatically.
+              <p id="feedback-instructions">
+                Save notes in this browser, or download a copy to share with the
+                team. Nothing is submitted automatically. Copying a view link
+                does not include your notes.
               </p>
             </div>
             <form id="feedback-form">
               <label for="review-notes">Review notes for this indicator</label
               ><textarea
                 id="review-notes"
+                aria-describedby="feedback-context feedback-instructions"
                 rows="4"
                 placeholder="What worked? What was confusing? What should change?"
               ></textarea>
+              <p class="feedback-context" id="feedback-context"></p>
               <div class="feedback-actions">
-                <button type="submit">Save notes in this browser</button
-                ><button type="button" id="download-notes">
+                <button type="button" id="download-notes">
                   Download review notes
                 </button>
+                <button type="submit">Save notes in this browser</button>
               </div>
               <p role="status" id="feedback-status"></p>
             </form>

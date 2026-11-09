@@ -1,0 +1,400 @@
+{
+  "header": {
+    "run_id": "spp-apr-2026-11-09",
+    "goal": "Find Hawaii’s preschool Measure 6B, understand how it did, and prepare a link and a review note to share with a colleague.",
+    "start": "https://a11y-charts-report-preview.vercel.app/spp-apr/",
+    "preset": "full-bag",
+    "traits": [
+      "VPF",
+      "HTS",
+      "FC",
+      "LIT",
+      "NR",
+      "LP"
+    ],
+    "phrasing": "own-words",
+    "mutations": "none",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "perception": "mixed",
+    "perception_note": "Tab creation automatically returned accessibility text. Decisions use screenshots; tree only targets noticed controls.",
+    "started_at": "2026-11-09T16:41:18.159Z"
+  },
+  "steps": [
+    {
+      "id": "C1",
+      "kind": "checkpoint",
+      "at": "2026-11-09T16:41:25.952Z",
+      "screenshot": "shots/C1.jpg",
+      "result_screenshot": "shots/C1-result.jpg",
+      "cue": "Report sections is at the bottom; the next row is cut off.",
+      "expectation": "The preschool choice looks just below the screen; I will move down to it.",
+      "action": "Scrolled down about half a screen",
+      "clicks": [],
+      "result": "Preschool Environments is visible with the report sections and the Drop Out heading below.",
+      "updated": "The preschool section should take me to the right report.",
+      "traits": [
+        "ordinary"
+      ],
+      "ignored": [
+        {
+          "box_px": [
+            16,
+            374,
+            354,
+            106
+          ],
+          "label": "Introductory paragraph"
+        },
+        {
+          "box_px": [
+            16,
+            30,
+            354,
+            37
+          ],
+          "label": "Mockup review description"
+        }
+      ],
+      "busy": false
+    },
+    {
+      "id": "C2",
+      "kind": "checkpoint",
+      "at": "2026-11-09T16:41:31.763Z",
+      "screenshot": "shots/C2.jpg",
+      "result_screenshot": "shots/C2-result.jpg",
+      "cue": "06 Preschool Environments link",
+      "expectation": "Preschool Environments sounds like the preschool report I need.",
+      "action": "Tapped Preschool Environments",
+      "clicks": [
+        {
+          "px": [
+            158,
+            382
+          ],
+          "approx": false,
+          "n": 1
+        }
+      ],
+      "result": "The heading changed to Preschool Environments. The result card says 3 measures and 2 targets met · 1 not met.",
+      "updated": "Now I need to find Measure 6B below.",
+      "traits": [
+        "ordinary"
+      ],
+      "ignored": [],
+      "busy": false
+    },
+    {
+      "kind": "correction",
+      "corrects": "C2",
+      "note": "C2 result was recorded incorrectly. The actual result screenshot shows Preschool Environments with Measure 6A 23.11% Target not met and Measure 6B 28.12% Target not met; it does not show a 3 measures summary."
+    },
+    {
+      "id": "C3",
+      "kind": "checkpoint",
+      "at": "2026-11-09T16:41:45.471Z",
+      "screenshot": "shots/C3.jpg",
+      "result_screenshot": "shots/C3-result.jpg",
+      "cue": "Measure 6B card: 28.12%, Target not met; target 18.29%, Lower is better",
+      "action": "Scrolled down",
+      "clicks": [],
+      "result": "Results by measure has Measure 6A selected in blue and a Measure 6B button beside it.",
+      "updated": "I can tap Measure 6B to get the view I need.",
+      "traits": [
+        "LIT",
+        "HTS"
+      ],
+      "ignored": [
+        {
+          "box_px": [
+            16,
+            92,
+            355,
+            74
+          ],
+          "label": "Preschool question paragraph"
+        }
+      ],
+      "busy": false
+    },
+    {
+      "id": "C4",
+      "kind": "checkpoint",
+      "at": "2026-11-09T16:41:51.557Z",
+      "screenshot": "shots/C4.jpg",
+      "result_screenshot": "shots/C4-result.jpg",
+      "cue": "Measure 6B button beside selected Measure 6A",
+      "action": "Tapped Measure 6B",
+      "clicks": [
+        {
+          "px": [
+            227,
+            616
+          ],
+          "approx": false,
+          "n": 1
+        }
+      ],
+      "result": "Measure 6B is blue and the heading changes to Separate special education class, separate school, or residential facility.",
+      "updated": "This is the measure I want to share.",
+      "traits": [
+        "ordinary"
+      ],
+      "ignored": [],
+      "busy": false
+    },
+    {
+      "id": "C5",
+      "kind": "checkpoint",
+      "at": "2026-11-09T16:42:00.716Z",
+      "screenshot": "shots/C5.jpg",
+      "result_screenshot": "shots/C5-result.jpg",
+      "cue": "Selected Measure 6B heading at bottom of screen",
+      "action": "Scrolled down",
+      "clicks": [],
+      "result": "Highlighted result says Target not met; 28.12% actual · 18.29% target. Lower is better appears above it.",
+      "updated": "Hawaii did not meet this target. I need the link and somewhere to put my note.",
+      "traits": [
+        "LIT",
+        "HTS"
+      ],
+      "ignored": [
+        {
+          "box_px": [
+            51,
+            515,
+            287,
+            124
+          ],
+          "label": "Supporting result explanation and baseline note"
+        },
+        {
+          "box_px": [
+            51,
+            704,
+            286,
+            88
+          ],
+          "label": "Source discrepancy paragraph"
+        }
+      ],
+      "busy": false
+    },
+    {
+      "id": "C6",
+      "kind": "checkpoint",
+      "at": "2026-11-09T16:42:08.898Z",
+      "screenshot": "shots/C6.jpg",
+      "result_screenshot": "shots/C6-result.jpg",
+      "cue": "Copy link was above; currently the 6B result remains visible",
+      "action": "Pressed Control+Home",
+      "clicks": [],
+      "result": "The screen stayed on Measure 6B result.",
+      "updated": "That did not take me back; I will scroll up.",
+      "traits": [
+        "ordinary"
+      ],
+      "ignored": [
+        {
+          "box_px": [
+            51,
+            515,
+            287,
+            124
+          ],
+          "label": "Supporting explanation"
+        },
+        {
+          "box_px": [
+            51,
+            704,
+            286,
+            88
+          ],
+          "label": "Source discrepancy"
+        }
+      ],
+      "busy": false
+    },
+    {
+      "id": "C7",
+      "kind": "checkpoint",
+      "at": "2026-11-09T16:42:19.273Z",
+      "screenshot": "shots/C7.jpg",
+      "result_screenshot": "shots/C7-result.jpg",
+      "cue": "The 6B result is still on screen",
+      "action": "Scrolled up two screens",
+      "clicks": [],
+      "result": "Copy link to this view button is visible above the selected Preschool Environments section.",
+      "updated": "This should copy the selected report for my colleague.",
+      "traits": [
+        "ordinary"
+      ],
+      "ignored": [
+        {
+          "box_px": [
+            16,
+            153,
+            355,
+            101
+          ],
+          "label": "Introductory paragraph"
+        }
+      ],
+      "busy": false
+    },
+    {
+      "id": "C8",
+      "kind": "checkpoint",
+      "at": "2026-11-09T16:42:32.034Z",
+      "screenshot": "shots/C8.jpg",
+      "result_screenshot": "shots/C8-result.jpg",
+      "cue": "Copy link to this view button",
+      "action": "Tapped Copy link to this view",
+      "clicks": [
+        {
+          "px": [
+            117,
+            360
+          ],
+          "approx": false,
+          "n": 1
+        }
+      ],
+      "result": "A line appears: Link copied. It includes the indicator, measure, chart view, and display settings.",
+      "updated": "The link is ready. I still need a review note.",
+      "traits": [
+        "LIT"
+      ],
+      "ignored": [
+        {
+          "box_px": [
+            16,
+            153,
+            355,
+            101
+          ],
+          "label": "Introductory paragraph"
+        }
+      ],
+      "busy": false
+    },
+    {
+      "id": "C9",
+      "kind": "checkpoint",
+      "at": "2026-11-09T16:42:41.266Z",
+      "screenshot": "shots/C9.jpg",
+      "result_screenshot": "shots/C9-result.jpg",
+      "cue": "Report view has no visible note field",
+      "action": "Scrolled down four screens",
+      "clicks": [],
+      "result": "Reached Behind the percentages and Reported population by category, with chart controls.",
+      "updated": "The notes must be farther down.",
+      "traits": [
+        "ordinary"
+      ],
+      "ignored": [
+        {
+          "box_px": [
+            47,
+            450,
+            301,
+            124
+          ],
+          "label": "Chart interaction instructions"
+        },
+        {
+          "box_px": [
+            32,
+            329,
+            318,
+            43
+          ],
+          "label": "Reported population explanation"
+        }
+      ],
+      "busy": false
+    },
+    {
+      "id": "C10",
+      "kind": "checkpoint",
+      "at": "2026-11-09T16:42:50.806Z",
+      "screenshot": "shots/C10.jpg",
+      "result_screenshot": "shots/C10-result.jpg",
+      "cue": "Still in population chart section",
+      "action": "Scrolled down two and a half screens",
+      "clicks": [],
+      "result": "Review notes for this indicator text box is visible with Save notes in this browser and Download review notes buttons.",
+      "updated": "I can write my note here, then save it.",
+      "traits": [
+        "HTS"
+      ],
+      "ignored": [
+        {
+          "box_px": [
+            16,
+            232,
+            351,
+            61
+          ],
+          "label": "Notes stay in this browser and download explanation"
+        }
+      ],
+      "busy": false
+    },
+    {
+      "id": "C11",
+      "kind": "checkpoint",
+      "at": "2026-11-09T16:43:02.478Z",
+      "screenshot": "shots/C11.jpg",
+      "result_screenshot": "shots/C11-result.jpg",
+      "cue": "Review notes for this indicator field; blue Save notes in this browser button",
+      "expectation": "I'll write down what I found so my colleague knows which result I mean.",
+      "action": "Tapped the note field and typed a note",
+      "entered_text": "Hawaii preschool Measure 6B was 28.12% and did not meet the 18.29% target. Lower is better. Can we talk about what would help this improve?",
+      "clicks": [
+        {
+          "px": [
+            157,
+            392
+          ],
+          "approx": false,
+          "n": 1
+        }
+      ],
+      "result": "The full note appears in the text box. Save notes in this browser remains below it.",
+      "updated": "I would press Save notes in this browser next because it is the blue button beneath my note.",
+      "traits": [
+        "VPF",
+        "HTS"
+      ],
+      "ignored": [
+        {
+          "box_px": [
+            16,
+            232,
+            351,
+            61
+          ],
+          "label": "Notes persistence and sharing explanation"
+        }
+      ],
+      "busy": false
+    }
+  ],
+  "end": {
+    "belief": "I found Hawaii preschool Measure 6B. It is 28.12%, did not meet the 18.29% target, and lower is better. The page says the link was copied. My note is typed, but I have not saved or shared it.",
+    "supporting_cue": "Measure 6B selected; Target not met; Link copied confirmation; visible typed review note and Save notes in this browser button.",
+    "stop_reason": "permission stop",
+    "pending_effects": "No save, download, submit, or send performed. Note remains typed in the field.",
+    "untested": [
+      "Would tap Save notes in this browser at approximately [130,520]. This is a commit point; stopped before it.",
+      "Would have clicked 0 more times; no unchanged save state was tested."
+    ],
+    "screenshot": "shots/C11-result.jpg",
+    "ended_at": "2026-11-09T16:43:02.478Z"
+  }
+}

@@ -1,0 +1,572 @@
+{
+  "run": {
+    "id": "spp-apr-2026-11-09",
+    "date": "2026-11-09",
+    "goal": "Find Hawaii\u2019s preschool Measure 6B, understand how it did, and prepare a link and a review note to share with a colleague.",
+    "start": "https://a11y-charts-report-preview.vercel.app/spp-apr/",
+    "preset": "full-bag",
+    "traits": [
+      "VPF",
+      "HTS",
+      "FC",
+      "LIT",
+      "NR",
+      "LP"
+    ],
+    "phrasing": "own-words",
+    "entered_text": "Hawaii preschool Measure 6B was 28.12% and did not meet the 18.29% target. Lower is better. Can we talk about what would help this improve?",
+    "mutations": "none",
+    "conditions": [],
+    "perception": "mixed",
+    "mode": "fast",
+    "inherited_state": "Fresh browser context; no saved notes. Existing root context is intentionally not inherited.",
+    "skill_version": "0.4.1"
+  },
+  "outcome": {
+    "believed": "I found Hawaii preschool Measure 6B. It is 28.12%, did not meet the 18.29% target, and lower is better. The page says the link was copied. My note is typed, but I have not saved or shared it.",
+    "supported": "UI-observed preparation: correct measure and numbers were displayed, a link-copy confirmation appeared, and a note was typed. Save, download, delivery, and clipboard payload were not tested by the rock.",
+    "gap": "The final note repeats the detailed target without its source-conflict caveat. No persisted or delivered feedback is claimed."
+  },
+  "summary": [
+    {
+      "finding": "F1",
+      "headline": "Source uncertainty was skipped while the result was copied into a note",
+      "step": "C5"
+    },
+    {
+      "finding": "F2",
+      "headline": "Sharing and note entry required substantial vertical travel",
+      "step": "C9"
+    }
+  ],
+  "intended": [
+    {
+      "id": "I1",
+      "screen": "",
+      "cue": "Preschool Environments",
+      "action": "Select Indicator 6"
+    },
+    {
+      "id": "I2",
+      "screen": "",
+      "cue": "Measure 6B",
+      "action": "Read result and compare with target"
+    },
+    {
+      "id": "I3",
+      "screen": "",
+      "cue": "2023 comparison and source notes",
+      "action": "Inspect comparison and source discrepancy"
+    },
+    {
+      "id": "I4",
+      "screen": "",
+      "cue": "Copy link to this view and Review notes",
+      "action": "Prepare a link and find how to record feedback"
+    }
+  ],
+  "steps": [
+    {
+      "id": "C1",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C1.jpg",
+      "result_screenshot": "tester/shots/C1-result.jpg",
+      "cue": "Report sections is at the bottom; the next row is cut off.",
+      "expectation": "The preschool choice looks just below the screen; I will move down to it.",
+      "action": "Scrolled down about half a screen",
+      "entered_text": "",
+      "result": "Preschool Environments is visible with the report sections and the Drop Out heading below.",
+      "updated": "The preschool section should take me to the right report.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 44.31,
+          "w": 90.77,
+          "h": 12.56,
+          "label": "Introductory paragraph"
+        },
+        {
+          "x": 4.1,
+          "y": 3.55,
+          "w": 90.77,
+          "h": 4.38,
+          "label": "Mockup review description"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C2",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C2.jpg",
+      "result_screenshot": "tester/shots/C2-result.jpg",
+      "cue": "06 Preschool Environments link",
+      "expectation": "Preschool Environments sounds like the preschool report I need.",
+      "action": "Tapped Preschool Environments",
+      "entered_text": "",
+      "result": "The heading changed to Preschool Environments. The result card says 3 measures and 2 targets met \u00b7 1 not met.",
+      "updated": "Now I need to find Measure 6B below.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [
+        {
+          "x": 40.51,
+          "y": 45.26,
+          "n": 1,
+          "approx": false
+        }
+      ],
+      "ignored": [],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "?",
+      "kind": "correction",
+      "screenshot": "",
+      "result_screenshot": "",
+      "cue": "",
+      "expectation": "",
+      "action": "",
+      "entered_text": "",
+      "result": "",
+      "updated": "",
+      "traits": [],
+      "clicks": [],
+      "ignored": [],
+      "corrects": "C2",
+      "note": "C2 result was recorded incorrectly. The actual result screenshot shows Preschool Environments with Measure 6A 23.11% Target not met and Measure 6B 28.12% Target not met; it does not show a 3 measures summary.",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C3",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C3.jpg",
+      "result_screenshot": "tester/shots/C3-result.jpg",
+      "cue": "Measure 6B card: 28.12%, Target not met; target 18.29%, Lower is better",
+      "expectation": "",
+      "action": "Scrolled down",
+      "entered_text": "",
+      "result": "Results by measure has Measure 6A selected in blue and a Measure 6B button beside it.",
+      "updated": "I can tap Measure 6B to get the view I need.",
+      "traits": [
+        "LIT",
+        "HTS"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 10.9,
+          "w": 91.03,
+          "h": 8.77,
+          "label": "Preschool question paragraph"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C4",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C4.jpg",
+      "result_screenshot": "tester/shots/C4-result.jpg",
+      "cue": "Measure 6B button beside selected Measure 6A",
+      "expectation": "",
+      "action": "Tapped Measure 6B",
+      "entered_text": "",
+      "result": "Measure 6B is blue and the heading changes to Separate special education class, separate school, or residential facility.",
+      "updated": "This is the measure I want to share.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [
+        {
+          "x": 58.21,
+          "y": 72.99,
+          "n": 1,
+          "approx": false
+        }
+      ],
+      "ignored": [],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C5",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C5.jpg",
+      "result_screenshot": "tester/shots/C5-result.jpg",
+      "cue": "Selected Measure 6B heading at bottom of screen",
+      "expectation": "",
+      "action": "Scrolled down",
+      "entered_text": "",
+      "result": "Highlighted result says Target not met; 28.12% actual \u00b7 18.29% target. Lower is better appears above it.",
+      "updated": "Hawaii did not meet this target. I need the link and somewhere to put my note.",
+      "traits": [
+        "LIT",
+        "HTS"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 13.08,
+          "y": 61.02,
+          "w": 73.59,
+          "h": 14.69,
+          "label": "Supporting result explanation and baseline note"
+        },
+        {
+          "x": 13.08,
+          "y": 83.41,
+          "w": 73.33,
+          "h": 10.43,
+          "label": "Source discrepancy paragraph"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": {
+        "from": "I3",
+        "kind": "unrecovered",
+        "note": "Skipped supporting source discrepancy; did not inspect the comparison/source detail."
+      },
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C6",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C6.jpg",
+      "result_screenshot": "tester/shots/C6-result.jpg",
+      "cue": "Copy link was above; currently the 6B result remains visible",
+      "expectation": "",
+      "action": "Pressed Control+Home",
+      "entered_text": "",
+      "result": "The screen stayed on Measure 6B result.",
+      "updated": "That did not take me back; I will scroll up.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 13.08,
+          "y": 61.02,
+          "w": 73.59,
+          "h": 14.69,
+          "label": "Supporting explanation"
+        },
+        {
+          "x": 13.08,
+          "y": 83.41,
+          "w": 73.33,
+          "h": 10.43,
+          "label": "Source discrepancy"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "Control+Home did not move this macOS browser view; platform-shortcut/tooling artifact, not classified as a site keyboard defect.",
+      "untested": false
+    },
+    {
+      "id": "C7",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C7.jpg",
+      "result_screenshot": "tester/shots/C7-result.jpg",
+      "cue": "The 6B result is still on screen",
+      "expectation": "",
+      "action": "Scrolled up two screens",
+      "entered_text": "",
+      "result": "Copy link to this view button is visible above the selected Preschool Environments section.",
+      "updated": "This should copy the selected report for my colleague.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 18.13,
+          "w": 91.03,
+          "h": 11.97,
+          "label": "Introductory paragraph"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C8",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C8.jpg",
+      "result_screenshot": "tester/shots/C8-result.jpg",
+      "cue": "Copy link to this view button",
+      "expectation": "",
+      "action": "Tapped Copy link to this view",
+      "entered_text": "",
+      "result": "A line appears: Link copied. It includes the indicator, measure, chart view, and display settings.",
+      "updated": "The link is ready. I still need a review note.",
+      "traits": [
+        "LIT"
+      ],
+      "clicks": [
+        {
+          "x": 30.0,
+          "y": 42.65,
+          "n": 1,
+          "approx": false
+        }
+      ],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 18.13,
+          "w": 91.03,
+          "h": 11.97,
+          "label": "Introductory paragraph"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C9",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C9.jpg",
+      "result_screenshot": "tester/shots/C9-result.jpg",
+      "cue": "Report view has no visible note field",
+      "expectation": "",
+      "action": "Scrolled down four screens",
+      "entered_text": "",
+      "result": "Reached Behind the percentages and Reported population by category, with chart controls.",
+      "updated": "The notes must be farther down.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 12.05,
+          "y": 53.32,
+          "w": 77.18,
+          "h": 14.69,
+          "label": "Chart interaction instructions"
+        },
+        {
+          "x": 8.21,
+          "y": 38.98,
+          "w": 81.54,
+          "h": 5.09,
+          "label": "Reported population explanation"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": {
+        "from": "I4",
+        "kind": "recovered",
+        "note": "Long scroll to the feedback form; note eventually prepared."
+      },
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C10",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C10.jpg",
+      "result_screenshot": "tester/shots/C10-result.jpg",
+      "cue": "Still in population chart section",
+      "expectation": "",
+      "action": "Scrolled down two and a half screens",
+      "entered_text": "",
+      "result": "Review notes for this indicator text box is visible with Save notes in this browser and Download review notes buttons.",
+      "updated": "I can write my note here, then save it.",
+      "traits": [
+        "HTS"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 27.49,
+          "w": 90.0,
+          "h": 7.23,
+          "label": "Notes stay in this browser and download explanation"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C11",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C11.jpg",
+      "result_screenshot": "tester/shots/C11-result.jpg",
+      "cue": "Review notes for this indicator field; blue Save notes in this browser button",
+      "expectation": "I'll write down what I found so my colleague knows which result I mean.",
+      "action": "Tapped the note field and typed a note",
+      "entered_text": "Hawaii preschool Measure 6B was 28.12% and did not meet the 18.29% target. Lower is better. Can we talk about what would help this improve?",
+      "result": "The full note appears in the text box. Save notes in this browser remains below it.",
+      "updated": "I would press Save notes in this browser next because it is the blue button beneath my note.",
+      "traits": [
+        "VPF",
+        "HTS"
+      ],
+      "clicks": [
+        {
+          "x": 40.26,
+          "y": 46.45,
+          "n": 1,
+          "approx": false
+        }
+      ],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 27.49,
+          "w": 90.0,
+          "h": 7.23,
+          "label": "Notes persistence and sharing explanation"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "source": "rock-exposed",
+      "recurs_in": [],
+      "category": "UX",
+      "title": "Conflicting target is outside the headline result",
+      "steps": [
+        "C5",
+        "C11"
+      ],
+      "traits": [
+        "HTS",
+        "LIT"
+      ],
+      "component": "SPP/APR result summary",
+      "component_basis": "reproduced",
+      "expected": "Reader recognizes the target needs confirmation.",
+      "observed": "The trace explicitly skips the source discrepancy and the typed note reports 18.29% without qualification.",
+      "cost": "Uncertainty can be lost in feedback shared with others. This is an inference from the omitted caveat, not proof of real-user prevalence.",
+      "fix": "Put Target needs confirmation in overview and result badges; mark the detailed target under review.",
+      "fix_signal": "Both the overview and selected-result headline expose uncertainty before body helper text.",
+      "regression_risk": "Do not change source numbers or classify all measures as uncertain.",
+      "ablation": "Repeat with Helper-Text Skipper removed."
+    },
+    {
+      "id": "F2",
+      "source": "rock-exposed",
+      "recurs_in": [],
+      "category": "UX",
+      "title": "Review controls require long vertical travel",
+      "steps": [
+        "C7",
+        "C9",
+        "C10"
+      ],
+      "traits": [
+        "HTS"
+      ],
+      "component": "SPP/APR review actions",
+      "component_basis": "reproduced",
+      "expected": "Prepare a link and note close to the selected result.",
+      "observed": "Scrolled up two screens to copy, then down four and another two-and-a-half screens to reach the note field.",
+      "cost": "Extra scrolling and loss of result context; the task was recovered.",
+      "fix": "Add measure-local copy and review-note actions, plus the header shortcut.",
+      "fix_signal": "From the measure, copy the current URL and follow a direct link to a focused feedback section.",
+      "regression_risk": "Copied link must still name the selected measure and chart view.",
+      "ablation": "Repeat at desktop width."
+    },
+    {
+      "id": "F3",
+      "source": "reviewer-observed",
+      "recurs_in": [],
+      "category": "UX",
+      "title": "Primary feedback action saves locally rather than preparing a shareable file",
+      "steps": [
+        "C11"
+      ],
+      "traits": [
+        "VPF",
+        "HTS"
+      ],
+      "component": "Feedback actions",
+      "component_basis": "inferred",
+      "expected": "Sharing-oriented task prioritizes an export.",
+      "observed": "Tester would press the blue local-save button. It stopped before saving and knew the note was not yet shared.",
+      "cost": "Potential extra step or confusion; no false belief of delivery was observed.",
+      "fix": "Make Download review notes primary and preserve explicit local-save wording.",
+      "fix_signal": "Download is first and primary; text clearly says no automatic submission.",
+      "regression_risk": "Retain local save and storage recovery.",
+      "ablation": "Remove Visual-Path Follower to test whether action prominence changes the route."
+    }
+  ],
+  "errata": [
+    {
+      "date": "2026-11-09",
+      "about": "C2",
+      "correction": "Use the tester\u2019s following correction and screenshot. The original description invents a summary not present in the screenshot; no product finding is based on it."
+    }
+  ],
+  "limits": [
+    "Perception: mixed (Tab creation automatically returned accessibility text. Decisions use screenshots; tree only targets noticed controls.)",
+    "Fresh agent context; shared filesystem instruction-based isolation, not an enforced sandbox. Packet SHA-256 4e3917fdcb7f07bba6d6ad9c22d43d39504484952f537f56bef76b3c142ed42d.",
+    "A fresh browser context was requested; browser storage isolation was not independently verified. No prior note was visible before entry.",
+    "Some checkpoints omit the explicit expectation field. They are retained as supplied. No trace conversion problems were reported.",
+    "Production mutations none: no saves, downloads, submissions, or sends. Typed note remains unsaved in the temporary tester tab.",
+    "The walkthrough is synthetic evidence that generates hypotheses; it is not real human research and does not estimate failure rates.",
+    "Calibration: not calibrated."
+  ],
+  "end": {
+    "belief": "I found Hawaii preschool Measure 6B. It is 28.12%, did not meet the 18.29% target, and lower is better. The page says the link was copied. My note is typed, but I have not saved or shared it.",
+    "supporting_cue": "Measure 6B selected; Target not met; Link copied confirmation; visible typed review note and Save notes in this browser button.",
+    "stop_reason": "permission stop",
+    "pending_effects": "No save, download, submit, or send performed. Note remains typed in the field.",
+    "untested": [
+      "Would tap Save notes in this browser at approximately [130,520]. This is a commit point; stopped before it.",
+      "Would have clicked 0 more times; no unchanged save state was tested."
+    ],
+    "screenshot": "shots/C11-result.jpg",
+    "ended_at": "2026-11-09T16:43:02.478Z"
+  }
+}

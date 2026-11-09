@@ -1,0 +1,23 @@
+id: spp-apr-target-caveat
+title: Target discrepancy omitted when repeating the result
+status: fixed-unverified
+created: 2026-11-09
+source_run: spp-apr-2026-11-09
+goal: Find preschool Measure 6B and prepare a link and review note.
+start: /spp-apr/
+preset: full-bag
+traits: [HTS, LIT]
+conditions: [viewport 390x844]
+mutations: none
+intended_path: ../runs/spp-apr-2026-11-09/coordinator/intended-path.json
+finding:
+  category: misleading feedback
+  evidence: [C5, C11]
+  component: SPP/APR result summary
+pass_condition: Source uncertainty is present in the headline before helper text; the comparison remains conditional.
+watch_for: Treating the under-review target as validated official data.
+triggers:
+  paths: [/spp-apr/*]
+history:
+  - run: spp-apr-2026-11-09
+    result: reproduced; deterministic fix implemented, fresh blind retest outstanding

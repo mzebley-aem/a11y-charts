@@ -1,0 +1,618 @@
+{
+  "base": "http://127.0.0.1:5191",
+  "browser": "156.0.8078.80",
+  "errors": [],
+  "states": [
+    {
+      "indicator": "2",
+      "measure": "2",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "2",
+      "measure": "2",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5A",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5A",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5B",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5B",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5C",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5C",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6A",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6A",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6B",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6B",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6C",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6C",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "widths": [
+    {
+      "width": 320,
+      "scroll": 320,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "scroll": 375,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "scroll": 390,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 480,
+      "scroll": 480,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 640,
+      "scroll": 640,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "scroll": 768,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "scroll": 1024,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "scroll": 1280,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "scroll": 1440,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    }
+  ],
+  "keyboard": [
+    {
+      "step": "first-tab",
+      "active": "<a class=\"skip-link\" href=\"#indicator-title\">Skip to report</a>"
+    },
+    {
+      "step": "skip-enter",
+      "active": "indicator-title"
+    }
+  ],
+  "functional": [
+    {
+      "name": "comparison-explanation",
+      "text": "Measure 6B: rate comparison\n\nBars use a percentage scale from 0% to 100%\n\nHide explanation\nView complete data\nPlain language summary\n\n28.12% in FFY 2023, compared with a target of 18.29%. Lower is better. The target was not met. The change from FFY 2022 was 0.54 percentage points higher.\n\nFFY 2022 actual\n27.58%\nFFY 2023 target\n18.29%\nFFY 2023 actual\n28.12%\nComplete data for Measure 6B: rate comparison\nReporting period\tRate\nFFY 2022 actual\t27.58%\nFFY 2023 target\t18.29%\nFFY 2023 actual\t28.12%"
+    },
+    {
+      "name": "history",
+      "before": "http://127.0.0.1:5191/spp-apr/?indicator=5&measure=5B&view=comparison&zoom=true&labels=false&pattern=none&actual=true&target=true",
+      "after": "http://127.0.0.1:5191/spp-apr/?indicator=5&measure=5A&view=comparison&zoom=true&labels=false&pattern=none&actual=true&target=true"
+    }
+  ],
+  "textSpacing": {
+    "width": 320,
+    "scroll": 320
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "confirmed": true,
+  "confirmed_by": "User reply 2026-11-09: Use that walkthrough",
+  "goal": "Understand preschool measure 6B and prepare a view link and review note",
+  "steps": [
+    {
+      "id": "I1",
+      "cue": "Preschool Environments",
+      "action": "Select Indicator 6"
+    },
+    {
+      "id": "I2",
+      "cue": "Measure 6B",
+      "action": "Read result and compare with target"
+    },
+    {
+      "id": "I3",
+      "cue": "2023 comparison and source notes",
+      "action": "Inspect comparison and source discrepancy"
+    },
+    {
+      "id": "I4",
+      "cue": "Copy link to this view and Review notes",
+      "action": "Prepare a link and find how to record feedback"
+    }
+  ],
+  "assumptions": [
+    "Reader notices different measures",
+    "Reader understands lower is better",
+    "Reader sees source discrepancy rather than assuming validated data",
+    "Reader can find sharing and review controls without losing current view"
+  ]
+}

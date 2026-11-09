@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bag of Rocks filmstrip</title>
+<!--
+  Template for bag-of-rocks. To use: copy this file into the run folder,
+  replace the JSON inside the "run-data" script element with the run's data
+  (schema in references/review-and-report.md), and keep screenshots at
+  the relative paths the JSON names (or use data: URIs).
+  Steps with an empty "screenshot" render a labeled placeholder.
+-->
+<style>
+:root{
+  --bg:#f7f6f3;--surface:#ffffff;--ink:#1d1d1b;--muted:#5f5e5a;--line:#dddbd4;
+  --accent:#2f5bd3;--accent-ink:#ffffff;--bubble:#fff6d6;--bubble-ink:#3a3000;
+  --bad:#b3261e;--warn:#9a5b00;--ok:#1e6b3a;--alt:#5b4bb3;--hatch:rgba(120,120,120,.35);
+  color-scheme:light;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141413;--surface:#1f1f1d;--ink:#ecebe6;--muted:#a9a7a0;--line:#3a3935;
+  --accent:#8aa6ff;--accent-ink:#0d1330;--bubble:#3a3417;--bubble-ink:#fff2b8;
+  --bad:#ff8a80;--warn:#ffb74d;--ok:#7bd88f;--alt:#b9adff;--hatch:rgba(200,200,200,.28);color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141413;--surface:#1f1f1d;--ink:#ecebe6;--muted:#a9a7a0;--line:#3a3935;
+  --accent:#8aa6ff;--accent-ink:#0d1330;--bubble:#3a3417;--bubble-ink:#fff2b8;
+  --bad:#ff8a80;--warn:#ffb74d;--ok:#7bd88f;--alt:#b9adff;--hatch:rgba(200,200,200,.28);color-scheme:dark}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:1100px;margin:0 auto;padding:1.5rem 1rem 4rem}
+h1{font-size:1.5rem;margin:0 0 .25rem}h2{font-size:1.15rem;margin:2rem 0 .75rem}
+.meta{color:var(--muted);font-size:.9rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1rem}
+.outcome{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:1rem}
+.label{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.chip{display:inline-block;font-size:.75rem;font-weight:600;padding:.1rem .5rem;border-radius:999px;border:1px solid currentColor}
+.k-unrecovered,.c-breakage{color:var(--bad)}.k-recovered,.c-misleading{color:var(--warn)}.k-alternate{color:var(--alt)}.c-confusion{color:var(--alt)}
+.summary li{margin:.4rem 0}.summary a{color:var(--accent)}
+.rail{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.25rem}
+.rail .card{min-width:180px;font-size:.85rem}
+.step{display:grid;gap:1rem;grid-template-columns:minmax(0,3fr) minmax(0,2fr);margin:1rem 0}
+@media (max-width:760px){.step{grid-template-columns:1fr}}
+.shot{position:relative;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.shot img{display:block;width:100%;max-width:100%;height:auto}
+.ph{aspect-ratio:16/10;display:grid;place-items:center;color:var(--muted);font-size:.9rem}
+.click{position:absolute;transform:translate(-50%,-50%);width:30px;height:30px;border-radius:50%;
+  background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.8rem;display:grid;place-items:center;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 30%,transparent)}
+.click .rep{position:absolute;top:-10px;right:-18px;background:var(--bad);color:#fff;border-radius:999px;padding:0 .35rem;font-size:.7rem}
+.ignored{position:absolute;border:2px dashed var(--muted);
+  background:repeating-linear-gradient(45deg,var(--hatch) 0 6px,transparent 6px 12px)}
+.ignored span{position:absolute;bottom:100%;left:0;font-size:.68rem;background:var(--surface);color:var(--muted);padding:0 .3rem;border-radius:4px;white-space:nowrap}
+.bubble{background:var(--bubble);color:var(--bubble-ink);border-radius:12px;padding:.6rem .8rem;position:relative;margin:.25rem 0 .75rem}
+.bubble::before{content:"Expects";display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;opacity:.75}
+dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:.25rem .75rem;font-size:.92rem}dt{color:var(--muted)}dd{margin:0}
+.verdicts{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.75rem}
+.verdicts button,.btn{font:inherit;font-size:.8rem;padding:.3rem .6rem;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.verdicts button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.click.approx{background:transparent;color:var(--accent);border:2px dashed var(--accent);box-shadow:none}
+.pair{display:grid;gap:.5rem}.pair .tag{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.step.wait .bubble{display:none}
+.step.reviewer{border-style:dashed}
+.harness{font-size:.85rem;color:var(--warn)}
+.entered{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.85rem;background:var(--bg);padding:.1rem .3rem;border-radius:4px}
+.untested{color:var(--warn);font-weight:600;font-size:.85rem}
+.finding{margin:.75rem 0}.finding h3{font-size:1rem;margin:.25rem 0}
+.toolbar{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<main id="app"></main>
+
+<script id="run-data" type="application/json">
+{
+  "run": {
+    "id": "spp-apr-2026-11-09",
+    "date": "2026-11-09",
+    "goal": "Find Hawaii\u2019s preschool Measure 6B, understand how it did, and prepare a link and a review note to share with a colleague.",
+    "start": "https://a11y-charts-report-preview.vercel.app/spp-apr/",
+    "preset": "full-bag",
+    "traits": [
+      "VPF",
+      "HTS",
+      "FC",
+      "LIT",
+      "NR",
+      "LP"
+    ],
+    "phrasing": "own-words",
+    "entered_text": "Hawaii preschool Measure 6B was 28.12% and did not meet the 18.29% target. Lower is better. Can we talk about what would help this improve?",
+    "mutations": "none",
+    "conditions": [],
+    "perception": "mixed",
+    "mode": "fast",
+    "inherited_state": "Fresh browser context; no saved notes. Existing root context is intentionally not inherited.",
+    "skill_version": "0.4.1"
+  },
+  "outcome": {
+    "believed": "I found Hawaii preschool Measure 6B. It is 28.12%, did not meet the 18.29% target, and lower is better. The page says the link was copied. My note is typed, but I have not saved or shared it.",
+    "supported": "UI-observed preparation: correct measure and numbers were displayed, a link-copy confirmation appeared, and a note was typed. Save, download, delivery, and clipboard payload were not tested by the rock.",
+    "gap": "The final note repeats the detailed target without its source-conflict caveat. No persisted or delivered feedback is claimed."
+  },
+  "summary": [
+    {
+      "finding": "F1",
+      "headline": "Source uncertainty was skipped while the result was copied into a note",
+      "step": "C5"
+    },
+    {
+      "finding": "F2",
+      "headline": "Sharing and note entry required substantial vertical travel",
+      "step": "C9"
+    }
+  ],
+  "intended": [
+    {
+      "id": "I1",
+      "screen": "",
+      "cue": "Preschool Environments",
+      "action": "Select Indicator 6"
+    },
+    {
+      "id": "I2",
+      "screen": "",
+      "cue": "Measure 6B",
+      "action": "Read result and compare with target"
+    },
+    {
+      "id": "I3",
+      "screen": "",
+      "cue": "2023 comparison and source notes",
+      "action": "Inspect comparison and source discrepancy"
+    },
+    {
+      "id": "I4",
+      "screen": "",
+      "cue": "Copy link to this view and Review notes",
+      "action": "Prepare a link and find how to record feedback"
+    }
+  ],
+  "steps": [
+    {
+      "id": "C1",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C1.jpg",
+      "result_screenshot": "tester/shots/C1-result.jpg",
+      "cue": "Report sections is at the bottom; the next row is cut off.",
+      "expectation": "The preschool choice looks just below the screen; I will move down to it.",
+      "action": "Scrolled down about half a screen",
+      "entered_text": "",
+      "result": "Preschool Environments is visible with the report sections and the Drop Out heading below.",
+      "updated": "The preschool section should take me to the right report.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 44.31,
+          "w": 90.77,
+          "h": 12.56,
+          "label": "Introductory paragraph"
+        },
+        {
+          "x": 4.1,
+          "y": 3.55,
+          "w": 90.77,
+          "h": 4.38,
+          "label": "Mockup review description"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C2",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C2.jpg",
+      "result_screenshot": "tester/shots/C2-result.jpg",
+      "cue": "06 Preschool Environments link",
+      "expectation": "Preschool Environments sounds like the preschool report I need.",
+      "action": "Tapped Preschool Environments",
+      "entered_text": "",
+      "result": "The heading changed to Preschool Environments. The result card says 3 measures and 2 targets met \u00b7 1 not met.",
+      "updated": "Now I need to find Measure 6B below.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [
+        {
+          "x": 40.51,
+          "y": 45.26,
+          "n": 1,
+          "approx": false
+        }
+      ],
+      "ignored": [],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "?",
+      "kind": "correction",
+      "screenshot": "",
+      "result_screenshot": "",
+      "cue": "",
+      "expectation": "",
+      "action": "",
+      "entered_text": "",
+      "result": "",
+      "updated": "",
+      "traits": [],
+      "clicks": [],
+      "ignored": [],
+      "corrects": "C2",
+      "note": "C2 result was recorded incorrectly. The actual result screenshot shows Preschool Environments with Measure 6A 23.11% Target not met and Measure 6B 28.12% Target not met; it does not show a 3 measures summary.",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C3",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C3.jpg",
+      "result_screenshot": "tester/shots/C3-result.jpg",
+      "cue": "Measure 6B card: 28.12%, Target not met; target 18.29%, Lower is better",
+      "expectation": "",
+      "action": "Scrolled down",
+      "entered_text": "",
+      "result": "Results by measure has Measure 6A selected in blue and a Measure 6B button beside it.",
+      "updated": "I can tap Measure 6B to get the view I need.",
+      "traits": [
+        "LIT",
+        "HTS"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 10.9,
+          "w": 91.03,
+          "h": 8.77,
+          "label": "Preschool question paragraph"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C4",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C4.jpg",
+      "result_screenshot": "tester/shots/C4-result.jpg",
+      "cue": "Measure 6B button beside selected Measure 6A",
+      "expectation": "",
+      "action": "Tapped Measure 6B",
+      "entered_text": "",
+      "result": "Measure 6B is blue and the heading changes to Separate special education class, separate school, or residential facility.",
+      "updated": "This is the measure I want to share.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [
+        {
+          "x": 58.21,
+          "y": 72.99,
+          "n": 1,
+          "approx": false
+        }
+      ],
+      "ignored": [],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C5",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C5.jpg",
+      "result_screenshot": "tester/shots/C5-result.jpg",
+      "cue": "Selected Measure 6B heading at bottom of screen",
+      "expectation": "",
+      "action": "Scrolled down",
+      "entered_text": "",
+      "result": "Highlighted result says Target not met; 28.12% actual \u00b7 18.29% target. Lower is better appears above it.",
+      "updated": "Hawaii did not meet this target. I need the link and somewhere to put my note.",
+      "traits": [
+        "LIT",
+        "HTS"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 13.08,
+          "y": 61.02,
+          "w": 73.59,
+          "h": 14.69,
+          "label": "Supporting result explanation and baseline note"
+        },
+        {
+          "x": 13.08,
+          "y": 83.41,
+          "w": 73.33,
+          "h": 10.43,
+          "label": "Source discrepancy paragraph"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": {
+        "from": "I3",
+        "kind": "unrecovered",
+        "note": "Skipped supporting source discrepancy; did not inspect the comparison/source detail."
+      },
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C6",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C6.jpg",
+      "result_screenshot": "tester/shots/C6-result.jpg",
+      "cue": "Copy link was above; currently the 6B result remains visible",
+      "expectation": "",
+      "action": "Pressed Control+Home",
+      "entered_text": "",
+      "result": "The screen stayed on Measure 6B result.",
+      "updated": "That did not take me back; I will scroll up.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 13.08,
+          "y": 61.02,
+          "w": 73.59,
+          "h": 14.69,
+          "label": "Supporting explanation"
+        },
+        {
+          "x": 13.08,
+          "y": 83.41,
+          "w": 73.33,
+          "h": 10.43,
+          "label": "Source discrepancy"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "Control+Home did not move this macOS browser view; platform-shortcut/tooling artifact, not classified as a site keyboard defect.",
+      "untested": false
+    },
+    {
+      "id": "C7",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C7.jpg",
+      "result_screenshot": "tester/shots/C7-result.jpg",
+      "cue": "The 6B result is still on screen",
+      "expectation": "",
+      "action": "Scrolled up two screens",
+      "entered_text": "",
+      "result": "Copy link to this view button is visible above the selected Preschool Environments section.",
+      "updated": "This should copy the selected report for my colleague.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 18.13,
+          "w": 91.03,
+          "h": 11.97,
+          "label": "Introductory paragraph"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C8",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C8.jpg",
+      "result_screenshot": "tester/shots/C8-result.jpg",
+      "cue": "Copy link to this view button",
+      "expectation": "",
+      "action": "Tapped Copy link to this view",
+      "entered_text": "",
+      "result": "A line appears: Link copied. It includes the indicator, measure, chart view, and display settings.",
+      "updated": "The link is ready. I still need a review note.",
+      "traits": [
+        "LIT"
+      ],
+      "clicks": [
+        {
+          "x": 30.0,
+          "y": 42.65,
+          "n": 1,
+          "approx": false
+        }
+      ],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 18.13,
+          "w": 91.03,
+          "h": 11.97,
+          "label": "Introductory paragraph"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C9",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C9.jpg",
+      "result_screenshot": "tester/shots/C9-result.jpg",
+      "cue": "Report view has no visible note field",
+      "expectation": "",
+      "action": "Scrolled down four screens",
+      "entered_text": "",
+      "result": "Reached Behind the percentages and Reported population by category, with chart controls.",
+      "updated": "The notes must be farther down.",
+      "traits": [
+        "ordinary"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 12.05,
+          "y": 53.32,
+          "w": 77.18,
+          "h": 14.69,
+          "label": "Chart interaction instructions"
+        },
+        {
+          "x": 8.21,
+          "y": 38.98,
+          "w": 81.54,
+          "h": 5.09,
+          "label": "Reported population explanation"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": {
+        "from": "I4",
+        "kind": "recovered",
+        "note": "Long scroll to the feedback form; note eventually prepared."
+      },
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C10",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C10.jpg",
+      "result_screenshot": "tester/shots/C10-result.jpg",
+      "cue": "Still in population chart section",
+      "expectation": "",
+      "action": "Scrolled down two and a half screens",
+      "entered_text": "",
+      "result": "Review notes for this indicator text box is visible with Save notes in this browser and Download review notes buttons.",
+      "updated": "I can write my note here, then save it.",
+      "traits": [
+        "HTS"
+      ],
+      "clicks": [],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 27.49,
+          "w": 90.0,
+          "h": 7.23,
+          "label": "Notes stay in this browser and download explanation"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    },
+    {
+      "id": "C11",
+      "kind": "checkpoint",
+      "screenshot": "tester/shots/C11.jpg",
+      "result_screenshot": "tester/shots/C11-result.jpg",
+      "cue": "Review notes for this indicator field; blue Save notes in this browser button",
+      "expectation": "I'll write down what I found so my colleague knows which result I mean.",
+      "action": "Tapped the note field and typed a note",
+      "entered_text": "Hawaii preschool Measure 6B was 28.12% and did not meet the 18.29% target. Lower is better. Can we talk about what would help this improve?",
+      "result": "The full note appears in the text box. Save notes in this browser remains below it.",
+      "updated": "I would press Save notes in this browser next because it is the blue button beneath my note.",
+      "traits": [
+        "VPF",
+        "HTS"
+      ],
+      "clicks": [
+        {
+          "x": 40.26,
+          "y": 46.45,
+          "n": 1,
+          "approx": false
+        }
+      ],
+      "ignored": [
+        {
+          "x": 4.1,
+          "y": 27.49,
+          "w": 90.0,
+          "h": 7.23,
+          "label": "Notes persistence and sharing explanation"
+        }
+      ],
+      "corrects": "",
+      "note": "",
+      "divergence": null,
+      "harness_note": "",
+      "untested": false
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "source": "rock-exposed",
+      "recurs_in": [],
+      "category": "UX",
+      "title": "Conflicting target is outside the headline result",
+      "steps": [
+        "C5",
+        "C11"
+      ],
+      "traits": [
+        "HTS",
+        "LIT"
+      ],
+      "component": "SPP/APR result summary",
+      "component_basis": "reproduced",
+      "expected": "Reader recognizes the target needs confirmation.",
+      "observed": "The trace explicitly skips the source discrepancy and the typed note reports 18.29% without qualification.",
+      "cost": "Uncertainty can be lost in feedback shared with others. This is an inference from the omitted caveat, not proof of real-user prevalence.",
+      "fix": "Put Target needs confirmation in overview and result badges; mark the detailed target under review.",
+      "fix_signal": "Both the overview and selected-result headline expose uncertainty before body helper text.",
+      "regression_risk": "Do not change source numbers or classify all measures as uncertain.",
+      "ablation": "Repeat with Helper-Text Skipper removed."
+    },
+    {
+      "id": "F2",
+      "source": "rock-exposed",
+      "recurs_in": [],
+      "category": "UX",
+      "title": "Review controls require long vertical travel",
+      "steps": [
+        "C7",
+        "C9",
+        "C10"
+      ],
+      "traits": [
+        "HTS"
+      ],
+      "component": "SPP/APR review actions",
+      "component_basis": "reproduced",
+      "expected": "Prepare a link and note close to the selected result.",
+      "observed": "Scrolled up two screens to copy, then down four and another two-and-a-half screens to reach the note field.",
+      "cost": "Extra scrolling and loss of result context; the task was recovered.",
+      "fix": "Add measure-local copy and review-note actions, plus the header shortcut.",
+      "fix_signal": "From the measure, copy the current URL and follow a direct link to a focused feedback section.",
+      "regression_risk": "Copied link must still name the selected measure and chart view.",
+      "ablation": "Repeat at desktop width."
+    },
+    {
+      "id": "F3",
+      "source": "reviewer-observed",
+      "recurs_in": [],
+      "category": "UX",
+      "title": "Primary feedback action saves locally rather than preparing a shareable file",
+      "steps": [
+        "C11"
+      ],
+      "traits": [
+        "VPF",
+        "HTS"
+      ],
+      "component": "Feedback actions",
+      "component_basis": "inferred",
+      "expected": "Sharing-oriented task prioritizes an export.",
+      "observed": "Tester would press the blue local-save button. It stopped before saving and knew the note was not yet shared.",
+      "cost": "Potential extra step or confusion; no false belief of delivery was observed.",
+      "fix": "Make Download review notes primary and preserve explicit local-save wording.",
+      "fix_signal": "Download is first and primary; text clearly says no automatic submission.",
+      "regression_risk": "Retain local save and storage recovery.",
+      "ablation": "Remove Visual-Path Follower to test whether action prominence changes the route."
+    }
+  ],
+  "errata": [
+    {
+      "date": "2026-11-09",
+      "about": "C2",
+      "correction": "Use the tester\u2019s following correction and screenshot. The original description invents a summary not present in the screenshot; no product finding is based on it."
+    }
+  ],
+  "limits": [
+    "Perception: mixed (Tab creation automatically returned accessibility text. Decisions use screenshots; tree only targets noticed controls.)",
+    "Fresh agent context; shared filesystem instruction-based isolation, not an enforced sandbox. Packet SHA-256 4e3917fdcb7f07bba6d6ad9c22d43d39504484952f537f56bef76b3c142ed42d.",
+    "A fresh browser context was requested; browser storage isolation was not independently verified. No prior note was visible before entry.",
+    "Some checkpoints omit the explicit expectation field. They are retained as supplied. No trace conversion problems were reported.",
+    "Production mutations none: no saves, downloads, submissions, or sends. Typed note remains unsaved in the temporary tester tab.",
+    "The walkthrough is synthetic evidence that generates hypotheses; it is not real human research and does not estimate failure rates.",
+    "Calibration: not calibrated."
+  ],
+  "end": {
+    "belief": "I found Hawaii preschool Measure 6B. It is 28.12%, did not meet the 18.29% target, and lower is better. The page says the link was copied. My note is typed, but I have not saved or shared it.",
+    "supporting_cue": "Measure 6B selected; Target not met; Link copied confirmation; visible typed review note and Save notes in this browser button.",
+    "stop_reason": "permission stop",
+    "pending_effects": "No save, download, submit, or send performed. Note remains typed in the field.",
+    "untested": [
+      "Would tap Save notes in this browser at approximately [130,520]. This is a commit point; stopped before it.",
+      "Would have clicked 0 more times; no unchanged save state was tested."
+    ],
+    "screenshot": "shots/C11-result.jpg",
+    "ended_at": "2026-11-09T16:43:02.478Z"
+  }
+}
+</script>
+
+<script>
+(function(){
+  const R = JSON.parse(document.getElementById('run-data').textContent);
+  const r = R.run || {};
+  const KEY = 'bag-of-rocks-verdicts:' + (r.id || 'run');
+  let verdicts = {};
+  try { verdicts = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { verdicts = {}; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(verdicts)); return true; } catch (e) { return false; } };
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const arr = v => Array.isArray(v) ? v : (v ? String(v).split(/,\s*/) : []);
+  const traitsOf = s => arr(s.traits ?? s.trait);
+  const catCls = c => c === 'breakage' ? 'c-breakage' : c === 'misleading feedback' ? 'c-misleading' : 'c-confusion';
+
+  let h = `<header><p class="label">Bag of Rocks filmstrip · ${esc(r.id)} · ${esc(r.date)} · skill ${esc(r.skill_version || '')}</p>`;
+  h += `<h1>${esc(r.goal)}</h1>`;
+  h += `<p class="meta">${esc(r.start)} · preset ${esc(r.preset)} [${arr(r.traits).map(esc).join(', ')}] · phrasing ${esc(r.phrasing || 'own-words')} · mutations ${esc(r.mutations)} · conditions ${esc(arr(r.conditions).join(', ') || 'none')} · perception ${esc(r.perception)} · mode ${esc(r.mode)}</p>`;
+  if (r.inherited_state) h += `<p class="meta">Inherited state: ${esc(r.inherited_state)}</p>`;
+  if (r.entered_text) h += `<p class="meta">Rock entered: <span class="entered">${esc(r.entered_text)}</span></p>`;
+  h += `</header>`;
+
+  const o = R.outcome || {};
+  h += `<section class="outcome">
+    <div class="card"><div class="label">Rock believed</div>${esc(o.believed)}</div>
+    <div class="card"><div class="label">Evidence supports</div><strong>${esc(o.supported)}</strong></div>
+    <div class="card"><div class="label">Gap</div>${esc(o.gap || 'None noted')}</div></section>`;
+
+  if ((R.summary||[]).length) h += `<h2>In 90 seconds</h2><ol class="summary card">` + R.summary.map(s =>
+    `<li>${esc(s.headline)} <a href="#step-${esc(s.step)}">See ${esc(s.step)}</a></li>`).join('') + `</ol>`;
+
+  if ((R.intended||[]).length) h += `<h2>Intended path (hidden from the rock)</h2><div class="rail">` + R.intended.map(i =>
+    `<div class="card"><strong>${esc(i.id)} · ${esc(i.screen)}</strong><br>${esc(i.cue)}<br><span class="meta">${esc(i.action)}</span></div>`).join('') + `</div>`;
+
+  const shot = (src, alt, overlays) => `<div class="shot">${src ? `<img src="${esc(src)}" alt="${esc(alt)}">` : `<div class="ph">${esc(alt)}</div>`}${overlays || ''}</div>`;
+
+  h += `<h2>Filmstrip</h2>`;
+  let n = 0;
+  (R.steps||[]).forEach(s => {
+    const kind = s.kind || 'checkpoint';
+    if (kind === 'checkpoint') n++;
+    const clicks = s.clicks || [];
+    const marks = clicks.map((c, j) =>
+      `<div class="click${c.approx ? ' approx' : ''}" style="left:${+c.x}%;top:${+c.y}%" aria-hidden="true">${n}${clicks.length>1?'.'+(j+1):''}${c.n>1?`<span class="rep">×${+c.n}</span>`:''}</div>`).join('');
+    const ign = (s.ignored||[]).map(g =>
+      `<div class="ignored" style="left:${+g.x}%;top:${+g.y}%;width:${+g.w}%;height:${+g.h}%" aria-hidden="true"><span>not read: ${esc(g.label)}</span></div>`).join('');
+    const before = shot(s.screenshot, `Screenshot ${s.id}${s.cue ? ': ' + s.cue : ''}`, ign + marks);
+    const visual = s.result_screenshot
+      ? `<div class="pair"><span class="tag">Before</span>${before}<span class="tag">After</span>${shot(s.result_screenshot, 'Result of ' + s.id, '')}</div>`
+      : before;
+    const d = s.divergence;
+    const dv = d ? `<p><span class="chip k-${esc(d.kind)}">${esc(d.kind)} divergence from ${esc(d.from)}</span> <span class="meta">${esc(d.note)}</span></p>` : '';
+    const clickText = clicks.map(c => `(${+c.x}%, ${+c.y}%)${c.n>1?' ×'+(+c.n):''}${c.approx?' approx':''}`).join(', ');
+    const ignText = (s.ignored||[]).map(g => esc(g.label)).join('; ');
+    const head = kind === 'wait' ? `Wait · ${esc(s.id)}` : kind === 'correction' ? `Tester correction to ${esc(s.corrects)} · ${esc(s.id)}` : kind === 'reviewer' ? `Reviewer-added · ${esc(s.id)}` : `Step ${n} · ${esc(s.id)}`;
+    h += `<article class="step card ${kind}" id="step-${esc(s.id)}">
+      ${visual}
+      <div>
+        <p class="label">${head}${traitsOf(s).length ? ' · ' + traitsOf(s).map(t => `<span class="chip">${esc(t)}</span>`).join(' ') : ''}</p>
+        ${dv}
+        ${s.expectation ? `<div class="bubble">${esc(s.expectation)}</div>` : ''}
+        <dl>
+          ${s.cue ? `<dt>Cue</dt><dd>${esc(s.cue)}</dd>` : ''}
+          ${s.action ? `<dt>Action</dt><dd>${esc(s.action)}${clickText ? ` <span class="meta">at ${clickText}</span>` : ''}</dd>` : ''}
+          ${s.entered_text ? `<dt>Entered</dt><dd><span class="entered">${esc(s.entered_text)}</span></dd>` : ''}
+          ${s.result ? `<dt>Result</dt><dd>${esc(s.result)}</dd>` : ''}
+          ${s.updated ? `<dt>Then</dt><dd>${esc(s.updated)}</dd>` : ''}
+          ${s.note ? `<dt>Note</dt><dd>${esc(s.note)}</dd>` : ''}
+          ${ignText ? `<dt>Not read</dt><dd>${ignText}</dd>` : ''}
+        </dl>
+        ${s.harness_note ? `<p class="harness">Harness: ${esc(s.harness_note)}</p>` : ''}
+        ${s.untested ? `<p class="untested">Untested commit (mutations: none): recorded as intent only.</p>` : ''}
+        <div class="verdicts" role="group" aria-label="Plausibility verdict for ${esc(s.id)}">
+          ${['plausible','too smart','too dumb','random'].map(v => `<button type="button" aria-pressed="${verdicts[s.id]===v}" data-step="${esc(s.id)}" data-v="${v}">${v}</button>`).join('')}
+        </div>
+      </div></article>`;
+  });
+
+  if ((R.findings||[]).length) h += `<h2>Findings</h2>` + R.findings.map(f => `<div class="finding card" id="finding-${esc(f.id)}">
+      <span class="chip ${catCls(f.category)}">${esc(f.category)}</span>
+      ${f.source ? `<span class="chip">${esc(f.source)}</span>` : ''}
+      ${arr(f.recurs_in).length ? `<span class="chip">also in ${arr(f.recurs_in).map(esc).join(', ')}</span>` : ''}
+      <h3>${esc(f.id)} · ${esc(f.title)}</h3>
+      <dl>
+        <dt>Steps</dt><dd>${arr(f.steps).map(x => `<a href="#step-${esc(x)}">${esc(x)}</a>`).join(', ')}</dd>
+        <dt>Traits</dt><dd>${arr(f.traits ?? f.trait).map(esc).join(', ')}</dd>
+        ${f.component ? `<dt>Component</dt><dd>${esc(f.component)} <span class="meta">(${esc(f.component_basis || 'inferred')})</span></dd>` : ''}
+        <dt>Expected</dt><dd>${esc(f.expected)}</dd>
+        <dt>Observed</dt><dd>${esc(f.observed)}</dd>
+        <dt>Cost</dt><dd>${esc(f.cost)}</dd>
+        <dt>Smallest fix</dt><dd>${esc(f.fix)}</dd>
+        <dt>Signal it worked</dt><dd>${esc(f.fix_signal)}</dd>
+        <dt>Watch for</dt><dd>${esc(f.regression_risk)}</dd>
+        ${f.ablation ? `<dt>Ablation</dt><dd>${esc(f.ablation)}</dd>` : ''}
+      </dl></div>`).join('');
+
+  if ((R.limits||[]).length) h += `<h2>Limits</h2><ul class="card">` + R.limits.map(l => `<li>${esc(l)}</li>`).join('') + `</ul>`;
+  if ((R.errata||[]).length) h += `<h2>Errata (append-only)</h2><ul class="card">` + R.errata.map(x => `<li><strong>${esc(x.date)} · ${esc(x.about)}:</strong> ${esc(x.correction)}</li>`).join('') + `</ul>`;
+
+  h += `<div class="toolbar">
+    <button class="btn" id="export">Download verdicts (JSON)</button>
+    <button class="btn" id="copy">Copy verdicts</button>
+    <button class="btn" id="clear">Clear verdicts</button>
+    <span class="meta" id="status" role="status"></span></div>`;
+
+  document.getElementById('app').innerHTML = h;
+  document.title = 'Bag of Rocks · ' + (r.goal || r.id || 'filmstrip');
+  const status = msg => { document.getElementById('status').textContent = msg; };
+  const count = () => Object.keys(verdicts).length;
+  status(save() ? (count() ? `${count()} verdicts restored from this browser.` : 'Verdicts save automatically in this browser.') : 'This browser can’t save verdicts; export before closing.');
+
+  document.querySelectorAll('.verdicts button').forEach(b => b.addEventListener('click', () => {
+    const step = b.dataset.step;
+    b.parentElement.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', 'false'));
+    if (verdicts[step] === b.dataset.v) delete verdicts[step];
+    else { verdicts[step] = b.dataset.v; b.setAttribute('aria-pressed', 'true'); }
+    status(save() ? `${count()} verdicts saved in this browser.` : 'Not saved; export before closing.');
+  }));
+
+  const payload = () => JSON.stringify({ run: r.id, skill_version: r.skill_version || '', exported: new Date().toISOString(),
+    verdicts: (R.steps||[]).filter(s => verdicts[s.id]).map(s => ({ step: s.id, kind: s.kind || 'checkpoint', traits: traitsOf(s), verdict: verdicts[s.id] })) }, null, 2);
+
+  document.getElementById('export').addEventListener('click', () => {
+    try {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([payload()], { type: 'application/json' }));
+      a.download = `verdicts-${r.id || 'run'}.json`;
+      document.body.appendChild(a); a.click(); a.remove();
+      status('Downloaded.');
+    } catch (e) { status('Download unavailable here; use Copy.'); }
+  });
+  document.getElementById('copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(payload()); status('Copied.'); } catch (e) { status('Clipboard unavailable.'); }
+  });
+  document.getElementById('clear').addEventListener('click', () => {
+    verdicts = {}; save();
+    document.querySelectorAll('.verdicts button').forEach(x => x.setAttribute('aria-pressed', 'false'));
+    status('Verdicts cleared.');
+  });
+})();
+</script>
+</body>
+</html>

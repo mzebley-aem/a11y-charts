@@ -1,0 +1,1584 @@
+{
+  "base": "http://127.0.0.1:5192",
+  "browser": "156.0.8078.80",
+  "errors": [],
+  "states": [
+    {
+      "indicator": "2",
+      "measure": "2",
+      "view": "trend",
+      "structure": {
+        "title": "Indicator 2: Drop Out · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Drop Out"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Drop out rate"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 2: actual vs. target"
+          },
+          {
+            "level": "H2",
+            "text": "Exit reasons"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=trend#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=trend#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=trend#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=trend#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=trend#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=trend#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "2",
+      "measure": "2",
+      "view": "comparison",
+      "structure": {
+        "title": "Indicator 2: Drop Out · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Drop Out"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Drop out rate"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 2: rate comparison"
+          },
+          {
+            "level": "H2",
+            "text": "Exit reasons"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=comparison#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=comparison#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=comparison#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=comparison#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=comparison#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2&measure=2&view=comparison#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "5",
+      "measure": "5A",
+      "view": "trend",
+      "structure": {
+        "title": "Indicator 5: Education Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Inside the regular class 80% or more of the day"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 5A: actual vs. target"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=trend#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=trend#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=trend#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=trend#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=trend#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=trend#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "5",
+      "measure": "5A",
+      "view": "comparison",
+      "structure": {
+        "title": "Indicator 5: Education Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Inside the regular class 80% or more of the day"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 5A: rate comparison"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=comparison#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=comparison#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=comparison#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=comparison#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=comparison#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=comparison#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "5",
+      "measure": "5B",
+      "view": "trend",
+      "structure": {
+        "title": "Indicator 5: Education Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Inside the regular class less than 40% of the day"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 5B: actual vs. target"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=trend#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=trend#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=trend#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=trend#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=trend#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=trend#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "5",
+      "measure": "5B",
+      "view": "comparison",
+      "structure": {
+        "title": "Indicator 5: Education Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Inside the regular class less than 40% of the day"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 5B: rate comparison"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=comparison#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=comparison#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=comparison#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=comparison#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=comparison#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=comparison#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "5",
+      "measure": "5C",
+      "view": "trend",
+      "structure": {
+        "title": "Indicator 5: Education Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Separate schools, residential facilities, or homebound/hospital placements"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 5C: actual vs. target"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=trend#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=trend#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=trend#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=trend#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=trend#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=trend#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "5",
+      "measure": "5C",
+      "view": "comparison",
+      "structure": {
+        "title": "Indicator 5: Education Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Separate schools, residential facilities, or homebound/hospital placements"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 5C: rate comparison"
+          },
+          {
+            "level": "H2",
+            "text": "Education Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=comparison#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=comparison#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=comparison#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=comparison#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=comparison#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5C&view=comparison#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "6",
+      "measure": "6A",
+      "view": "trend",
+      "structure": {
+        "title": "Indicator 6: Preschool Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Regular early childhood program, with most services received there"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 6A: actual vs. target"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=trend#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=trend#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=trend#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=trend#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=trend#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=trend#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "6",
+      "measure": "6A",
+      "view": "comparison",
+      "structure": {
+        "title": "Indicator 6: Preschool Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Regular early childhood program, with most services received there"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 6A: rate comparison"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=comparison#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=comparison#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=comparison#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=comparison#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=comparison#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6A&view=comparison#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "6",
+      "measure": "6B",
+      "view": "trend",
+      "structure": {
+        "title": "Indicator 6: Preschool Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Separate special education class, separate school, or residential facility"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 6B: actual vs. target"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=trend#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=trend#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=trend#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=trend#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=trend#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=trend#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "6",
+      "measure": "6B",
+      "view": "comparison",
+      "structure": {
+        "title": "Indicator 6: Preschool Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Separate special education class, separate school, or residential facility"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 6B: rate comparison"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=comparison#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=comparison#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=comparison#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=comparison#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=comparison#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6B&view=comparison#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "6",
+      "measure": "6C",
+      "view": "trend",
+      "structure": {
+        "title": "Indicator 6: Preschool Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Special education and related services in the home"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 6C: actual vs. target"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=trend#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=trend#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=trend#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=trend#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=trend#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=trend#"
+          }
+        ]
+      },
+      "violations": []
+    },
+    {
+      "indicator": "6",
+      "measure": "6C",
+      "view": "comparison",
+      "structure": {
+        "title": "Indicator 6: Preschool Environments · SPP/APR mockup",
+        "language": "en",
+        "h1": 1,
+        "main": 1,
+        "duplicateIds": [],
+        "missingReferences": [],
+        "headings": [
+          {
+            "level": "H1",
+            "text": "State Performance Plan /Annual Performance Report"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H2",
+            "text": "Results by measure"
+          },
+          {
+            "level": "H3",
+            "text": "Special education and related services in the home"
+          },
+          {
+            "level": "H4",
+            "text": "Measure 6C: rate comparison"
+          },
+          {
+            "level": "H2",
+            "text": "Preschool Environments"
+          },
+          {
+            "level": "H3",
+            "text": "Reported population by category"
+          },
+          {
+            "level": "H2",
+            "text": "\n                What would make this report clearer?\n              "
+          }
+        ],
+        "links": [
+          {
+            "text": "Skip to report",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=comparison#indicator-title"
+          },
+          {
+            "text": "ADAPT Report explorer",
+            "href": "http://127.0.0.1:5192/spp-apr/"
+          },
+          {
+            "text": "Chart component gallery ↗",
+            "href": "http://127.0.0.1:5192/index.html"
+          },
+          {
+            "text": "Add review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=comparison#feedback"
+          },
+          {
+            "text": "02Drop Out",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=2"
+          },
+          {
+            "text": "05Education Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=5"
+          },
+          {
+            "text": "06Preschool Environments",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6"
+          },
+          {
+            "text": "Source & data notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=comparison#source-notes"
+          },
+          {
+            "text": "Review notes",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=comparison#feedback"
+          },
+          {
+            "text": "Add review notes for this indicator",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=comparison#feedback"
+          },
+          {
+            "text": "Back to top ↑",
+            "href": "http://127.0.0.1:5192/spp-apr/?indicator=6&measure=6C&view=comparison#"
+          }
+        ]
+      },
+      "violations": []
+    }
+  ],
+  "widths": [
+    {
+      "width": 320,
+      "scroll": 320,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "scroll": 375,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "scroll": 390,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 480,
+      "scroll": 480,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 640,
+      "scroll": 640,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "scroll": 768,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "scroll": 1024,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "scroll": 1280,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "scroll": 1440,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "actual",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "target",
+          "width": 18,
+          "height": 18
+        }
+      ]
+    }
+  ],
+  "keyboard": [
+    {
+      "step": "first-tab",
+      "active": "<a class=\"skip-link\" href=\"#indicator-title\">Skip to report</a>"
+    },
+    {
+      "step": "skip-enter",
+      "active": "indicator-title"
+    }
+  ],
+  "functional": [
+    {
+      "name": "comparison-explanation",
+      "text": "Measure 6B: rate comparison\n\nBars use a percentage scale from 0% to 100%\n\nHide explanation\nView complete data\nPlain language summary\n\n28.12% in FFY 2023, compared with a target of 18.29%. Lower is better. Using the detailed target, this result would not meet the target. The source summary gives a different target; confirmation is needed. The change from FFY 2022 was 0.54 percentage points higher.\n\nFFY 2022 actual\n27.58%\nFFY 2023 target\n18.29%\nFFY 2023 actual\n28.12%\nComplete data for Measure 6B: rate comparison\nReporting period\tRate\nFFY 2022 actual\t27.58%\nFFY 2023 target\t18.29%\nFFY 2023 actual\t28.12%"
+    },
+    {
+      "name": "history",
+      "before": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5B&view=comparison&zoom=true&labels=false&pattern=none&actual=true&target=true",
+      "after": "http://127.0.0.1:5192/spp-apr/?indicator=5&measure=5A&view=comparison&zoom=true&labels=false&pattern=none&actual=true&target=true"
+    }
+  ],
+  "textSpacing": {
+    "width": 320,
+    "scroll": 320
+  }
+}

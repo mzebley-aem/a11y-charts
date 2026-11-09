@@ -1,0 +1,2521 @@
+{
+  "base": "https://a11y-charts-report-preview.vercel.app",
+  "browser": "156.0.8078.80",
+  "errors": [],
+  "states": [
+    {
+      "indicator": "2",
+      "measure": "2",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "2",
+      "measure": "2",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5A",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5A",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5B",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5B",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5C",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "5",
+      "measure": "5C",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6A",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".result-summary > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6A",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".result-summary > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6B",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".result-summary > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#measure-content > .data-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6B",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".result-summary > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#measure-content > .data-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6C",
+      "view": "trend",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "indicator": "6",
+      "measure": "6C",
+      "view": "comparison",
+      "violations": [
+        {
+          "id": "color-contrast-enhanced",
+          "impact": "serious",
+          "tags": [
+            "cat.color",
+            "wcag2aaa",
+            "wcag146",
+            "ACT"
+          ],
+          "nodes": [
+            {
+              "target": [
+                ".brand > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".report-intro > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".review-badge"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.64 (foreground color: #49535f, background color: #e8edf3, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "nav > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > strong"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".sidebar-note > p"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#indicator-number"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".section-topline > span"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(1) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > .unmet.outcome"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.58 (foreground color: #9c2117, background color: #fbe5e3, font size: 9.6pt (12.8px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(2) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".summary-card:nth-child(3) > small"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".measure-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".direction"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".view-description"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.2pt (13.6px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                ".population-panel > .panel-heading > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#a11y-bar-chart-1-details-help"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.74 (foreground color: #565c65, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#population-note"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.23 (foreground color: #565c65, background color: #f4f6fa, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > .eyebrow"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: bold). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "#feedback > div > p:nth-child(3)"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 10.8pt (14.4px), font weight: normal). Expected contrast ratio of 7:1"
+            },
+            {
+              "target": [
+                "footer"
+              ],
+              "summary": "Fix any of the following:\n  Element has insufficient color contrast of 6.34 (foreground color: #565c65, background color: #f7f8fa, font size: 9.6pt (12.8px), font weight: normal). Expected contrast ratio of 7:1"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "widths": [
+    {
+      "width": 320,
+      "scroll": 320,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "Back to top ↑",
+          "width": 288,
+          "height": 20.46875
+        }
+      ]
+    },
+    {
+      "width": 375,
+      "scroll": 375,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "Back to top ↑",
+          "width": 343,
+          "height": 20.46875
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "scroll": 390,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "Back to top ↑",
+          "width": 358,
+          "height": 20.46875
+        }
+      ]
+    },
+    {
+      "width": 480,
+      "scroll": 480,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "Back to top ↑",
+          "width": 448,
+          "height": 20.46875
+        }
+      ]
+    },
+    {
+      "width": 640,
+      "scroll": 640,
+      "smallTargets": [
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "Back to top ↑",
+          "width": 608,
+          "height": 20.46875
+        }
+      ]
+    },
+    {
+      "width": 768,
+      "scroll": 768,
+      "smallTargets": [
+        {
+          "text": "Source & data notes",
+          "width": 158,
+          "height": 21.75
+        },
+        {
+          "text": "Review notes",
+          "width": 158,
+          "height": 21.75
+        },
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "Back to top ↑",
+          "width": 80.546875,
+          "height": 20.46875
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "scroll": 1024,
+      "smallTargets": [
+        {
+          "text": "Source & data notes",
+          "width": 203,
+          "height": 21.75
+        },
+        {
+          "text": "Review notes",
+          "width": 203,
+          "height": 21.75
+        },
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "Back to top ↑",
+          "width": 80.546875,
+          "height": 20.46875
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "scroll": 1280,
+      "smallTargets": [
+        {
+          "text": "Source & data notes",
+          "width": 203,
+          "height": 21.75
+        },
+        {
+          "text": "Review notes",
+          "width": 203,
+          "height": 21.75
+        },
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "Back to top ↑",
+          "width": 80.546875,
+          "height": 20.46875
+        }
+      ]
+    },
+    {
+      "width": 1440,
+      "scroll": 1440,
+      "smallTargets": [
+        {
+          "text": "Source & data notes",
+          "width": 203,
+          "height": 21.75
+        },
+        {
+          "text": "Review notes",
+          "width": 203,
+          "height": 21.75
+        },
+        {
+          "text": "zoom",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "labels",
+          "width": 18,
+          "height": 18
+        },
+        {
+          "text": "Back to top ↑",
+          "width": 80.546875,
+          "height": 20.46875
+        }
+      ]
+    }
+  ],
+  "keyboard": [
+    {
+      "step": "first-tab",
+      "active": "<a class=\"skip-link\" href=\"#report\">Skip to report</a>"
+    },
+    {
+      "step": "skip-enter",
+      "active": ""
+    }
+  ],
+  "functional": [
+    {
+      "name": "comparison-explanation",
+      "text": "Measure 6B: rate comparison\n\nHover or focus a bar to preview details. Use Arrow Up or Arrow Down to move between categories; Home and End go to the first and last. Click, tap, Enter, or Space to keep details open. Press Escape to dismiss; Tab moves through the chart normally.\n\nBars use a shared count scale up to 100\n\nHide explanation\nView complete data\nPlain language summary\nThe total is Unavailable.\nFFY 2022 actual: 27.58%.\nFFY 2023 target: 18.29%.\nFFY 2023 actual: 28.12%.\nFFY 2022 actual\nDetails\nCount: 27.58%\nPercentage of total: Unavailable Details for FFY 2022 actual\nFFY 2023 target\nDetails\nCount: 18.29%\nPercentage of total: Unavailable Details for FFY 2023 target\nFFY 2023 actual\nDetails\nCount: 28.12%\nPercentage of total: Unavailable Details for FFY 2023 actual\nComplete data for Measure 6B: rate comparison\nCategory\tCount\tPercentage of total\nFFY 2022 actual\t27.58%\tUnavailable\nFFY 2023 target\t18.29%\tUnavailable\nFFY 2023 actual\t28.12%\tUnavailable\nTotal\tUnavailable\t"
+    },
+    {
+      "name": "history",
+      "before": "https://a11y-charts-report-preview.vercel.app/spp-apr/?indicator=5&measure=5B&view=comparison&zoom=true&labels=false&pattern=none",
+      "after": "https://a11y-charts-report-preview.vercel.app/spp-apr/?indicator=6&measure=6C&view=comparison"
+    }
+  ],
+  "textSpacing": {
+    "width": 320,
+    "scroll": 342
+  }
+}

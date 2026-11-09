@@ -1,0 +1,18 @@
+{
+  "/": {
+    "status": 200,
+    "sha256": "e13785f69eac6b46fe8d66d2e1e2e8fa066dafd1ea00ea6a4d477e35ac45f2f0"
+  },
+  "/demo/line-chart.html": {
+    "status": 200,
+    "sha256": "4034e56f6b24be08e379e6af4ecdbb21826d75912dbb36daaa98d28b15ab749b"
+  },
+  "/demo/bar-chart.html": {
+    "status": 200,
+    "sha256": "d5019fbbb0d2f97d33653ff00c7a233938614cbd4b48ee64e6b174e460ac4f72"
+  },
+  "/demo/report-demo.html": {
+    "status": 200,
+    "sha256": "0843c50d94c869de1699d5386d017c33f7adebc805e53460787b1def78664610"
+  }
+}

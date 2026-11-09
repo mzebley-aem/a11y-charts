@@ -1,0 +1,74 @@
+{
+  "states": [
+    {
+      "name": "all-report-disclosures",
+      "violations": []
+    },
+    {
+      "name": "#chart-stage-dialog",
+      "violations": []
+    },
+    {
+      "name": "#population-chart-dialog",
+      "violations": []
+    },
+    {
+      "name": "population-details-definitions-explanation",
+      "violations": []
+    }
+  ],
+  "keyboard": [
+    {
+      "root": "#chart-stage",
+      "first": "Close data",
+      "afterReverse": {
+        "text": "Download CSV",
+        "inside": true
+      }
+    },
+    {
+      "root": "#chart-stage",
+      "restored": true
+    },
+    {
+      "root": "#population-chart",
+      "first": "Close",
+      "afterReverse": {
+        "text": "Download CSV",
+        "inside": true
+      }
+    },
+    {
+      "root": "#population-chart",
+      "restored": true
+    }
+  ],
+  "browsers": [
+    {
+      "engine": "webkit",
+      "version": "27.2",
+      "skip": true,
+      "comparison": true
+    },
+    {
+      "engine": "firefox",
+      "version": "157.0",
+      "skip": true,
+      "comparison": true
+    }
+  ],
+  "fallbacks": [
+    {
+      "clipboard": true,
+      "focused": true
+    },
+    {
+      "storage": "Browser storage is unavailable. Download your notes to keep a copy."
+    }
+  ],
+  "links": [],
+  "fontResize": {
+    "width": 640,
+    "scroll": 640
+  }
+}

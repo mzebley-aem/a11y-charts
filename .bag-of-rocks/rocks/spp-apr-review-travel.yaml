@@ -1,0 +1,23 @@
+id: spp-apr-review-travel
+title: Copy and review controls are far from the selected measure
+status: fixed-unverified
+created: 2026-11-09
+source_run: spp-apr-2026-11-09
+goal: Prepare a link and review note for preschool Measure 6B.
+start: /spp-apr/
+preset: full-bag
+traits: [HTS]
+conditions: [viewport 390x844]
+mutations: none
+intended_path: ../runs/spp-apr-2026-11-09/coordinator/intended-path.json
+finding:
+  category: recoverable confusion
+  evidence: [C7, C9, C10]
+  component: Report review actions
+pass_condition: Measure-local actions copy its URL and reach a focused feedback form directly.
+watch_for: Copied link losing the selected measure or implying it includes notes.
+triggers:
+  paths: [/spp-apr/*]
+history:
+  - run: spp-apr-2026-11-09
+    result: reproduced; deterministic fix implemented, fresh blind retest outstanding

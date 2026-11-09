@@ -1,0 +1,329 @@
+{
+  "focus": [
+    {
+      "tag": "A",
+      "id": "",
+      "name": "Skip to report",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "ADAPT Report explorer",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "Chart component gallery ↗",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "share",
+      "name": "Copy link to this view",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "print",
+      "name": "Print report view",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "Add review notes",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "02Drop Out",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "05Education Environments",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "06Preschool Environments",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "Source & data notes",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "Review notes",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "SUMMARY",
+      "id": "",
+      "name": "How is it measured?",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "name": "Measure 2",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "name": "Trend over time",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "name": "2023 comparison",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "name": "Restore full Y-axis",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "name": "Data",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "name": "Explain",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "INPUT",
+      "id": "",
+      "name": "Chart period navigation",
+      "visible": true,
+      "outline": "none",
+      "outlineWidth": "0px"
+    },
+    {
+      "tag": "SUMMARY",
+      "id": "",
+      "name": "Chart display settings",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "SUMMARY",
+      "id": "",
+      "name": "How to read this measure",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "name": "Explain",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "name": "Show definitions",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "name": "View complete data",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "a11y-bar-chart-1-details-trigger-0",
+      "name": "Percentage of total: 89.95% Count: 3,715Definition for Regular high sc",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "a11y-bar-chart-1-details-trigger-1",
+      "name": "Percentage of total: 0.51% Count: 21Definition for State-defined alter",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "a11y-bar-chart-1-details-trigger-2",
+      "name": "Percentage of total: 1.48% Count: 61Definition for Certificate: Certif",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "a11y-bar-chart-1-details-trigger-3",
+      "name": "Percentage of total: 0.34% Count: 14Definition for Reached maximum age",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "a11y-bar-chart-1-details-trigger-4",
+      "name": "Percentage of total: 7.72% Count: 319Definition for Dropped out: Dropp",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "SUMMARY",
+      "id": "",
+      "name": "Report terms",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "TEXTAREA",
+      "id": "review-notes",
+      "name": "",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "",
+      "name": "Save notes in this browser",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "download-notes",
+      "name": "Download review notes",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "Back to top ↑",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BODY",
+      "id": "",
+      "name": "Skip to report\n    \n      Interactive mockupFor review · Based on supp",
+      "visible": true,
+      "outline": "none",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "Skip to report",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "ADAPT Report explorer",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "A",
+      "id": "",
+      "name": "Chart component gallery ↗",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "share",
+      "name": "Copy link to this view",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    },
+    {
+      "tag": "BUTTON",
+      "id": "print",
+      "name": "Print report view",
+      "visible": true,
+      "outline": "solid",
+      "outlineWidth": "3px"
+    }
+  ],
+  "chartPeriods": {
+    "home": "2018, 1 of 6. Target met. Actual 8.90%. Target 9.00%. 0.10 percentage points below target.",
+    "right": "2019, 2 of 6. Target met. Actual 8.40%. Target 8.80%. 0.40 percentage points below target.",
+    "end": "2023, 6 of 6. Target met. Actual 7.72%. Target 8.00%. 0.28 percentage points below target."
+  }
+}

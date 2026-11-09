@@ -1,0 +1,26 @@
+{
+  "run_id": "spp-apr-2026-11-09",
+  "skill_dir": "/Users/mzebley/.codex/skills/bag-of-rocks",
+  "goal": "Find Hawaii\u2019s preschool Measure 6B, understand how it did, and prepare a link and a review note to share with a colleague.",
+  "start_url": "https://a11y-charts-report-preview.vercel.app/spp-apr/",
+  "account": "Public visitor; no sign-in",
+  "preset": "full-bag",
+  "traits_add": [],
+  "traits_remove": [],
+  "fc_intensity": 3,
+  "phrasing": "own-words",
+  "mutations": "none",
+  "allowed_effects": "Read and explore the public report. Preparing a link means locating the view and copy action; do not send anything.",
+  "prohibited_effects": [
+    "Do not submit, save, download, or send feedback. Stop before any commit point.",
+    "Do not change browser permissions, sharing permissions, or production content."
+  ],
+  "user_facts": [],
+  "device": "Phone viewport 390 x 844 CSS pixels; set it before starting.",
+  "budget": {
+    "actions": 18,
+    "minutes": 12
+  },
+  "output_dir": "/Users/mzebley/Documents/GitHub/a11y-charts/.bag-of-rocks/runs/spp-apr-2026-11-09/tester",
+  "inherited_state": "Fresh browser context; no saved notes. Existing root context is intentionally not inherited."
+}

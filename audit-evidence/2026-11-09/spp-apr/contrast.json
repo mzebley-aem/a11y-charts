@@ -1,0 +1,62 @@
+[
+  {
+    "pair": "Original muted text on page",
+    "foreground": "#565c65",
+    "background": "#f7f8fa",
+    "ratio": 6.35
+  },
+  {
+    "pair": "Muted text on page",
+    "foreground": "#454c57",
+    "background": "#f7f8fa",
+    "ratio": 8.15
+  },
+  {
+    "pair": "Muted text on chart",
+    "foreground": "#454c57",
+    "background": "#ffffff",
+    "ratio": 8.66
+  },
+  {
+    "pair": "Review badge",
+    "foreground": "#38424e",
+    "background": "#e8edf3",
+    "ratio": 8.67
+  },
+  {
+    "pair": "Target not met badge",
+    "foreground": "#881d13",
+    "background": "#fbe5e3",
+    "ratio": 7.8
+  },
+  {
+    "pair": "Focus outline on white",
+    "foreground": "#a42165",
+    "background": "#ffffff",
+    "ratio": 7.04
+  },
+  {
+    "pair": "Focus outline on page",
+    "foreground": "#a42165",
+    "background": "#f7f8fa",
+    "ratio": 6.62
+  },
+  {
+    "pair": "Actual data line",
+    "foreground": "#1f4093",
+    "background": "#ffffff",
+    "ratio": 9.49
+  },
+  {
+    "pair": "Target data line",
+    "foreground": "#667b1f",
+    "background": "#ffffff",
+    "ratio": 4.75
+  },
+  {
+    "pair": "Button border",
+    "foreground": "#8b95a5",
+    "background": "#ffffff",
+    "ratio": 3.03
+  }
+]
