@@ -125,12 +125,15 @@ function renderMeasure() {
     <details class="reading-guide"><summary>How to read this measure</summary><p>${direction(measure)}. A result ${measure.direction === 'above' ? 'at or above' : 'at or below'} the target meets the target. Percentages describe ${indicator.population.replace(/^[A-Z]/, (letter) => letter.toLowerCase())}. ${count(measure.count)} of ${count(indicator.total)} are included in this measure.</p><p>A percentage point is the difference between two percentages. A baseline is the reference year used to describe longer-term change.</p></details>`;
   $('#feedback-context').textContent =
     `Notes apply to Indicator ${indicator.id}: ${indicator.title}. Current measure: ${measure.id}.`;
+  const targetNote = measure.id === '6B' ? 'The 18.29% detailed target is under review: the supplied PDF summary gives 28.12%. Any target outcome using 18.29% is conditional and needs confirmation.' : '';
   const stage = $('#chart-stage');
   if (view === 'trend') {
     const chart = document.createElement(
       'a11y-line-chart',
     ) as A11yLineChartElement;
     chart.chartTitle = `Measure ${measure.id}: actual vs. target`;
+    chart.dataNote = targetNote;
+    if (targetNote) chart.messages = { outcomeNotMet: 'Target not met using the detailed target (under review)' };
     chart.config = {
       headingLevel: 4,
       valuePreset: 'percent',
@@ -193,6 +196,7 @@ function renderMeasure() {
       'a11y-bar-chart',
     ) as A11yBarChartElement;
     chart.chartTitle = `Measure ${measure.id}: rate comparison`;
+    chart.dataNote = targetNote;
     chart.config = {
       headingLevel: 4,
       scaleMode: 'largest',

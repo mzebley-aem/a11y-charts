@@ -224,6 +224,10 @@ test('source uncertainty is part of the 6B headline and overview', async ({
   await expect(page.locator('.feedback-actions button').first()).toHaveText(
     'Download review notes',
   );
+  await page.locator('#chart-stage').getByRole('button', { name: 'Data', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText('Any target outcome using 18.29% is conditional');
+  await expect(page.getByRole('dialog')).toContainText('Target not met using the detailed target (under review)');
+  await page.keyboard.press('Escape');
 });
 
 test('reviewers can copy the current measure and reach notes without returning to the header', async ({
