@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Interactive SPP/APR report mockup for Hawaii Part B, FFY 2023. For design review."
+    />
+    <link rel="icon" href="data:," />
+    <title>SPP/APR · Hawaii Part B · Report mockup</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#report">Skip to report</a>
+    <div class="prototype-banner">
+      <strong>Interactive mockup</strong
+      ><span
+        >For review · Based on supplied report examples, not an official
+        publication</span
+      >
+    </div>
+    <header class="site-header">
+      <a class="brand" href="./">ADAPT <span>Report explorer</span></a
+      ><a href="../index.html">Chart component gallery ↗</a>
+    </header>
+    <main>
+      <div class="report-intro">
+        <p class="eyebrow">Hawaii · IDEA Part B · FFY 2023</p>
+        <h1>State Performance Plan /<br />Annual Performance Report</h1>
+        <p>
+          Explore outcomes for children and youth with disabilities. Compare
+          results with state targets and see how performance has changed.
+        </p>
+        <div class="report-actions">
+          <span class="review-badge">Design review · Version 1</span
+          ><button id="share" type="button">Copy link to this view</button
+          ><button id="print" type="button">Print report view</button>
+        </div>
+        <p id="share-status" role="status"></p>
+        <label id="share-fallback" hidden
+          >Copy this view’s link<input type="text" readonly
+        /></label>
+      </div>
+      <div class="report-layout">
+        <aside class="report-sidebar">
+          <nav aria-label="Report sections">
+            <p class="eyebrow">Report sections</p>
+            <div id="indicator-nav"></div>
+          </nav>
+          <div class="sidebar-note">
+            <strong>About this mockup</strong>
+            <p>
+              Try the report sections, measure selectors, chart views, and
+              display settings. Use the review notes to capture feedback.
+            </p>
+            <a href="#source-notes">Source & data notes</a
+            ><a href="#feedback">Review notes</a>
+          </div>
+        </aside>
+        <div id="report" class="report-content" tabindex="-1">
+          <section aria-labelledby="indicator-title">
+            <div class="section-topline">
+              <p class="eyebrow" id="indicator-number"></p>
+              <span>Federal fiscal year 2023</span>
+            </div>
+            <h2 id="indicator-title"></h2>
+            <p id="indicator-description" class="section-description"></p>
+            <details class="measurement">
+              <summary>How is it measured?</summary>
+              <p id="measurement-text"></p>
+            </details>
+            <div id="overview" class="overview"></div>
+          </section>
+          <section class="measure-panel" aria-labelledby="measure-heading">
+            <div class="panel-heading">
+              <p class="eyebrow">Explore performance</p>
+              <h2 id="measure-heading">Results by measure</h2>
+            </div>
+            <div
+              id="measure-nav"
+              class="measure-nav"
+              role="group"
+              aria-label="Choose a measure"
+            ></div>
+            <div id="measure-content"></div>
+          </section>
+          <section
+            class="population-panel"
+            aria-labelledby="population-heading"
+          >
+            <div class="panel-heading">
+              <p class="eyebrow">Behind the percentages</p>
+              <h2 id="population-heading"></h2>
+              <p id="population-description"></p>
+            </div>
+            <a11y-bar-chart
+              id="population-chart"
+              class="theme-adapt"
+            ></a11y-bar-chart>
+            <p id="population-note" class="data-note"></p>
+          </section>
+          <details id="source-notes" class="source-notes">
+            <summary>Source & data notes</summary>
+            <p>
+              Reference examples: Ind2.pdf, Ind5.pdf, and Ind6.pdf, supplied for
+              this prototype. Values are transcribed from those examples and
+              have not been independently validated.
+            </p>
+            <ul id="source-list"></ul>
+            <p>
+              Only explicitly printed historical values are included. Planned
+              targets for 2024–2025 are mentioned in the PDFs, but their exact
+              values are not visible; they are omitted here. Missing data is
+              never treated as zero.
+            </p>
+          </details>
+          <section
+            id="feedback"
+            class="feedback"
+            aria-labelledby="feedback-heading"
+          >
+            <div>
+              <p class="eyebrow">Help shape the next version</p>
+              <h2 id="feedback-heading">
+                What would make this report clearer?
+              </h2>
+              <p>
+                Notes stay in this browser when storage is available. Download
+                them to share with the team; nothing is submitted automatically.
+              </p>
+            </div>
+            <form id="feedback-form">
+              <label for="review-notes">Review notes for this indicator</label
+              ><textarea
+                id="review-notes"
+                rows="4"
+                placeholder="What worked? What was confusing? What should change?"
+              ></textarea>
+              <div class="feedback-actions">
+                <button type="submit">Save notes in this browser</button
+                ><button type="button" id="download-notes">
+                  Download review notes
+                </button>
+              </div>
+              <p role="status" id="feedback-status"></p>
+            </form>
+          </section>
+        </div>
+      </div>
+      <footer>
+        SPP/APR report prototype · Hawaii Part B · FFY 2023<a href="#"
+          >Back to top ↑</a
+        >
+      </footer>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

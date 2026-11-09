@@ -300,3 +300,33 @@ another installed engine; use `PLAYWRIGHT_CHROMIUM_CHANNEL=chrome` for local Chr
 For the full raw evidence sweep, serve the repo with the line package's
 `vite.audit.config.mjs`, then run `npm run a11y:audit --prefix packages/line-chart`.
 A clean automated scan does not certify spoken screen-reader behavior.
+
+## SPP/APR interactive report mockup
+
+The separate `/spp-apr/` page uses the actual line and bar components to explore
+Hawaii Part B FFY 2023 Indicators 2, 5, and 6. The gallery at `/` and existing
+demo/report URLs remain unchanged.
+
+```bash
+npm run gallery:dev
+# Open http://127.0.0.1:5191/spp-apr/
+npm run gallery:typecheck
+npm run browser:spp-apr
+npm run site:build
+```
+
+`site:build` includes `/spp-apr/index.html` in the existing deployment output.
+Copy-link preserves the selected indicator, measure, chart view, and display
+settings. Links become externally shareable when this build is deployed to the
+existing host. Review notes are stored locally on explicit save and can be
+downloaded as a text file; no feedback service is connected.
+
+Report content and transcribed values live in
+[`demo-gallery/spp-apr/data.ts`](./demo-gallery/spp-apr/data.ts), with their source
+page references and unresolved data issues. The supplied PDFs are reference
+examples, not independently validated official data. Missing history and baseline
+placeholders remain unavailable. Measure 6B uses the detailed comparison's
+18.29% target and explicitly flags the conflicting summary. Incomplete population
+breakdowns retain the full supplied denominator. No future target values are
+invented. Update this data file and the visible source notes together when
+feedback resolves these issues.

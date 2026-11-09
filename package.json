@@ -20,6 +20,7 @@
     "site:build": "npm run gallery:build && npm run demo:build --prefix packages/line-chart && npm run demo:build --prefix packages/bar-chart && npm run report:build --prefix packages/line-chart && node scripts/assemble-demo-site.mjs",
     "gallery:typecheck": "packages/line-chart/node_modules/.bin/tsc -p demo-gallery/tsconfig.json",
     "browser:grouped": "npm run browser:grouped --prefix packages/line-chart",
+    "browser:spp-apr": "npm exec --prefix packages/line-chart -- playwright test --config packages/line-chart/playwright.spp-apr.config.mjs",
     "browser:themes": "npm run browser:themes --prefix packages/line-chart"
   },
   "private": true,
