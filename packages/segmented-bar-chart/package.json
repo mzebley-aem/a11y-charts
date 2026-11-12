@@ -1,0 +1,45 @@
+{
+  "name": "@a11y-charts/segmented-bar-chart",
+  "version": "0.0.0",
+  "description": "Framework-free, accessible segmented bar chart custom element",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0 <27"
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/types/segmented-bar-chart/src/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/types/segmented-bar-chart/src/core.d.ts",
+      "import": "./dist/core.js"
+    },
+    "./define": {
+      "types": "./dist/types/segmented-bar-chart/src/define.d.ts",
+      "import": "./dist/define.js"
+    },
+    "./chart.js": "./dist/chart.js",
+    "./styles.css": "./dist/styles.css"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs && npm run smoke:packed",
+    "smoke:packed": "node scripts/packed-smoke.mjs",
+    "smoke:core": "npm run smoke:packed",
+    "clean": "node scripts/clean.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "es-module-lexer": "^2.3.2",
+    "happy-dom": "^20.11.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.1",
+    "vitest": "^4.1.11"
+  }
+}

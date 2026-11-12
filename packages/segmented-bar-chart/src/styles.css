@@ -1,0 +1,156 @@
+/* Light-DOM styles are scoped to the component; shared tokens remain inherited. */
+a11y-segmented-bar-chart,
+a11y-segmented-bar-chart .a11y-segmented-bar-chart-root,
+a11y-segmented-bar-chart .a11y-segmented-bar-chart-dialog-layer {
+  display: block;
+  min-width: 0;
+  color: var(--a11y-segmented-bar-chart-text, var(--a11y-charts-segmented-text, var(--a11y-charts-text, #1b1b1b)));
+  font-family: var(--a11y-segmented-bar-chart-font, var(--a11y-charts-segmented-font, var(--a11y-charts-font-family, system-ui, sans-serif)));
+  font-size: var(--a11y-segmented-bar-chart-font-size, var(--a11y-charts-font-size, 1rem));
+  line-height: var(--a11y-segmented-bar-chart-line-height, var(--a11y-charts-line-height, 1.5));
+}
+a11y-segmented-bar-chart .a11y-segmented-bar-chart-root,
+a11y-segmented-bar-chart .a11y-segmented-bar-chart-dialog-layer {
+  --segmented-ink: var(--a11y-segmented-bar-chart-color, var(--a11y-charts-segmented-color, #1d467e));
+  --segmented-muted: var(--a11y-segmented-bar-chart-muted, var(--a11y-charts-muted, #565c65));
+  --segmented-surface: var(--a11y-segmented-bar-chart-surface, var(--a11y-charts-surface, #fff));
+  --segmented-border: var(--a11y-segmented-bar-chart-border, var(--a11y-charts-border, #c6cace));
+  --segmented-focus: var(--a11y-segmented-bar-chart-focus, var(--a11y-charts-focus, #005ea8));
+  --segmented-space: var(--a11y-segmented-bar-chart-space, 1rem);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+a11y-segmented-bar-chart .chart { position: relative; min-width: 0; }
+a11y-segmented-bar-chart .title {
+  margin: 0 0 .5rem;
+  font-size: var(--a11y-segmented-bar-chart-title-font-size, var(--a11y-charts-heading-font-size, 1.5rem));
+  line-height: 1.3;
+  font-weight: 700;
+}
+a11y-segmented-bar-chart p { margin: .5rem 0; }
+a11y-segmented-bar-chart .subtitle { color: var(--segmented-muted); }
+a11y-segmented-bar-chart .toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  margin: var(--segmented-space) 0 calc(var(--segmented-space) * 1.5);
+  padding-bottom: var(--segmented-space);
+  border-bottom: 1px solid var(--segmented-border);
+}
+a11y-segmented-bar-chart .visual { display: grid; grid-template-columns: minmax(8rem, 1fr) minmax(0, 4fr); gap: calc(var(--segmented-space) * 1.5); align-items: center; }
+a11y-segmented-bar-chart .visual:not(:has(.total)) { grid-template-columns: minmax(0, 1fr); }
+a11y-segmented-bar-chart .breakdown { min-width: 0; }
+a11y-segmented-bar-chart .total { margin: 0; }
+a11y-segmented-bar-chart .total strong {
+  display: block;
+  color: var(--segmented-ink);
+  font-size: var(--a11y-segmented-bar-chart-metric-size, var(--a11y-charts-segmented-metric-size, 3.5rem));
+  font-weight: 750;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+a11y-segmented-bar-chart .total span { display: block; margin-top: .5rem; color: var(--segmented-muted); }
+a11y-segmented-bar-chart .bar {
+  display: flex;
+  width: 100%;
+  height: var(--a11y-segmented-bar-chart-bar-height, var(--a11y-charts-segmented-bar-height, 1rem));
+  margin: .75rem 0;
+  border-radius: var(--a11y-segmented-bar-chart-border-radius, .375rem);
+  background: var(--a11y-segmented-bar-chart-track, var(--a11y-charts-segmented-track, #c6cace));
+  overflow: hidden;
+}
+a11y-segmented-bar-chart .segment { flex: 0 0 auto; box-sizing: border-box; }
+a11y-segmented-bar-chart .segment + .segment { border-inline-start: 2px solid var(--segmented-surface); }
+a11y-segmented-bar-chart .segment,
+a11y-segmented-bar-chart .swatch { background-color: var(--a11y-segmented-bar-chart-segment-color, var(--segmented-ink)); }
+a11y-segmented-bar-chart [data-index="1"] { background-color: var(--a11y-segmented-bar-chart-segment-2, #007d79); }
+a11y-segmented-bar-chart [data-index="2"] { background-color: var(--a11y-segmented-bar-chart-segment-3, #a26700); }
+a11y-segmented-bar-chart [data-index="3"] { background-color: var(--a11y-segmented-bar-chart-segment-4, #74529e); }
+a11y-segmented-bar-chart [data-index="4"] { background-color: var(--a11y-segmented-bar-chart-segment-5, #b50909); }
+a11y-segmented-bar-chart [data-index="5"] { background-color: var(--a11y-segmented-bar-chart-segment-6, #5c6f14); }
+a11y-segmented-bar-chart [data-pattern="diagonal"] { background-image: repeating-linear-gradient(135deg, transparent 0 5px, var(--pattern-color, #fff) 5px 7px); }
+a11y-segmented-bar-chart [data-pattern="dots"] { background-image: radial-gradient(var(--pattern-color, #fff) 1px, transparent 2px); background-size: 7px 7px; }
+a11y-segmented-bar-chart [data-pattern="horizontal"] { background-image: repeating-linear-gradient(0deg, transparent 0 5px, var(--pattern-color, #fff) 5px 7px); }
+a11y-segmented-bar-chart .legend { position: relative; list-style: none; padding: 0; margin: 1rem 0 0; display: flex; flex-wrap: wrap; gap: .5rem 1rem; }
+a11y-segmented-bar-chart .legend-item { position: static; display: flex; align-items: baseline; gap: .5rem; min-width: 0; max-width: 100%; }
+a11y-segmented-bar-chart .swatch { width: .875rem; height: .875rem; flex: none; align-self: baseline; border-radius: .125rem; }
+a11y-segmented-bar-chart .legend-item > span:not(.swatch) { min-width: 0; }
+a11y-segmented-bar-chart button,
+a11y-segmented-bar-chart a { font: inherit; color: var(--segmented-ink); cursor: pointer; }
+a11y-segmented-bar-chart button {
+  min-width: 24px;
+  min-height: 44px;
+  padding: var(--a11y-segmented-bar-chart-button-padding, .5rem .75rem);
+  border: 1px solid var(--segmented-border);
+  border-radius: var(--a11y-segmented-bar-chart-button-radius, .25rem);
+  background: var(--segmented-surface);
+  text-align: start;
+}
+a11y-segmented-bar-chart .legend-item > button { min-width: 0; border-color: transparent; padding: .25rem; margin: -.25rem 0; text-decoration: underline; text-underline-offset: .2em; }
+a11y-segmented-bar-chart button:hover,
+a11y-segmented-bar-chart a:hover { text-decoration: underline; }
+a11y-segmented-bar-chart button:active { transform: translateY(1px); }
+a11y-segmented-bar-chart button:focus-visible,
+a11y-segmented-bar-chart a:focus-visible,
+a11y-segmented-bar-chart summary:focus-visible { outline: 3px solid var(--segmented-focus); outline-offset: 3px; }
+a11y-segmented-bar-chart .card-link::after { content: ''; position: absolute; z-index: 2; inset: 0; border-radius: var(--a11y-segmented-bar-chart-border-radius, .375rem); }
+a11y-segmented-bar-chart .card-link:focus-visible::after { outline: 3px solid var(--segmented-focus); outline-offset: 3px; }
+a11y-segmented-bar-chart .card {
+  position: absolute; z-index: 10; top: 100%; inset-inline-start: 0;
+  width: max-content; min-width: min(14rem, 100%); max-width: min(24rem, 100%);
+  padding: var(--segmented-space); background: var(--segmented-surface); border: 1px solid var(--segmented-border);
+  border-radius: .25rem; box-shadow: 0 3px 8px #0003; box-sizing: border-box;
+}
+a11y-segmented-bar-chart .card.above { top: auto; bottom: 100%; }
+a11y-segmented-bar-chart .card.in-flow { position: static; }
+a11y-segmented-bar-chart [hidden] { display: none !important; }
+a11y-segmented-bar-chart .status { font-size: .875rem; color: var(--segmented-muted); }
+a11y-segmented-bar-chart table { border-collapse: collapse; width: 100%; margin: 1rem 0; }
+a11y-segmented-bar-chart caption { text-align: start; font-weight: 700; margin-bottom: .75rem; }
+a11y-segmented-bar-chart th,
+a11y-segmented-bar-chart td { border: 1px solid var(--segmented-border); padding: .5rem; text-align: start; overflow-wrap: anywhere; }
+a11y-segmented-bar-chart .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; border: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; }
+a11y-segmented-bar-chart dialog { width: min(50rem, calc(100vw - 2rem)); max-width: calc(100vw - 2rem); max-height: calc(100dvh - 2rem); box-sizing: border-box; padding: 1.5rem; border: 2px solid var(--segmented-border); background: var(--segmented-surface); color: inherit; overflow: auto; }
+a11y-segmented-bar-chart dialog::backdrop { background: rgb(0 0 0 / .5); }
+a11y-segmented-bar-chart details > summary { min-height: 44px; cursor: pointer; }
+a11y-segmented-bar-chart .compact .visual { display: block; }
+a11y-segmented-bar-chart .compact .total { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1rem; margin-bottom: 1.25rem; }
+a11y-segmented-bar-chart .compact .total span { margin: 0; }
+a11y-segmented-bar-chart .compact .legend { font-size: .9375rem; }
+@media (max-width: 48rem) {
+  a11y-segmented-bar-chart .visual { grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+}
+@media (max-width: 36rem) {
+  a11y-segmented-bar-chart .legend { display: grid; grid-template-columns: minmax(0, 1fr); }
+  a11y-segmented-bar-chart .legend-item { flex-wrap: wrap; }
+  a11y-segmented-bar-chart .legend-item > button { flex: 1; }
+  a11y-segmented-bar-chart .card { position: static; width: 100%; max-width: 100%; flex-basis: 100%; }
+  a11y-segmented-bar-chart dialog { padding: .75rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  a11y-segmented-bar-chart *, a11y-segmented-bar-chart *::after { transition: none !important; animation: none !important; }
+}
+@media (forced-colors: active) {
+  a11y-segmented-bar-chart .bar { background: Canvas; border: 1px solid CanvasText; }
+  a11y-segmented-bar-chart .segment,
+  a11y-segmented-bar-chart .swatch { forced-color-adjust: none; background-color: CanvasText !important; border: 1px solid Canvas; --pattern-color: Canvas !important; }
+  a11y-segmented-bar-chart [data-index="1"], a11y-segmented-bar-chart [data-index="3"], a11y-segmented-bar-chart [data-index="5"] { background-image: repeating-linear-gradient(135deg, CanvasText 0 4px, Canvas 4px 6px); }
+  a11y-segmented-bar-chart [data-index="2"], a11y-segmented-bar-chart [data-index="4"] { background-image: radial-gradient(Canvas 1px, transparent 2px); background-size: 6px 6px; }
+  a11y-segmented-bar-chart button, a11y-segmented-bar-chart a { color: LinkText; }
+  a11y-segmented-bar-chart button:focus-visible, a11y-segmented-bar-chart a:focus-visible { outline-color: Highlight; }
+}
+@media print {
+  a11y-segmented-bar-chart .toolbar, a11y-segmented-bar-chart .card, a11y-segmented-bar-chart dialog { display: none !important; }
+  a11y-segmented-bar-chart .chart { break-inside: avoid; }
+  a11y-segmented-bar-chart .bar, a11y-segmented-bar-chart .swatch { print-color-adjust: exact; }
+  a11y-segmented-bar-chart button { border: 0; padding: 0; text-decoration: none; }
+}
+
+a11y-segmented-bar-chart .toolbar:empty { display: none; }
+a11y-segmented-bar-chart .data-tools { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1rem 0; }
+/* The generated aggregate has a stable neutral identity independent of source IDs. */
+a11y-segmented-bar-chart [data-other] { background-color: var(--a11y-segmented-bar-chart-other-color, #565c65); }
+a11y-segmented-bar-chart .group-members { padding-inline-start: 1.5rem; overflow-wrap: anywhere; }
+a11y-segmented-bar-chart .group-members li + li { margin-top: .35rem; }
+a11y-segmented-bar-chart .legend-item:has(> .card.in-flow:not([hidden])) { flex-wrap: wrap; }
+a11y-segmented-bar-chart .card.in-flow { flex-basis: 100%; }

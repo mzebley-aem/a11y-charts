@@ -175,3 +175,20 @@ test('line updates period semantics and recovers when actions or data disappear'
   await expect(errorMessage).toBeFocused();
   await expect(chart.locator('canvas')).toHaveCount(0);
 });
+
+test('line tooltip follows the selected point at both chart edges', async ({ page }) => {
+  const chart = page.locator('a11y-line-chart');
+  const navigator = chart.locator('.a11y-line-chart__navigator');
+  const tooltip = chart.locator('.perf-tooltip');
+  await navigator.focus();
+  await expect(tooltip).toBeVisible();
+  const first = await tooltip.boundingBox();
+  await page.keyboard.press('End');
+  await expect(navigator).toHaveAttribute('aria-valuetext', /2025/);
+  await expect.poll(async () => (await tooltip.boundingBox())!.x).toBeGreaterThan(first!.x + 100);
+  const last = await tooltip.boundingBox();
+  expect(first!.x).toBeGreaterThanOrEqual(0);
+  expect(last!.x + last!.width).toBeLessThanOrEqual(1000);
+  await page.keyboard.press('Escape');
+  await expect(tooltip).toBeHidden();
+});

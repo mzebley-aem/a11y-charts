@@ -164,3 +164,36 @@ test('bar visible controls meet 44px target size and outcome labels meet 7:1 con
   expect(result.ratios.length).toBeGreaterThan(0);
   expect(result.ratios.every(ratio => ratio >= 7)).toBe(true);
 });
+
+test('bar details anchor to hover location or keyboard trigger and stay inside the chart', async ({ page }) => {
+  await mountBar(page);
+  const trigger = page.locator('.a11y-bar-chart__details-trigger').first();
+  const card = page.locator('.a11y-bar-chart__details').first();
+  const rect = await trigger.boundingBox();
+  if (!rect) throw new Error('Missing trigger');
+  await trigger.hover({ position: { x: 30, y: rect.height / 2 } });
+  await expect(card).toBeVisible();
+  let bounds = await card.boundingBox();
+  expect(Math.abs(bounds!.x - (rect.x + 30))).toBeLessThan(2);
+  await card.hover();
+  await page.waitForTimeout(250);
+  await expect(card).toBeVisible();
+  await page.mouse.move(0, 0);
+  await expect(card).toBeHidden();
+  await trigger.hover({ position: { x: rect.width - 10, y: rect.height / 2 } });
+  bounds = await card.boundingBox();
+  expect(bounds!.x).toBeGreaterThan(rect.x + 100);
+  expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(rect.x + rect.width + 2);
+  await trigger.hover({ position: { x: 50, y: rect.height / 2 } });
+  bounds = await card.boundingBox();
+  expect(Math.abs(bounds!.x - (rect.x + 50))).toBeLessThan(2);
+  await page.screenshot({ path: 'tmp/segmented/bar-anchored-details.png' });
+  await page.mouse.move(0, 0);
+  await expect(card).toBeHidden();
+  await trigger.focus();
+  bounds = await card.boundingBox();
+  expect(Math.abs(bounds!.x - rect.x)).toBeLessThan(2);
+  await page.keyboard.press('Escape');
+  await expect(card).toBeHidden();
+  await expect(trigger).toBeFocused();
+});

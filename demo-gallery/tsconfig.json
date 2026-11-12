@@ -4,5 +4,5 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"], "strict": true,
     "noEmit": true, "skipLibCheck": true
   },
-  "include": ["*.ts", "spp-apr/*.ts"]
+  "include": ["*.ts", "spp-apr/*.ts", "dispute-resolution/*.ts", "segmented/*.ts"]
 }

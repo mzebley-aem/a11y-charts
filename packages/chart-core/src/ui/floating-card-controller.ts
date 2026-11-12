@@ -12,6 +12,8 @@ export interface FloatingCardEntry {
   /** Virtual positioning for chart points that have no focusable trigger. */
   anchor?: () => DOMRect | undefined;
   onDismiss?: () => void;
+  /** Optional chart-specific placement; lifecycle and dismissal remain shared. */
+  position?: (anchor: DOMRect) => void;
 }
 
 export interface FloatingCardControllerOptions {
@@ -131,6 +133,7 @@ export class FloatingCardController {
     const entry = this.#active;
     const anchor = entry?.anchor?.() ?? (entry?.root.isConnected ? entry.root.getBoundingClientRect() : undefined);
     if (!entry || !anchor) return;
+    if (entry.position) { entry.position(anchor); return; }
     const above = this.#options.classNames?.above;
     const inFlow = this.#options.classNames?.inFlow;
     if (above) entry.card.classList.remove(above);

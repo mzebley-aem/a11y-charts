@@ -5,10 +5,10 @@
     "ng": "ng",
     "start": "npm run dev --prefix packages/line-chart",
     "start:bar": "npm run dev --prefix packages/bar-chart",
-    "build": "npm run build --prefix packages/line-chart && npm run build --prefix packages/bar-chart",
+    "build": "npm run build --prefix packages/line-chart && npm run build --prefix packages/bar-chart && npm run build --prefix packages/segmented-bar-chart",
     "watch": "npm run dev --prefix packages/line-chart",
-    "test": "npm test --prefix packages/line-chart && npm test --prefix packages/bar-chart",
-    "typecheck": "npm run typecheck --prefix packages/line-chart && npm run typecheck --prefix packages/bar-chart",
+    "test": "npm test --prefix packages/line-chart && npm test --prefix packages/bar-chart && npm test --prefix packages/segmented-bar-chart",
+    "typecheck": "npm run typecheck --prefix packages/line-chart && npm run typecheck --prefix packages/bar-chart && npm run typecheck --prefix packages/segmented-bar-chart",
     "verify": "npm test && npm run typecheck && npm run build",
     "browser:test": "npm run browser:test --prefix packages/line-chart",
     "reference:start": "ng serve",
@@ -21,7 +21,9 @@
     "gallery:typecheck": "packages/line-chart/node_modules/.bin/tsc -p demo-gallery/tsconfig.json",
     "browser:grouped": "npm run browser:grouped --prefix packages/line-chart",
     "browser:spp-apr": "npm exec --prefix packages/line-chart -- playwright test --config packages/line-chart/playwright.spp-apr.config.mjs",
-    "browser:themes": "npm run browser:themes --prefix packages/line-chart"
+    "browser:themes": "npm run browser:themes --prefix packages/line-chart",
+    "browser:dispute-resolution": "npm exec --prefix packages/line-chart -- playwright test --config packages/line-chart/playwright.dispute-resolution.config.mjs",
+    "browser:segmented": "npm exec --prefix packages/line-chart -- playwright test --config packages/line-chart/playwright.segmented.config.mjs"
   },
   "private": true,
   "dependencies": {

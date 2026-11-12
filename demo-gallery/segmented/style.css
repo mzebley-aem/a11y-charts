@@ -1,0 +1,34 @@
+:root { color: #17212b; background: #f5f7fa; font: 1rem/1.5 system-ui, sans-serif; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+header { background: #142e47; padding: 1rem max(1rem, calc((100% - 72rem)/2)); }
+header a { color: white; }
+main { max-width: 72rem; margin: auto; padding: 2rem 1rem 5rem; }
+h1, h2 { line-height: 1.2; }
+h1 { font-size: clamp(2rem, 4vw, 3rem); margin: .25rem 0 1rem; }
+main > section { margin-top: 3rem; }
+.eyebrow { color: #334f6b; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1rem; }
+.skip-link { position: absolute; top: -5rem; left: 1rem; padding: .5rem; background: white; z-index: 10; }
+.skip-link:focus { top: 1rem; }
+a:focus-visible { outline: 3px solid #005ea2; outline-offset: 3px; }
+header a { display: inline-flex; min-height: 2.75rem; align-items: center; }
+.skip-link { min-height: 2.75rem; }
+.controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; padding: 1rem; background: white; border: 1px solid #c5d0d8; }
+.controls label { display: flex; gap: .5rem; align-items: center; font-weight: 600; }
+.controls select { min-height: 2.75rem; padding: .5rem; }
+#breakdown, #comparison, #grouping, .cards > div { background: white; border: 1px solid #c5d0d8; border-radius: .5rem; padding: 1.25rem; min-width: 0; }
+#group-picks { flex: 1 1 100%; min-width: 0; border: 1px solid #8397a7; }
+#group-pick-options { display: flex; flex-wrap: wrap; gap: .75rem; }
+#group-pick-options label { flex: 0 1 auto; flex-direction: row; align-items: center; }
+#group-update { min-height: 2.75rem; padding: .5rem 1rem; }
+.controls label { flex-wrap: wrap; min-width: 0; max-width: 100%; }
+.controls select { max-width: 100%; }
+.controls label { flex: 1 1 12rem; flex-direction: column; align-items: flex-start; }
+.controls select { width: 100%; min-width: 0; }
+h1, h2 { overflow-wrap: anywhere; }
+
+.controls label:has(input[type="checkbox"]) { flex-direction: row; align-items: center; }
+.controls label:has(input[type="checkbox"]) { flex-wrap: nowrap; min-height: 2.75rem; }
+.controls input[type="checkbox"] { flex: none; }
+.controls :is(select, input, button):focus-visible { outline: 3px solid #005ea2; outline-offset: 3px; }

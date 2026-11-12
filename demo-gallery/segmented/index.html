@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore accessible segmented bar chart examples.">
+  <link rel="icon" href="data:,">
+  <title>Segmented bar charts · Accessible charts</title>
+</head>
+<body>
+  <a class="skip-link" href="#examples">Skip to examples</a>
+  <header><a href="../">← Chart gallery</a></header>
+  <main id="examples">
+    <p class="eyebrow">Component demo · fictional data</p>
+    <h1>Segmented bar charts</h1>
+    <p>Explore complete breakdowns and independent comparisons in full and compact presentations. All values on this page are fictional.</p>
+    <div class="controls" role="group" aria-label="Display options">
+      <label>Language <select id="locale"><option value="en-US">English</option><option value="fr-FR">Français</option><option value="es-MX">Español</option></select></label>
+      <label><input id="details-toggle" type="checkbox" checked> Category details</label>
+      <label>Theme <select id="theme"><option value="default">Default</option><option value="alternate">Alternate</option></select></label>
+      <label>Values <select id="values"><option value="both">Counts and percentages</option><option value="counts">Counts only</option><option value="shares">Percentages only</option></select></label>
+    </div>
+    <section aria-labelledby="breakdown-heading"><h2 id="breakdown-heading">Full breakdown</h2><p>Categories are parts of a reported total. Focus or select a category to explore its definition.</p><div id="breakdown"></div></section>
+    <section aria-labelledby="grouping-heading"><h2 id="grouping-heading">Grouping categories</h2><p>Explore how a larger breakdown keeps selected categories separate and combines the rest. The complete data remains available in the data view.</p>
+      <div class="controls" role="group" aria-label="Grouping options">
+        <label>Dataset <select id="group-dataset"><option value="many">Six categories</option><option value="few">Three categories</option><option value="incomplete">Missing and suppressed values</option></select></label>
+        <label>Grouping <select id="group-mode"><option value="automatic">Automatic</option><option value="explicit">Choose categories</option></select></label>
+        <label>Automatic order <select id="group-order"><option value="value">Largest first</option><option value="source">Original order</option><option value="label">Alphabetical</option></select></label>
+        <fieldset id="group-picks" hidden><legend>Keep separate (up to three)</legend><p>Categories appear in the order chosen. Choose none to combine every category; clear a choice to select another.</p><div id="group-pick-options"></div></fieldset>
+        <label><input type="checkbox" id="group-highlight"> Highlight a category that may be grouped</label>
+        <button type="button" id="group-update">Update values</button>
+      </div><div id="grouping"></div>
+    </section>
+    <section aria-labelledby="comparison-heading"><h2 id="comparison-heading">Independent comparison</h2><p>These measures are independent; the unfilled portion of the bar is not another reported outcome.</p><div id="comparison"></div></section>
+    <section aria-labelledby="compact-heading"><h2 id="compact-heading">Compact presentations</h2><p>A compact card can link to another page, or provide separate category controls.</p><div class="cards"><div id="linked"></div><div id="interactive"></div></div></section>
+    <section aria-labelledby="availability-heading"><h2 id="availability-heading">Data availability and reference values</h2><p>These examples show zero, missing, suppressed, and above-reference values without inventing categories.</p><div class="cards"><div id="availability"></div><div id="above"></div></div></section>
+    <section id="details"><h2>Example destination</h2><p>This anchor demonstrates the compact card link.</p></section>
+  </main>
+  <script type="module" src="./main.ts"></script>
+</body>
+</html>

@@ -150,3 +150,24 @@ Reference: https://qa-viewer.adaptdata.org/reports/idea-child-count-and-settings
 Initial rendered inspection on 2026-10-23 identified an age-filtered chart with a vertical gray navigation panel and a standalone Child Count by Sex chart. Both show blue rectangular bars, labels above bars, percentages on pale backgrounds beside bars, and bold counts below those percentages. White bordered cards, dark typography, blue Explain/Glossary/Data controls, and header separators form the surrounding presentation.
 
 Fidelity tokens must cover value placement and its separate percentage/count typography, bar corners and height, card border/padding, toolbar presentation, and the navigation panel and selected indicator. Some placement changes may require layout variants rather than scalar CSS tokens. This inspection is a starting reference, not full desktop/mobile or interaction verification. The 12-Month Count view has not yet been inspected.
+
+## Segmented bar chart
+
+`<a11y-segmented-bar-chart>` uses the shared inherited text, surface, border,
+focus and track roles where applicable. Its chart-specific CSS properties include
+`--a11y-segmented-bar-chart-text`, `--a11y-segmented-bar-chart-font`,
+`--a11y-segmented-bar-chart-title-font-size`,
+`--a11y-segmented-bar-chart-metric-size`,
+`--a11y-segmented-bar-chart-bar-height`, and
+`--a11y-segmented-bar-chart-track`. Segment defaults can be set with
+`--a11y-segmented-bar-chart-segment-color` and numbered properties
+`--a11y-segmented-bar-chart-segment-2` through `-6`. Per-category color and
+pattern can also be supplied through `theme.segments` keyed by category ID.
+Use labels, counts and percentages alongside color; the legend and data table
+provide the values in forced colors and other nonvisual contexts.
+
+Grouped breakdowns reserve a neutral treatment for the generated Other categories
+segment. Set `theme.other` (`color`, `pattern`, `patternColor`) or
+`--a11y-segmented-bar-chart-other-color` to change it. This is independent of
+`theme.segments[id]`, so a source category named Other keeps its own identity and
+style. Reordering/grouping does not reassign the source categories' theme keys.

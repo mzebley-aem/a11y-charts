@@ -5,6 +5,8 @@ Framework-free Light DOM chart components for accessible reporting:
 - [`packages/line-chart`](./packages/line-chart): actual-versus-target performance.
 - [`packages/bar-chart`](./packages/bar-chart): horizontal category counts and
   population shares, with explanation, definitions, suppression, and CSV.
+- [`packages/segmented-bar-chart`](./packages/segmented-bar-chart): breakdowns
+  of a total and individual measures compared with a denominator.
 
 The bar chart and the localization/data-view additions to both charts follow
 [`BAR-CHART-SPEC.md`](./BAR-CHART-SPEC.md).
@@ -216,11 +218,12 @@ current package-level feature inventory and integration notes.
 ## Audit fixes and verification
 
 The October 21 audit is in [AUDIT-2026-10-21.md](./AUDIT-2026-10-21.md).
-Use Node 24 and install the two active packages separately:
+Use Node 24 and install the active packages separately:
 
 ```bash
 npm ci --prefix packages/line-chart
 npm ci --prefix packages/bar-chart
+npm ci --prefix packages/segmented-bar-chart
 npm run verify
 npm run browser:test
 ```
@@ -236,6 +239,8 @@ Vercel runs `npm run site:build` and publishes `dist/gallery`. The chart gallery
 is served at `/`; standalone demos are at `/demo/line-chart.html` and
 `/demo/bar-chart.html`. The existing `/demo/report-demo.html` URL remains available.
 The site build includes the current line, bar, grouped-population, and theme examples.
+The independent segmented chart examples are at `/segmented/`; exercise them
+with `npm run browser:segmented`.
 
 Root `start`, `build`, `test`, and `typecheck` now target the active chart packages.
 `start:bar` opens the bar demo. The frozen Angular reference remains available only
@@ -330,3 +335,55 @@ placeholders remain unavailable. Measure 6B uses the detailed comparison's
 breakdowns retain the full supplied denominator. No future target values are
 invented. Update this data file and the visible source notes together when
 feedback resolves these issues.
+
+## Dispute resolution interactive report demo
+
+Open `/dispute-resolution/` with `npm run gallery:dev` (default:
+http://127.0.0.1:5191/dispute-resolution/). The gallery links to this demo and
+`site:build` includes it in the existing deployment output. The source mockup
+and its original file are not modified.
+
+The overview and four section views use the actual `<a11y-bar-chart>` component
+for 15 charts. Counts are transcribed from the supplied “Part B Dispute
+Resolution Report.html.” No State is identified; 2022–23 is retained without
+inferring exact reporting dates. These are unverified example values, not
+independently validated official data. The demo separates overlapping meeting
+activity from complaint status, names every percentage denominator, keeps
+totals out of category rows, and does not invent unreported outcomes.
+
+Overview quick links include a segmented status bar and numeric legend drawn
+from each section’s complete complaint/request status breakdown; overlapping
+meeting activity is excluded from these bars.
+
+Copy-link preserves section and display preferences; Back/Forward restores
+views. Each chart offers Data, Explain, and data exports.
+Print applies to the current view. The report interface has no demo notices,
+source-review panels, glossary appendix, or feedback collection. Provenance and
+audit limitations remain documented here and in the review report.
+
+- Content/data: `demo-gallery/dispute-resolution/data.ts`
+- Flow, content, and WCAG 2.2 AA review with AAA advice:
+  `audit-evidence/2026-11-10/dispute-resolution/REVIEW.md`
+- Checks: `npm run browser:dispute-resolution`, `npm run gallery:typecheck`,
+  and `npm run site:build`
+- Reproduce automated evidence:
+  `node audit-evidence/2026-11-10/dispute-resolution/audit.cjs`
+  (requires a running gallery server and the supplied local source file).
+  Set `SKIP_SOURCE=1` to check only the demo, or `AUDIT_BASE` for a built preview.
+
+Before replacing examples with live data, confirm the State, period, metric
+mapping, whether expedited complaints are included in the due process total,
+and the approved small-count disclosure policy. Human screen-reader testing
+remains required; a clean automated scan is not a conformance claim.
+
+The dispute-resolution demo's local application shell is styled to match the
+supplied QA assessment report (reviewed November 10): desktop rail/mobile Menu,
+breadcrumbs, horizontal section links, Quick Summary
+panels, and report-style chart values. It uses no QA application runtime and has
+no live State data connection. See the review's QA framework alignment addendum.
+
+The overview and single-value panels use the reusable segmented chart.
+Section-specific labels, definitions, and explanatory sentences live in
+`single-value-content.ts`; source counts remain in `data.ts`. Meeting counts
+are compared with complaint totals as in the supplied data; the unfilled track
+does not represent an additional reported meeting outcome.

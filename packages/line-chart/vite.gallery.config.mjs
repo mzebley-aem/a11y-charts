@@ -17,6 +17,8 @@ export default defineConfig({
       input: {
         gallery: `${root}/index.html`,
         sppApr: `${root}/spp-apr/index.html`,
+        disputeResolution: `${root}/dispute-resolution/index.html`,
+        segmented: `${root}/segmented/index.html`,
       },
     },
   },

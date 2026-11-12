@@ -1,13 +1,13 @@
 # Shared chart core and standalone distribution
 
-The shared source library lives in `packages/chart-core/src`. Both chart packages
+The shared source library lives in `packages/chart-core/src`. The chart packages
 compile the utilities and UI primitives they use into independent outputs.
 Chart-specific semantic models and renderers remain in their own packages.
 
 ## Distribution contract
 
 A consumer should be able to load a chart-specific script and stylesheet and
-use `<a11y-line-chart>` or `<a11y-bar-chart>`. No shared JavaScript file, private
+use `<a11y-line-chart>`, `<a11y-bar-chart>`, or `<a11y-segmented-bar-chart>`. No shared JavaScript file, private
 core package, framework runtime, or separately loaded ECharts should be required
 for the standalone browser distribution.
 
@@ -31,6 +31,7 @@ That packaging choice need not change the authoring architecture.
 | UI primitives | Card markup, action buttons, data dialog, disclosure, focus recovery, positioning and dismissal controllers | Actual-versus-target or population calculations |
 | Line package | Line semantic model, baseline/history, period navigator, ECharts adapter | A second sanitizer/dialog implementation |
 | Bar package | Count/share model, category bars, total/suppression conventions, category identity | ECharts or a second generic card state machine |
+| Segmented bar package | Part-to-whole breakdowns and independent comparisons, compact presentation | Inventing unreported comparison categories |
 
 Use small functions and composed controllers. A universal chart superclass would
 couple unrelated rendering and data assumptions and make extraction harder.
