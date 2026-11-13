@@ -1,22 +1,23 @@
 import { describe, expect, it, vi } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import {
-  buildSegmentedBarModel, buildSegmentedBarCsv, buildSegmentedBarXlsx,
+  buildSegmentedBarModel, buildSegmentedBarCsv,
   validateSegmentedBarData, validateSegmentedBarTotal, resolveConfig,
   type A11ySegmentedBarChartDatum, type A11ySegmentedBarChartValueFormatter
 } from '../src/core.js';
+import * as segmentedPackage from '../src/index.js';
 
 const part = (value: number | null, id = 'a'): A11ySegmentedBarChartDatum => ({ id, label: id, value });
 
 describe('segmented canonical model integrity', () => {
-  it('validates protected records without reading their protected numeric accessor', () => {
-    const value = vi.fn(() => { throw new Error('protected value accessed'); });
-    const datum = { id: 'protected', label: 'Protected', valueSuppressed: true, get value(): number { return value(); } };
-    expect(validateSegmentedBarData([datum])).toEqual({ valid: true, data: [{ id: 'protected', label: 'Protected', value: null, valueSuppressed: true }] });
+  it('validates suppressed zeros as plain records', () => {
+    const datum = { id: 'protected', label: 'Protected', value: 0 };
+    expect(validateSegmentedBarData([datum])).toEqual({ valid: true, data: [{ id: 'protected', label: 'Protected', value: 0 }] });
     const formatter = vi.fn(() => 'formatted');
-    const model = buildSegmentedBarModel([datum], { formatValue: formatter });
+    const model = buildSegmentedBarModel([datum], { suppressed: true, formatValue: formatter });
     expect(model.rows[0]?.valueText).toBe('Suppressed');
     expect(model.total).toBeNull();
-    expect(value).not.toHaveBeenCalled();
     expect(formatter).not.toHaveBeenCalled();
   });
 
@@ -37,13 +38,13 @@ describe('segmented canonical model integrity', () => {
     const model = buildSegmentedBarModel(source);
     expect(model.rows.map(row => row.status)).toEqual(['reported', 'missing']);
     expect(model.rows[0]!.valueText).toBe('0');
-    expect(model.rows[1]!.valueText).toBe('Missing');
+    expect(model.rows[1]!.valueText).toBe('Not reported');
     expect(model.total).toBeNull();
   });
 
-  it('retains explicit zero under legacy suppression and never infers a protected total', () => {
-    const model = buildSegmentedBarModel([{ ...part(0), valueSuppressed: false }, part(0, 'b')], { suppressed: true });
-    expect(model.rows.map(row => row.status)).toEqual(['reported', 'suppressed']);
+  it('suppresses zeros only under the chart flag and never infers a suppressed total', () => {
+    const model = buildSegmentedBarModel([part(0), part(0, 'b')], { suppressed: true });
+    expect(model.rows.map(row => row.status)).toEqual(['suppressed', 'suppressed']);
     expect(model.total).toBeNull();
     expect(model.rows.map(row => row.ratio)).toEqual([0, 0]);
   });
@@ -98,7 +99,7 @@ describe('segmented canonical model integrity', () => {
       expect(model.rows[0]!.valueText).toBe('5');
     }
     const model = buildSegmentedBarModel([part(null)], { messages: { missingValue: null } as unknown as Record<string, string> });
-    expect(model.rows[0]!.valueText).toBe('Missing');
+    expect(model.rows[0]!.valueText).toBe('Not reported');
     expect(resolveConfig(null).locale).toBe('en-US');
     expect(resolveConfig({ locale: 'invalid_locale', countDecimals: -1, percentageDecimals: 50 }).percentageDecimals).toBe(2);
   });
@@ -110,20 +111,67 @@ describe('segmented canonical model integrity', () => {
   });
 
   it('exports source values and localized metadata without leaking protected numbers', () => {
-    const model = buildSegmentedBarModel([{ ...part(123456789), valueSuppressed: true }, { ...part(7, 'b'), label: '=SUM(1,2)' }]);
+    const model = buildSegmentedBarModel([part(0), { ...part(7, 'b'), label: '=SUM(1,2)' }], { suppressed: true });
     const options = { contextText: '=formula', explanationText: 'Authored explanation', dataNoteText: 'Data note' };
     const csv = buildSegmentedBarCsv(model, options);
     expect(csv).toContain("'=formula");
     expect(csv).toContain("'=SUM(1,2)");
     expect(csv).toContain('Authored explanation');
-    expect(csv).not.toContain('123456789');
+    expect(csv).toContain('a,Suppressed,Suppressed');
+    expect(csv).not.toMatch(/\ba,0\b/);
     expect(csv).toContain('\r\n');
-    const workbook = buildSegmentedBarXlsx(model, options);
-    expect([...workbook.slice(0, 2)]).toEqual([80, 75]);
-    const xml = new TextDecoder().decode(workbook);
-    expect(xml).not.toContain('123456789');
-    expect(xml).toContain('Authored explanation');
-    expect(xml).toContain('=SUM(1,2)');
-    expect(xml).not.toContain('<f>');
+    // The DOM-free helper returns plain text; the element adds the UTF-8 byte-order mark when it creates the download.
+    expect(csv.charCodeAt(0)).not.toBe(0xfeff);
+  });
+});
+
+describe('segmented English catalog export', () => {
+  it('exposes the English catalog under an unambiguous name while keeping ENGLISH_MESSAGES', () => {
+    expect(segmentedPackage.ENGLISH_SEGMENTED_BAR_CHART_MESSAGES).toBe(segmentedPackage.ENGLISH_MESSAGES);
+    expect(segmentedPackage.ENGLISH_SEGMENTED_BAR_CHART_MESSAGES.missingValue).toBe('Not reported');
+    expect(segmentedPackage.ENGLISH_SEGMENTED_BAR_CHART_MESSAGES.detailsHelp).toContain('Use the arrow keys, Home and End to move between categories.');
+  });
+});
+
+describe('percent scale and CSV contract', () => {
+  const rows = [part(455, 'a'), part(545, 'b')];
+
+  it('passes whole percentages to formatValue by default and fractions when configured', () => {
+    const whole = vi.fn((context: { value: number; series: string }) => `W${context.value}`);
+    const wholeModel = buildSegmentedBarModel(rows, { formatValue: whole });
+    const wholePercents = whole.mock.calls.filter(([context]) => context.series === 'percentage').map(([context]) => context.value);
+    expect(wholePercents).toContain(45.5);
+    expect(wholeModel.rows[0]!.percentageText).toBe('W45.5');
+    expect(whole.mock.calls.filter(([context]) => context.series === 'count').map(([context]) => context.value)).toContain(455);
+
+    const fraction = vi.fn((context: { value: number; series: string }) => `F${context.value}`);
+    const fractionModel = buildSegmentedBarModel(rows, { formatValue: fraction, config: { percentScale: 'fraction' } });
+    expect(fraction.mock.calls.filter(([context]) => context.series === 'percentage').map(([context]) => context.value)).toContain(0.455);
+    expect(fractionModel.rows[0]!.percentageText).toBe('F0.455');
+  });
+
+  it('keeps the model percentage and built-in fallback as fractions regardless of percentScale', () => {
+    const model = buildSegmentedBarModel(rows, { formatValue: () => '', config: { percentScale: 'whole' } });
+    expect(model.rows[0]).toMatchObject({ percentage: 0.455, ratio: 0.455 });
+    expect(model.rows[0]!.percentageText).toBe('45.50%');
+  });
+
+  it('resolves percentScale to whole unless fraction is requested', () => {
+    expect(resolveConfig(null).percentScale).toBe('whole');
+    expect(resolveConfig({ percentScale: 'bogus' as 'whole' }).percentScale).toBe('whole');
+    expect(resolveConfig({ percentScale: 'fraction' }).percentScale).toBe('fraction');
+  });
+
+  it('removes the tableVisibility and showTable options from the resolved config', () => {
+    const resolved = resolveConfig({ dataView: 'none' });
+    expect(resolved.dataView).toBe('none');
+    expect(resolved).not.toHaveProperty('tableVisibility');
+    expect(resolveConfig({ dataView: 'bogus' as 'dialog' }).dataView).toBe('dialog');
+  });
+
+  it('keeps the shared core free of imports from the bar-chart package', () => {
+    const source = readFileSync(resolve(process.cwd(), 'src/core.ts'), 'utf8');
+    expect(source).not.toMatch(/from\s+['"][^'"]*bar-chart\//);
+    expect(source).not.toMatch(/xlsx/i);
   });
 });

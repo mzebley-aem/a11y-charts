@@ -28,12 +28,11 @@ describe('grouping review invariants', () => {
     }
   });
 
-  it('never reads a protected accessor or computes a partial Other value', () => {
-    const read = vi.fn(() => { throw new Error('Protected numeric accessor read'); });
-    const protectedDatum = { id: 'protected', label: 'Protected category', valueSuppressed: true, get value(): number { return read(); } };
+  it('treats a suppressed zero as protected and never computes a partial Other value', () => {
+    const protectedDatum = { id: 'protected', label: 'Protected category', value: 0 };
     const formatValue = vi.fn(({ value }: { value: number }) => String(value));
     const model = buildSegmentedBarModel([...fixture(5), protectedDatum], {
-      total: 100, config: { separateCategoryIds: ['source-0'] }, formatValue
+      total: 100, suppressed: true, config: { separateCategoryIds: ['source-0'] }, formatValue
     });
     const other = model.displaySegments.find(segment => segment.kind === 'other');
     expect(other?.kind).toBe('other');
@@ -42,8 +41,9 @@ describe('grouping review invariants', () => {
     expect(other.percentage).toBeNull();
     expect(other.ratio).toBe(0);
     expect(other.status).toBe('suppressed');
-    expect(read).not.toHaveBeenCalled();
     expect(model.rows.find(row => row.id === 'protected')?.value).toBeNull();
+    expect(model.rows.find(row => row.id === 'protected')?.valueText).toBe('Suppressed');
+
   });
 
   it('keeps original records in CSV without adding or duplicating a generated aggregate', () => {

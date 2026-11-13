@@ -23,15 +23,14 @@ try {
     if (typeof globalThis.HTMLElement !== 'undefined') throw new Error('Expected a DOM-free Node process.');
     if (typeof core.resolveConfig !== 'function' || typeof core.buildBarModel !== 'function') throw new Error('Missing packed core exports.');
     if (!core.validateBarData([{ id: 'smoke', label: 'Smoke', value: 1 }]).valid) throw new Error('Packed validation failed.');
-    const workbook = core.buildBarXlsx(core.buildBarModel([{ id: 'smoke', label: 'Smoke', value: 1 }]));
-    if (workbook[0] !== 80 || workbook[1] !== 75) throw new Error('Packed XLSX export failed.');
+    if (!core.buildBarCsv(core.buildBarModel([{ id: 'smoke', label: 'Smoke', value: 1 }])).includes('Smoke')) throw new Error('Packed CSV export failed.');
     if (typeof core.prepareBarViewSection !== 'function') throw new Error('Missing grouped preparation helper.');
   `;
   execFileSync(process.execPath, ['--input-type=module', '-e', runtimeSmoke], { cwd: consumer, stdio: 'inherit' });
 
   await writeFile(join(consumer, 'smoke.mts'), `
     import { buildBarModel, resolveConfig, validateBarData, type A11yBarChartDatum } from '${manifest.name}/core';
-    import { A11yBarChartElement, A11yBarChartGroupElement, buildBarCsv, buildBarXlsx, type BarViewSection } from '${manifest.name}';
+    import { A11yBarChartElement, A11yBarChartGroupElement, buildBarCsv, type BarViewSection } from '${manifest.name}';
     import { defineA11yBarChart, defineA11yBarChartGroup } from '${manifest.name}/define';
     const rows: A11yBarChartDatum[] = [{ id: 'typed', label: 'Typed', value: 2 }];
     const config = resolveConfig(undefined);
@@ -46,7 +45,6 @@ try {
     void A11yBarChartGroupElement;
     const sections: BarViewSection[] = [];
     void sections;
-    buildBarXlsx(buildBarModel(rows));
   `);
   execFileSync(process.execPath, [resolve(root, 'node_modules/typescript/bin/tsc'), '--strict', '--noEmit', '--module', 'NodeNext', '--moduleResolution', 'NodeNext', '--target', 'ES2022', 'smoke.mts'], { cwd: consumer, stdio: 'inherit' });
 

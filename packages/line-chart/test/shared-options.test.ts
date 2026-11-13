@@ -5,19 +5,19 @@ import { buildSemanticModel } from '../src/semantic-model.js';
 import { lineRichContentToText, renderLineRichContent } from '../src/rich-content.js';
 
 describe('line shared data tools', () => {
-  const buildModel = (data: Array<{ x: string; actual?: number | null; target?: number | null; actualSuppressed?: boolean; targetSuppressed?: boolean }>) => {
+  const buildModel = (data: Array<{ x: string; actual?: number | null; target?: number | null }>, suppressed = false) => {
     const config = resolveConfig({ valuePreset: 'number' });
     const formatValue = (value: number | null) => value === null ? 'Missing' : String(value);
-    return buildSemanticModel({ config, data, formatDifference: ({ value }) => String(value), formatValue, formatXValue: String });
+    return buildSemanticModel({ config, data, suppressed, formatDifference: ({ value }) => String(value), formatValue, formatXValue: String });
   };
 
   it('exports localized metadata rows, suppressed states, and leaves numeric negatives unescaped', () => {
     const data = [
       { x: 'Q1', actual: -2, target: 0 },
-      { x: 'Q2', actual: 91, actualSuppressed: true, target: 77 },
-      { x: 'Q3', actual: null, target: 4, targetSuppressed: true }
+      { x: 'Q2', actual: 0, target: 77 },
+      { x: 'Q3', actual: null, target: 4 }
     ];
-    const model = buildModel(data);
+    const model = buildModel(data, true);
     const csv = buildLineCsv({
       data, model, headers: ['Period', 'Actual', 'Target', 'Outcome'],
       formatPeriod: String, formatValue: String, missing: 'Missing', suppressed: 'Protected', context: '<p>Safe <strong>context</strong></p><script>bad()</script>', dataNote: 'Note',
@@ -26,10 +26,16 @@ describe('line shared data tools', () => {
     expect(csv).toContain('"Context","Safe context"\r\n"Data note","Note"');
     expect(csv).toContain('"Q1","-2","0"');
     expect(csv).toContain('"Q2","Protected","77"');
-    expect(csv).toContain('"Q3","Missing","Protected","Target outcome unavailable"');
-    expect(csv).not.toContain('91');
+    expect(csv).toContain('"Q3","Missing","4"');
+    expect(csv).not.toContain('"Q2","0"');
   });
 
+  it('exports a zero as a reported value when the suppressed flag is off', () => {
+    const data = [{ x: 'Q2', actual: 0, target: 77 }];
+    const csv = buildLineCsv({ data, model: buildModel(data), headers: ['Period', 'Actual', 'Target', 'Outcome'], formatPeriod: String, formatValue: String, missing: 'Missing', suppressed: 'Protected' });
+    expect(csv).toContain('"Q2","0","77"');
+    expect(csv).not.toContain('Protected');
+  });
   it('sanitizes rich content with a small allowlist and turns it into plain text', () => {
     const fragment = renderLineRichContent('<p>Useful <strong>note</strong><img src=x onerror=alert(1)><a href="javascript:alert(1)">link</a></p><script>secret()</script>');
     const host = document.createElement('div'); host.append(fragment);

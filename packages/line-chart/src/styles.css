@@ -263,7 +263,7 @@ a11y-line-chart :is(.a11y-line-chart__actions button, .a11y-line-chart__export):
 a11y-line-chart :is(.a11y-line-chart__actions button, .a11y-line-chart__export):active { transform: translateY(1px); }
 a11y-line-chart :is(.a11y-line-chart__explanation, .a11y-line-chart__glossary) { margin-block: 0.75rem; }
 a11y-line-chart :is(.a11y-line-chart__explanation, .a11y-line-chart__glossary) > summary { align-items: center; cursor: pointer; display: flex; font-weight: 650; min-height: 44px; width: fit-content; }
-a11y-line-chart :is(.a11y-line-chart__data-context, .a11y-line-chart__data-note, .a11y-line-chart__explanation-context) { margin-block: 0.75rem; }
+a11y-line-chart :is(.a11y-line-chart__data-context, .a11y-line-chart__data-note, .a11y-line-chart__suppression-note, .a11y-line-chart__explanation-context) { margin-block: 0.75rem; }
 a11y-line-chart .a11y-line-chart__filtered,
 a11y-line-chart .a11y-line-chart__suppression-indicator { font-weight: 600; }
 @media (prefers-reduced-motion: reduce) { a11y-line-chart :is(.a11y-line-chart__actions button, .a11y-line-chart__export, .a11y-line-chart__data-action, .a11y-line-chart__dialog-close):active { transform: none; } }

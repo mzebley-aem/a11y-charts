@@ -186,7 +186,7 @@ footer { justify-content: center; text-align: center; padding: 2rem 1rem; backgr
   --a11y-segmented-bar-chart-metric-size: 4rem;
   --a11y-segmented-bar-chart-color: var(--ink);
 }
-.single-value-breakdown a11y-segmented-bar-chart .legend { display: grid; grid-template-columns: minmax(0, 1fr); }
+.single-value-breakdown a11y-segmented-bar-chart .a11y-segmented-bar-chart__legend { display: grid; grid-template-columns: minmax(0, 1fr); }
 @media(max-width: 48rem) {
   .single-value-breakdown a11y-segmented-bar-chart { --a11y-segmented-bar-chart-title-font-size: 1.4rem; }
 }

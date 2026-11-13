@@ -29,10 +29,6 @@ test('keyboard detail cards, data dialog and exports retain the reported compari
   await dialog.getByRole('button', { name: 'Download CSV', exact: true }).click();
   const csv = await readFile(await (await download).path(), 'utf8');
   expect(csv).toContain('Meetings held'); expect(csv).not.toContain('68');
-  const excelDownload = page.waitForEvent('download');
-  await dialog.getByRole('button', { name: 'Download Excel', exact: true }).click();
-  const excel = await readFile(await (await excelDownload).path());
-  expect(excel.subarray(0, 2).toString()).toBe('PK');
   expect(errors).toEqual([]);
 });
 
@@ -93,8 +89,8 @@ test('display options localize the chart and availability states do not invent d
   await expect(chart.getByRole('heading', { name: 'Estado de las solicitudes' })).toBeVisible();
   const availability = page.locator('#availability a11y-segmented-bar-chart');
   await expect(availability).toContainText('Suppressed');
-  await expect(availability).toContainText('Missing');
-  await expect(availability).not.toContainText('7 (');
+  await expect(availability).toContainText('Not reported');
+  await expect(availability).not.toContainText('Small group: 0');
   await expect(page.locator('#above a11y-segmented-bar-chart')).toContainText('exceeds');
 });
 
@@ -147,7 +143,7 @@ test('grouping keeps complete data and supports keyboard details and updates', a
   await expect(chart).toContainText(/highlighted category/i);
   await page.locator('#group-highlight').uncheck();
   await page.locator('#group-dataset').selectOption('incomplete');
-  await expect(chart).toContainText(/Missing|Suppressed/i);
+  await expect(chart).toContainText(/Not reported|Suppressed/i);
 });
 
 test('grouped detail view passes automated accessibility and reflows', async ({ page }) => {
@@ -184,11 +180,11 @@ test('regrouping and long member lists retain keyboard access without overflow',
     const trigger = chart.locator('[data-focus-key="group:other"]');
     await trigger.focus();
     await page.keyboard.press('Enter');
-    const lastLink = chart.locator('.group-members a').last();
+    const lastLink = chart.locator('.a11y-segmented-bar-chart__group-members a').last();
     await lastLink.focus();
     await expect(lastLink).toBeFocused();
     await expect(lastLink).toBeInViewport();
-    await expect(chart.locator('.group-members > li')).toHaveCount(40);
+    await expect(chart.locator('.a11y-segmented-bar-chart__group-members > li')).toHaveCount(40);
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
     await page.keyboard.press('Escape');
     await expect(trigger).toBeFocused();
@@ -200,10 +196,10 @@ test('detail cards follow their segment or legend trigger and clamp at the right
   await page.goto('/segmented/');
   const chart = page.locator('#grouping a11y-segmented-bar-chart');
   const button = chart.locator('[data-focus-key="group:other"]');
-  const card = chart.locator('[data-group-members] .card');
-  const segment = chart.locator('.segment[data-other]');
+  const card = chart.locator('[data-group-members] .a11y-segmented-bar-chart__card');
+  const segment = chart.locator('.a11y-segmented-bar-chart__segment[data-other]');
   const checkPosition = async (anchor: typeof button) => {
-    const [a, c, legend] = await Promise.all([anchor.boundingBox(), card.boundingBox(), chart.locator('.legend').boundingBox()]);
+    const [a, c, legend] = await Promise.all([anchor.boundingBox(), card.boundingBox(), chart.locator('.a11y-segmented-bar-chart__legend').boundingBox()]);
     if (!a || !c || !legend) throw new Error('Missing geometry');
     const maxLeft = Math.min(1440 - 8, legend.x + legend.width) - c.width;
     expect(Math.abs(c.x - Math.max(legend.x, Math.min(a.x, maxLeft)))).toBeLessThan(2);

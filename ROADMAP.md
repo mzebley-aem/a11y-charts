@@ -250,7 +250,7 @@ Complex `data`, `config`, and `theme` JSON attributes are out of the first stabl
 Dispatch framework-neutral `CustomEvent`s with documented, versioned detail objects:
 
 - `a11y-line-chart-point-change`
-- `a11y-line-chart-display-change`
+- `a11y-line-chart-settings-change`
 - `a11y-line-chart-ready`
 - `a11y-line-chart-error`
 

@@ -80,7 +80,7 @@ function semanticYValues(model: A11yLineChartSemanticModel): number[] {
   const values: number[] = [];
   for (const point of model.points) {
     if (!point.actualSuppressed && typeof point.actualValue === 'number') values.push(point.actualValue);
-    const target = point.targetSuppressed ? null : point.targetValue;
+    const target = point.targetValue;
     if (isTargetRange(target)) values.push(target.min, target.max);
     else if (typeof target === 'number') values.push(target);
   }
@@ -213,7 +213,8 @@ function tooltipContext(index: number, context: ChartOptionContext): A11yLineCha
       ? context.message?.('tooltipDifferenceEqual', { actual: context.config.actualSeriesLabel, target: context.config.targetSeriesLabel.toLocaleLowerCase() }) ?? `${context.config.actualSeriesLabel} equals ${context.config.targetSeriesLabel.toLocaleLowerCase()}`
       : context.message?.('tooltipDifference', { actual: context.config.actualSeriesLabel, description: interpretation.targetDifference.description }) ?? `${context.config.actualSeriesLabel} is ${interpretation.targetDifference.description}`
     : '';
-  const copiedDatum = { ...datum, x: datum.x instanceof Date ? new Date(datum.x.getTime()) : datum.x, target: copyTarget(datum.target) };
+  // The raw author datum may hold a suppressed zero; expose the model's masked actual instead.
+  const copiedDatum: A11yLineChartDatum = { x: datum.x instanceof Date ? new Date(datum.x.getTime()) : datum.x, actual: interpretation.actualValue, target: copyTarget(datum.target) };
   const copiedInterpretation = {
     ...interpretation,
     x: interpretation.x instanceof Date ? new Date(interpretation.x.getTime()) : interpretation.x,
@@ -242,8 +243,7 @@ function tooltipContext(index: number, context: ChartOptionContext): A11yLineCha
     differenceLabel,
     relation: interpretation.relation,
     relationLabel: interpretation.outcome === 'unavailable' ? '' : interpretation.outcomeLabel,
-    actualSuppressed: datum.actualSuppressed === true,
-    targetSuppressed: datum.targetSuppressed === true,
+    actualSuppressed: interpretation.actualSuppressed,
     theme: { ...context.theme }
   };
 }
@@ -285,34 +285,12 @@ function defaultTooltip(ctx: A11yLineChartTooltipContext, context: ChartOptionCo
 }
 
 export function buildChartOptions(context: ChartOptionContext): EChartsCoreOption {
+  // Suppression is decided by the semantic model; points arrive with actualValue already masked.
   const data = normalizeLineData(context.data);
-  const points = context.model.points.map((point, index) => {
-    const datum = data[index];
-    if (!datum || (!datum.actualSuppressed && !datum.targetSuppressed)) return point;
-    const actualSuppressed = datum.actualSuppressed === true;
-    const targetSuppressed = datum.targetSuppressed === true;
-    const outcomeLabel = context.message?.('outcomeUnavailable') ?? 'Target outcome unavailable';
-    const protectedLabel = context.message?.('suppressed') ?? 'Suppressed';
-    return {
-      ...point,
-      actualValue: actualSuppressed ? null : point.actualValue,
-      actualFormatted: actualSuppressed ? protectedLabel : point.actualFormatted,
-      actualSuppressed,
-      targetValue: targetSuppressed ? null : point.targetValue,
-      targetFormatted: targetSuppressed ? protectedLabel : point.targetFormatted,
-      targetSuppressed,
-      outcome: 'unavailable' as const,
-      outcomeLabel,
-      relation: 'incomplete' as const,
-      targetDifference: null,
-      baseline: point.baseline ? { ...point.baseline, difference: null } : null,
-      narrative: `${point.xLabel}: ${actualSuppressed ? protectedLabel : point.actualFormatted}; ${targetSuppressed ? protectedLabel : point.targetFormatted}. ${outcomeLabel}.`
-    };
-  });
-  const safeContext = { ...context, data, model: { ...context.model, points } };
+  const safeContext = { ...context, data };
   const { config, formatValue, formatXValue, reducedMotion, theme } = context;
   const categories = data.map((item) => formatXValue(item.x));
-  let actual = data.map((item) => item.actual ?? null);
+  let actual = context.model.points.map((point) => point.actualValue);
   const target = data.map((item) => isTargetRange(item.target) ? item.target.min : item.target ?? null);
   const scalarTarget = data.map((item) => isTargetRange(item.target) ? null : item.target ?? null);
   const rangeUpper = data.map((item) => isTargetRange(item.target) ? item.target.max : null);

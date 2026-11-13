@@ -68,7 +68,7 @@ test('settings work by keyboard and chart data opens a labelled modal dialog', a
   expect(helpId).toBeTruthy();
   await expect(example.locator(`#${helpId}`)).toBeVisible();
 
-  const dataButton = example.locator('a11y-line-chart').getByRole('button', { name: 'Data', exact: true });
+  const dataButton = example.locator('a11y-line-chart').getByRole('button', { name: 'View complete data', exact: true });
   await dataButton.focus();
   await page.keyboard.press('Enter');
   const dialog = example.locator('a11y-line-chart dialog');

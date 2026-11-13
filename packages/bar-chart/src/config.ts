@@ -1,11 +1,12 @@
 import type { A11yBarChartConfig, ResolvedA11yBarChartConfig } from './model.js';
 import { canonicalLocaleOrDefault } from '../../chart-core/src/validation.js';
+import { resolvePercentScale } from '../../chart-core/src/csv.js';
 
 const defaults: ResolvedA11yBarChartConfig = {
   scaleMode: 'largest',
   inferTotal: true,
   dataView: 'dialog',
-  tableVisibility: 'visible',
+  percentScale: 'whole',
   showSummary: true,
   showContext: true,
   showActions: true,
@@ -39,17 +40,14 @@ function decimals(value: unknown, fallback: number): number {
 
 export function resolveConfig(config: A11yBarChartConfig | null | undefined = undefined): ResolvedA11yBarChartConfig {
   if (!config || typeof config !== 'object') return { ...defaults };
-  const tableVisibility = config.tableVisibility === 'hidden' || config.tableVisibility === 'screen-reader' || config.tableVisibility === 'visible'
-    ? config.tableVisibility
-    : config.showTable === false ? 'hidden' : defaults.tableVisibility;
   return {
     scaleMode: config.scaleMode === 'population-share' ? 'population-share' : 'largest',
     inferTotal: typeof config.inferTotal === 'boolean' ? config.inferTotal : defaults.inferTotal,
     ...(typeof config.scaleMaximum === 'number' && Number.isFinite(config.scaleMaximum) && config.scaleMaximum > 0
       ? { scaleMaximum: config.scaleMaximum }
       : {}),
-    dataView: config.dataView === 'inline' ? 'inline' : 'dialog',
-    tableVisibility,
+    dataView: config.dataView === 'inline' || config.dataView === 'none' ? config.dataView : 'dialog',
+    percentScale: resolvePercentScale(config.percentScale, defaults.percentScale),
     showSummary: typeof config.showSummary === 'boolean' ? config.showSummary : defaults.showSummary,
     showContext: typeof config.showContext === 'boolean' ? config.showContext : defaults.showContext,
     showActions: typeof config.showActions === 'boolean' ? config.showActions : defaults.showActions,

@@ -4,6 +4,7 @@ import { createMessageResolver, type MessageDictionary } from './messages.js';
 import { copyTarget, isTargetRange } from './target.js';
 import { compareToNumericOrRange } from '../../chart-core/src/target.js';
 import { createFixedDecimalFormatter } from '../../chart-core/src/format.js';
+import { fractionToWholePercent } from '../../chart-core/src/csv.js';
 
 export function buildBarModel(data: readonly A11yBarChartDatum[], options: BarModelOptions = {}): A11yBarChartSemanticModel {
   const config: ResolvedA11yBarChartConfig = resolveConfig(options.config);
@@ -25,19 +26,21 @@ export function buildBarModel(data: readonly A11yBarChartDatum[], options: BarMo
     : null;
   const suppressed = options.suppressed === true;
   const filtered = options.filtered === true;
-  const isSuppressed = (datum: A11yBarChartDatum): boolean => datum.valueSuppressed === true ||
-    (datum.valueSuppressed !== false && options.suppressed === true && datum.value === 0);
-  const hasMissingValues = data.some((datum) => datum.valueSuppressed !== true && datum.value === null);
+  // The host suppresses upstream by sending 0; the chart only decides how zeros read while the flag is on.
+  const isSuppressed = (datum: A11yBarChartDatum): boolean => suppressed && datum.value === 0;
+  const hasMissingValues = data.some((datum) => datum.value === null);
   const hasSuppressedValues = data.some(isSuppressed);
+  // A provided zero total under suppression is not a usable denominator; it reads as Suppressed.
+  const providedTotal = suppressed && validTotal === 0 ? null : validTotal;
   let sum = 0;
   let sumOverflow = false;
   for (const datum of data) {
-    if (isSuppressed(datum)) continue;
     const value = datum.value ?? 0;
     if (value > Number.MAX_VALUE - sum) sumOverflow = true;
     else if (!sumOverflow) sum += value;
   }
-  const total = hasProvidedTotal ? validTotal : !config.inferTotal || suppressed || hasSuppressedValues || hasMissingValues || sumOverflow ? null : sum;
+  // A computed sum is understated when zeros are suppressed, so it is never inferred then.
+  const total = hasProvidedTotal ? providedTotal : !config.inferTotal || hasSuppressedValues || hasMissingValues || sumOverflow ? null : sum;
   const denominatorKnown = total !== null;
   const totalText = total !== null
     ? formatValue({ value: total, series: 'total', locale: config.locale }, () => numberFormat(total, config.countDecimals))
@@ -46,7 +49,7 @@ export function buildBarModel(data: readonly A11yBarChartDatum[], options: BarMo
       : msg('totalUnavailable');
   const largest = data.reduce((largestValue, datum) => Math.max(largestValue,
     isSuppressed(datum) || datum.value === null ? 0 : datum.value,
-    datum.targetSuppressed ? 0 : isTargetRange(datum.target) ? datum.target.max : datum.target ?? 0), 0);
+    isTargetRange(datum.target) ? datum.target.max : datum.target ?? 0), 0);
   const max = config.scaleMaximum ?? largest;
   const warnings: string[] = [];
   const indicators: string[] = [];
@@ -55,13 +58,13 @@ export function buildBarModel(data: readonly A11yBarChartDatum[], options: BarMo
   if (sumOverflow && !hasProvidedTotal && !suppressed && !hasMissingValues) warnings.push(msg('warningComputedTotalOverflow'));
   if (suppressed || hasSuppressedValues) indicators.push(msg('suppressed'));
   if (filtered) indicators.push(msg('filtered'));
-  if (validTotal !== null && !sumOverflow && sum > validTotal) warnings.push(msg('warningTotalMismatch', {
+  if (providedTotal !== null && !sumOverflow && sum > providedTotal) warnings.push(msg('warningTotalMismatch', {
     sum: numberFormat(sum, config.countDecimals), total: totalText
   }));
   if (config.scaleMode === 'largest' && config.scaleMaximum !== undefined) {
     for (const datum of data) {
       const valueClipped = !isSuppressed(datum) && datum.value !== null && datum.value > config.scaleMaximum;
-      const targetMax = datum.targetSuppressed ? null : isTargetRange(datum.target) ? datum.target.max : datum.target ?? null;
+      const targetMax = isTargetRange(datum.target) ? datum.target.max : datum.target ?? null;
       if (valueClipped || (targetMax !== null && targetMax > config.scaleMaximum)) {
         warnings.push(msg('warningScaleClipped', { label: datum.label }));
       }
@@ -85,7 +88,7 @@ export function buildBarModel(data: readonly A11yBarChartDatum[], options: BarMo
       ? status === 'suppressed'
         ? msg('percentageSuppressed')
         : msg('percentageUnavailable')
-      : formatValue({ value: percentage, series: 'percentage', locale: config.locale, id: datum.id, label: datum.label }, () => percentFormat(percentage, config.percentageDecimals));
+      : formatValue({ value: config.percentScale === 'whole' ? fractionToWholePercent(percentage) : percentage, series: 'percentage', locale: config.locale, id: datum.id, label: datum.label }, () => percentFormat(percentage, config.percentageDecimals));
     if (percentageOverflow) warnings.push(msg('warningPercentageOverflow', { label: datum.label }));
     let barRatio = 0;
     if (status === 'reported' && datum.value !== null) {
@@ -101,15 +104,13 @@ export function buildBarModel(data: readonly A11yBarChartDatum[], options: BarMo
     else if (status === 'suppressed') narrative = msg('narrativeSuppressed', { label: datum.label });
     else if (percentage === null) narrative = msg('narrativeValue', { label: datum.label, value: valueText });
     else narrative = msg('narrativeShare', { label: datum.label, value: valueText, percentage: percentageText });
-    const targetSuppressed = datum.targetSuppressed === true;
-    const target = targetSuppressed ? null : copyTarget(datum.target);
+    const target = copyTarget(datum.target);
     const targetMin = isTargetRange(target) ? target.min : target;
     const targetMax = isTargetRange(target) ? target.max : target;
     const formatBound = (value: number) => formatValue({ value, series: 'target', locale: config.locale, id: datum.id, label: datum.label }, () => numberFormat(value, config.countDecimals));
-    const targetText = targetSuppressed ? msg('targetSuppressed')
-      : target === null ? msg('targetUnavailable')
-        : isTargetRange(target) ? msg('targetRange', { min: formatBound(target.min), max: formatBound(target.max) })
-          : formatBound(target);
+    const targetText = target === null ? msg('targetUnavailable')
+      : isTargetRange(target) ? msg('targetRange', { min: formatBound(target.min), max: formatBound(target.max) })
+        : formatBound(target);
     const targetRelation: A11yBarChartRow['targetRelation'] = status !== 'reported' || targetMin === null || targetMax === null ? 'incomplete'
       : compareToNumericOrRange(datum.value!, target!);
     const targetOutcome: A11yBarChartRow['targetOutcome'] = targetRelation === 'incomplete' ? 'unavailable'
@@ -117,8 +118,7 @@ export function buildBarModel(data: readonly A11yBarChartDatum[], options: BarMo
         : targetRelation === 'equal' || targetRelation === config.positiveDirection ? 'met' : 'not-met';
     const targetOutcomeLabel = targetOutcome === 'unavailable' ? ''
       : msg(targetOutcome === 'met' ? 'outcomeMet' : 'outcomeNotMet');
-    const targetNarrative = targetSuppressed ? msg('targetProtected', { label: datum.label })
-      : target === null ? '' : msg({ below: 'targetBelow', within: 'targetWithin', above: 'targetAbove', equal: 'targetEqual', incomplete: 'targetIncomplete' }[targetRelation] as 'targetBelow' | 'targetWithin' | 'targetAbove' | 'targetEqual' | 'targetIncomplete', { label: datum.label, target: targetText });
+    const targetNarrative = target === null ? '' : msg({ below: 'targetBelow', within: 'targetWithin', above: 'targetAbove', equal: 'targetEqual', incomplete: 'targetIncomplete' }[targetRelation] as 'targetBelow' | 'targetWithin' | 'targetAbove' | 'targetEqual' | 'targetIncomplete', { label: datum.label, target: targetText });
     const scale = config.scaleMode === 'largest' ? max : total;
     const ratio = (value: number | null): number | null => value === null || scale === null || scale <= 0 ? null : Math.min(1, Math.max(0, value / scale));
     // A zero target on an all-zero largest scale still has a meaningful origin.
@@ -131,7 +131,7 @@ export function buildBarModel(data: readonly A11yBarChartDatum[], options: BarMo
     if (targetNarrative) narrative += ` ${targetNarrative}`;
     if (targetOutcomeLabel) narrative += ` ${targetOutcomeLabel}.`;
     return { id: datum.id, label: datum.label, value: status === 'suppressed' ? null : datum.value, status, valueText, percentage, percentageText, barRatio,
-      target, targetSuppressed, targetText, targetRelation, targetOutcome, targetOutcomeLabel, targetNarrative, targetStartRatio, targetEndRatio,
+      target, targetText, targetRelation, targetOutcome, targetOutcomeLabel, targetNarrative, targetStartRatio, targetEndRatio,
       definition: datum.definition ?? '', narrative };
   });
 

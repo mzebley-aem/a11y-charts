@@ -65,7 +65,7 @@ test('report remains within the viewport and chart dialogs work with a keyboard'
   await page.goto('/spp-apr/');
   const data = page
     .locator('#chart-stage')
-    .getByRole('button', { name: 'Data', exact: true });
+    .getByRole('button', { name: /^(Data|View complete data)$/ });
   await page
     .getByRole('button', { name: 'Restore full Y-axis', exact: true })
     .click();
@@ -199,7 +199,7 @@ test('text-spacing and reflow keep the report and open data dialogs contained', 
     .toBeLessThanOrEqual(320);
   await page
     .locator('#chart-stage')
-    .getByRole('button', { name: 'Data', exact: true })
+    .getByRole('button', { name: /^(Data|View complete data)$/ })
     .click();
   await expect(page.getByRole('dialog')).toBeVisible();
   await expect
@@ -224,7 +224,7 @@ test('source uncertainty is part of the 6B headline and overview', async ({
   await expect(page.locator('.feedback-actions button').first()).toHaveText(
     'Download review notes',
   );
-  await page.locator('#chart-stage').getByRole('button', { name: 'Data', exact: true }).click();
+  await page.locator('#chart-stage').getByRole('button', { name: /^(Data|View complete data)$/ }).click();
   await expect(page.getByRole('dialog')).toContainText('Any target outcome using 18.29% is conditional');
   await expect(page.getByRole('dialog')).toContainText('Target not met using the detailed target (under review)');
   await page.keyboard.press('Escape');

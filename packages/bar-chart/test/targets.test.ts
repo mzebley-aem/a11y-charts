@@ -24,7 +24,6 @@ describe('bar target contract', () => {
     for (const target of [-1, NaN, Infinity, '5', [], {}, { min: 9, max: 4 }, { min: -1, max: 9 }, { min: 2, max: Infinity }, { min: 2, max: null }]) {
       expect(validateBarData([{ ...datum(5), target }])).toMatchObject({ valid: false, code: 'validationInvalidTarget', params: { id: 'a' } });
     }
-    expect(validateBarData([{ ...datum(5), targetSuppressed: 'true' }])).toMatchObject({ valid: false, code: 'validationInvalidTarget' });
   });
 
   it('includes target bounds in largest scaling without adding them to the population', () => {
@@ -63,16 +62,16 @@ describe('bar target contract', () => {
     expect(extreme.rows[0]!.targetEndRatio).toBe(1);
   });
 
-  it('protects targets separately from zero-count suppression in every semantic output', () => {
-    const validated = validateBarData([{ ...datum(0, { min: 9876, max: 9999 }), targetSuppressed: true }]);
+  it('never suppresses a target, even when the zero value it sits beside is suppressed', () => {
+    const validated = validateBarData([datum(0, { min: 9876, max: 9999 })]);
     expect(validated.valid).toBe(true);
     if (!validated.valid) return;
-    expect(validated.data[0]!.target).toBeNull();
+    expect(validated.data[0]!.target).toEqual({ min: 9876, max: 9999 });
     const formatter = vi.fn(({ value }) => String(value));
     const model = buildBarModel(validated.data, { suppressed: true, formatValue: formatter });
-    expect(model.rows[0]).toMatchObject({ target: null, targetSuppressed: true, targetText: 'Suppressed', targetRelation: 'incomplete', targetStartRatio: null });
-    expect(JSON.stringify(model) + buildBarCsv(model)).not.toMatch(/9876|9999/);
-    expect(formatter).not.toHaveBeenCalled();
+    expect(model.rows[0]).toMatchObject({ status: 'suppressed', valueText: 'Suppressed', target: { min: 9876, max: 9999 }, targetRelation: 'incomplete' });
+    expect(model.rows[0]!.targetText).toBe('9876 to 9999');
+    expect(formatter.mock.calls.map(([context]) => context.series)).not.toContain('count');
     const visibleZero = buildBarModel([datum(0, 0)], { total: 1, suppressed: true });
     expect(visibleZero.rows[0]).toMatchObject({ status: 'suppressed', targetText: '0', targetRelation: 'incomplete' });
   });

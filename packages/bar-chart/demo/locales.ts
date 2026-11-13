@@ -8,14 +8,14 @@ type Catalog = Record<keyof typeof ENGLISH_MESSAGES, string> & MessageDictionary
 export const BAR_DEMO_MESSAGES = {
   'en-US': { ...ENGLISH_MESSAGES },
   'fr-FR': {
-    exportXlsx: 'Télécharger le fichier Excel', explanationLabel: 'Explication', plainLanguageSummary: 'Résumé en langage clair',
+    explanationLabel: 'Explication', plainLanguageSummary: 'Résumé en langage clair',
     warningScaleClipped: 'La valeur ou la cible de {label} dépasse le maximum de l’échelle commune ; la barre ou le repère est limité à la piste.',
     scaleShared: 'Les barres utilisent une échelle commune jusqu’à {maximum}',
     detailsAction: 'Détails pour {label}', detailsHint: 'Détails',
     detailsHelp: 'Survolez une barre ou placez-y le focus pour prévisualiser les détails. Utilisez les flèches Haut et Bas pour parcourir les catégories ; Début et Fin vont à la première et à la dernière. Cliquez, touchez, appuyez sur Entrée ou Espace pour garder les détails ouverts. Échap les ferme ; Tab continue normalement.',
     detailsPreview: 'Aperçu. Sélectionnez la barre pour garder les détails ouverts.',
     detailsPinned: 'Détails maintenus ouverts. Sélectionnez à nouveau la barre pour les fermer.',
-    targetHeader: 'Cible', csvTargetHeader: 'Cible', targetUnavailable: 'Non définie', targetSuppressed: 'Masquée',
+    targetHeader: 'Cible', csvTargetHeader: 'Cible', targetUnavailable: 'Non définie',
     targetRange: '{min} à {max}',
     outcomeMet: 'Cible atteinte', outcomeNotMet: 'Cible non atteinte',
     targetBelow: '{label} est en dessous de la cible ({target}).',
@@ -23,10 +23,9 @@ export const BAR_DEMO_MESSAGES = {
     targetAbove: '{label} est au-dessus de la cible ({target}).',
     targetEqual: '{label} correspond à la cible ({target}).',
     targetIncomplete: '{label} : cible {target} ; comparaison indisponible.',
-    targetProtected: '{label} : cible masquée ; comparaison indisponible.',
     warningTargetClipped: 'La cible de {label} dépasse le total fourni ; son repère est limité à la piste. La cible complète est indiquée dans le texte.',
     warningTargetScaleUnavailable: 'La cible de {label} ne peut pas être positionnée sans total positif. La cible complète est indiquée dans le texte.',
-    validationInvalidTarget: 'La catégorie {id} nécessite une cible finie et positive ou nulle, ou une plage avec min et max finis, positifs ou nuls, et min <= max. targetSuppressed doit être un booléen.',
+    validationInvalidTarget: 'La catégorie {id} nécessite une cible finie et positive ou nulle, ou une plage avec min et max finis, positifs ou nuls, et min <= max.',
     title: 'Graphique', subtitle: '', filtered: 'Données filtrées', suppressed: 'Données masquées',
     empty: 'Aucune catégorie n’est disponible.', invalidData: 'Les données du graphique sont invalides. Vérifiez les catégories et les valeurs.',
     invalidMessages: 'Le paramètre de messages n’est pas un JSON valide. Corrigez sa valeur puis réessayez.',
@@ -39,11 +38,11 @@ export const BAR_DEMO_MESSAGES = {
     showData: 'Voir toutes les données', close: 'Fermer', dataDialogTitle: 'Données complètes du graphique',
     dialogUnsupported: 'Ce navigateur ne prend pas en charge les boîtes de dialogue modales pour les données du graphique.',
     dialogUnavailable: 'La boîte de dialogue des données du graphique n’a pas pu s’ouvrir en mode modal.',
-    dataTableCaption: 'Données complètes : {title}', dataInlineSummary: 'Données complètes du graphique',
+    dataTableCaption: 'Données complètes : {title}', dataInlineSummary: 'Afficher les données complètes',
     exportCsv: 'Télécharger le fichier CSV', scaleLargest: 'Barres proportionnelles à la valeur la plus élevée',
     scalePopulationShare: 'Barres proportionnelles au total déclaré', missingValue: 'Non communiqué',
-    suppressedValue: 'Masqué', noDefinitions: 'Aucune définition de catégorie n’est disponible.',
-    glossary: 'Afficher les définitions', hideGlossary: 'Masquer les définitions', noContext: '',
+    suppressedValue: 'Masqué', suppressionNote: 'Certaines valeurs sont masquées pour protéger la vie privée.', noDefinitions: 'Aucune définition de catégorie n’est disponible.',
+    glossary: 'Glossaire', hideGlossary: 'Masquer le glossaire', noContext: '',
     summaryNoData: 'Aucune donnée de catégorie n’a été déclarée.',
     'summaryAllZero.one': 'La seule catégorie déclarée a une valeur nulle.',
     'summaryAllZero.other': 'Les {count} catégories déclarées ont toutes une valeur nulle.',
@@ -78,14 +77,14 @@ export const BAR_DEMO_MESSAGES = {
     scaleWarning: 'Certaines valeurs dépassent le total fourni ; la longueur des barres est limitée à la piste du graphique.'
   },
   'es-ES': {
-    exportXlsx: 'Descargar Excel', explanationLabel: 'Explicación', plainLanguageSummary: 'Resumen en lenguaje claro',
+    explanationLabel: 'Explicación', plainLanguageSummary: 'Resumen en lenguaje claro',
     warningScaleClipped: 'El valor o la meta de {label} supera el máximo de la escala compartida; la barra o el marcador se limita al área del gráfico.',
     scaleShared: 'Las barras usan una escala compartida hasta {maximum}',
     detailsAction: 'Detalles de {label}', detailsHint: 'Detalles',
     detailsHelp: 'Pase el cursor o enfoque una barra para ver los detalles. Use las flechas Arriba y Abajo para recorrer las categorías; Inicio y Fin van a la primera y la última. Haga clic, toque, pulse Intro o Espacio para mantener los detalles abiertos. Escape los cierra; Tab continúa normalmente.',
     detailsPreview: 'Vista previa. Seleccione la barra para mantener los detalles abiertos.',
     detailsPinned: 'Detalles abiertos. Seleccione la barra de nuevo para cerrarlos.',
-    targetHeader: 'Meta', csvTargetHeader: 'Meta', targetUnavailable: 'Sin definir', targetSuppressed: 'Suprimida',
+    targetHeader: 'Meta', csvTargetHeader: 'Meta', targetUnavailable: 'Sin definir',
     targetRange: '{min} a {max}',
     outcomeMet: 'Meta alcanzada', outcomeNotMet: 'Meta no alcanzada',
     targetBelow: '{label} está por debajo de la meta ({target}).',
@@ -93,10 +92,9 @@ export const BAR_DEMO_MESSAGES = {
     targetAbove: '{label} está por encima de la meta ({target}).',
     targetEqual: '{label} coincide con la meta ({target}).',
     targetIncomplete: '{label}: meta {target}; comparación no disponible.',
-    targetProtected: '{label}: meta suprimida; comparación no disponible.',
     warningTargetClipped: 'La meta de {label} supera el total proporcionado; su marcador se limita al espacio del gráfico. La meta completa se muestra en el texto.',
     warningTargetScaleUnavailable: 'La meta de {label} no se puede ubicar sin un total positivo. La meta completa se muestra en el texto.',
-    validationInvalidTarget: 'La categoría {id} necesita una meta finita y no negativa, o un rango con min y max finitos y no negativos y min <= max. targetSuppressed debe ser booleano.',
+    validationInvalidTarget: 'La categoría {id} necesita una meta finita y no negativa, o un rango con min y max finitos y no negativos y min <= max.',
     title: 'Gráfico', subtitle: '', filtered: 'Datos filtrados', suppressed: 'Datos suprimidos',
     empty: 'No hay categorías disponibles.', invalidData: 'Los datos del gráfico no son válidos. Comprueba las categorías y los valores.',
     invalidMessages: 'El ajuste de mensajes no es un JSON válido. Corrige su valor e inténtalo de nuevo.',
@@ -109,11 +107,11 @@ export const BAR_DEMO_MESSAGES = {
     showData: 'Ver todos los datos', close: 'Cerrar', dataDialogTitle: 'Datos completos del gráfico',
     dialogUnsupported: 'Este navegador no admite diálogos modales para los datos del gráfico.',
     dialogUnavailable: 'No se pudo abrir el diálogo de datos del gráfico como modal.',
-    dataTableCaption: 'Datos completos de {title}', dataInlineSummary: 'Datos completos del gráfico',
+    dataTableCaption: 'Datos completos de {title}', dataInlineSummary: 'Ver datos completos',
     exportCsv: 'Descargar CSV', scaleLargest: 'Barras según el valor más alto notificado',
     scalePopulationShare: 'Barras según el total notificado', missingValue: 'No informado',
-    suppressedValue: 'Suprimido', noDefinitions: 'No hay definiciones de categorías disponibles.',
-    glossary: 'Mostrar definiciones', hideGlossary: 'Ocultar definiciones', noContext: '',
+    suppressedValue: 'Suprimido', suppressionNote: 'Algunos valores se suprimen para proteger la privacidad.', noDefinitions: 'No hay definiciones de categorías disponibles.',
+    glossary: 'Glosario', hideGlossary: 'Ocultar glosario', noContext: '',
     summaryNoData: 'No se han notificado datos de categorías.',
     'summaryAllZero.one': 'La única categoría notificada tiene un valor de cero.',
     'summaryAllZero.other': 'Las {count} categorías notificadas tienen un valor de cero.',
@@ -174,10 +172,7 @@ export interface BarDemoPageContent {
   filteredLabel: string;
   suppressedLabel: string;
   alternateLabel: string;
-  tableVisibilityLabel: string;
-  tableVisible: string;
-  tableScreenReader: string;
-  tableHidden: string;
+  noneMode: string;
   showSummary: string;
   showDetails: string;
   showContext: string;
@@ -225,10 +220,9 @@ export const BAR_DEMO_PAGE_MESSAGES: Record<BarDemoLocale, BarDemoPageContent> =
     kicker: 'Accessible reporting component', heading: 'Horizontal bar chart',
     introduction: 'Each chart keeps its complete data, explanation and definitions available alongside the visual comparison.',
     controlsHeading: 'Try the component', scaleLabel: 'Bar scale', scaleLargest: 'Largest value',
-    scalePopulationShare: 'Population share', dataViewLabel: 'Data view', dialogMode: 'Dialog', inlineMode: 'Inline disclosure',
+    scalePopulationShare: 'Population share', dataViewLabel: 'Data view', dialogMode: 'Dialog', inlineMode: 'Inline disclosure', noneMode: 'None',
     localeLabel: 'Display language', filteredLabel: 'Filtered data', suppressedLabel: 'Suppressed data',
     alternateLabel: 'Use alternate dataset', referenceHeading: 'Reference cases',
-    tableVisibilityLabel: 'Full-data table visibility', tableVisible: 'Visible', tableScreenReader: 'Screen-reader only', tableHidden: 'Hidden',
     showDetails: 'Explore hover and focus cards',
     showSummary: 'Show summary', showContext: 'Show context', showActions: 'Show actions', showExplanation: 'Show explanation',
     showGlossary: 'Show definitions', showExport: 'Show CSV export', showCounts: 'Show counts', showPercentages: 'Show percentages',
@@ -249,9 +243,8 @@ export const BAR_DEMO_PAGE_MESSAGES: Record<BarDemoLocale, BarDemoPageContent> =
     introduction: 'Chaque graphique présente la comparaison visuelle ainsi que toutes les données, explications et définitions.',
     controlsHeading: 'Essayer le composant', scaleLabel: 'Échelle des barres', scaleLargest: 'Valeur la plus élevée',
     scalePopulationShare: 'Part de la population', dataViewLabel: 'Affichage des données', dialogMode: 'Boîte de dialogue',
-    inlineMode: 'Dévoilement intégré', localeLabel: 'Langue d’affichage', filteredLabel: 'Données filtrées',
+    inlineMode: 'Dévoilement intégré', noneMode: 'Aucune', localeLabel: 'Langue d’affichage', filteredLabel: 'Données filtrées',
     suppressedLabel: 'Données masquées', alternateLabel: 'Utiliser un autre jeu de données', referenceHeading: 'Exemples de référence',
-    tableVisibilityLabel: 'Visibilité du tableau complet', tableVisible: 'Visible', tableScreenReader: 'Lecteurs d’écran uniquement', tableHidden: 'Masqué',
     showDetails: 'Explorer les cartes au survol et au focus',
     showSummary: 'Afficher le résumé', showContext: 'Afficher le contexte', showActions: 'Afficher les actions', showExplanation: 'Afficher l’explication',
     showGlossary: 'Afficher les définitions', showExport: 'Afficher l’export CSV', showCounts: 'Afficher les nombres', showPercentages: 'Afficher les pourcentages',
@@ -272,9 +265,8 @@ export const BAR_DEMO_PAGE_MESSAGES: Record<BarDemoLocale, BarDemoPageContent> =
     introduction: 'Cada gráfico muestra la comparación visual junto con todos sus datos, explicaciones y definiciones.',
     controlsHeading: 'Prueba el componente', scaleLabel: 'Escala de las barras', scaleLargest: 'Valor más alto',
     scalePopulationShare: 'Proporción de la población', dataViewLabel: 'Vista de datos', dialogMode: 'Diálogo',
-    inlineMode: 'Despliegue integrado', localeLabel: 'Idioma de visualización', filteredLabel: 'Datos filtrados',
+    inlineMode: 'Despliegue integrado', noneMode: 'Ninguna', localeLabel: 'Idioma de visualización', filteredLabel: 'Datos filtrados',
     suppressedLabel: 'Datos suprimidos', alternateLabel: 'Usar otro conjunto de datos', referenceHeading: 'Casos de referencia',
-    tableVisibilityLabel: 'Visibilidad de la tabla completa', tableVisible: 'Visible', tableScreenReader: 'Solo lectores de pantalla', tableHidden: 'Oculta',
     showDetails: 'Explorar tarjetas al pasar el cursor y enfocar',
     showSummary: 'Mostrar resumen', showContext: 'Mostrar contexto', showActions: 'Mostrar acciones', showExplanation: 'Mostrar explicación',
     showGlossary: 'Mostrar definiciones', showExport: 'Mostrar exportación CSV', showCounts: 'Mostrar recuentos', showPercentages: 'Mostrar porcentajes',
@@ -306,7 +298,7 @@ export function getBarDemoContent(locale: BarDemoLocale): BarDemoChartContent[] 
       sex: ['Reported population by sex', 'Illustrative values · 27 total', 'Illustrative values for this component example.'],
       settings: ['Reported setting counts', 'Illustrative values · 510 total', 'Illustrative setting counts; one value is suppressed for privacy.'],
       alternateDefinitions: ['Programs in the northern service area.', 'Programs in the central service area.', 'Programs in the southern service area.'],
-      dataNotes: ['Counts are illustrative and preserve the supplied reference values.', 'Some reporting statuses are not numeric values.', 'The two illustrative categories total 27.', 'The value of zero is reported; suppression is demonstrated by the chart option.', 'The alternative dataset totals 100.'],
+      dataNotes: ['Counts are illustrative and preserve the supplied reference values.', 'Some reporting statuses are not numeric values.', 'The two illustrative categories total 27.', 'The zero value stands for a protected count and is suppressed for privacy in this example.', 'The alternative dataset totals 100.'],
       labels: ['Home', 'Community-based', 'Other', 'Northern service area', 'Central service area', 'Southern service area', 'Complete reports', 'Pending reports', 'Not reported', 'Male', 'Female', 'Home setting', 'Community setting', 'Other setting']
     },
     'fr-FR': {
@@ -316,7 +308,7 @@ export function getBarDemoContent(locale: BarDemoLocale): BarDemoChartContent[] 
       sex: ['Population déclarée par sexe', 'Valeurs illustratives · total de 27', 'Valeurs illustratives pour cet exemple de composant.'],
       settings: ['Nombres déclarés par milieu', 'Valeurs illustratives · total de 510', 'Nombres illustratifs par milieu ; une valeur est masquée pour protéger la confidentialité.'],
       alternateDefinitions: ['Programmes de la zone de service nord.', 'Programmes de la zone de service centrale.', 'Programmes de la zone de service sud.'],
-      dataNotes: ['Les nombres sont illustratifs et conservent les valeurs de référence fournies.', 'Certains états de déclaration ne sont pas des valeurs numériques.', 'Les deux catégories illustratives totalisent 27.', 'La valeur zéro est déclarée ; l’option du graphique illustre la suppression.', 'Le jeu de données alternatif totalise 100.'],
+      dataNotes: ['Les nombres sont illustratifs et conservent les valeurs de référence fournies.', 'Certains états de déclaration ne sont pas des valeurs numériques.', 'Les deux catégories illustratives totalisent 27.', 'La valeur zéro représente un effectif protégé et est masquée pour protéger la vie privée dans cet exemple.', 'Le jeu de données alternatif totalise 100.'],
       labels: ['Domicile', 'Milieu communautaire', 'Autre', 'Zone de service nord', 'Zone de service centrale', 'Zone de service sud', 'Rapports complets', 'Rapports en attente', 'Non déclaré', 'Hommes', 'Femmes', 'Milieu familial', 'Milieu communautaire', 'Autre milieu']
     },
     'es-ES': {
@@ -326,7 +318,7 @@ export function getBarDemoContent(locale: BarDemoLocale): BarDemoChartContent[] 
       sex: ['Población notificada por sexo', 'Valores ilustrativos · total de 27', 'Valores ilustrativos para este ejemplo del componente.'],
       settings: ['Recuentos notificados por entorno', 'Valores ilustrativos · total de 510', 'Recuentos ilustrativos por entorno; se suprime un valor para proteger la privacidad.'],
       alternateDefinitions: ['Programas de la zona de servicio norte.', 'Programas de la zona de servicio central.', 'Programas de la zona de servicio sur.'],
-      dataNotes: ['Los recuentos son ilustrativos y conservan los valores de referencia proporcionados.', 'Algunos estados de informe no son valores numéricos.', 'Las dos categorías ilustrativas suman 27.', 'El valor cero está notificado; la opción del gráfico demuestra la supresión.', 'El conjunto de datos alternativo suma 100.'],
+      dataNotes: ['Los recuentos son ilustrativos y conservan los valores de referencia proporcionados.', 'Algunos estados de informe no son valores numéricos.', 'Las dos categorías ilustrativas suman 27.', 'El valor cero representa un recuento protegido y se suprime para proteger la privacidad en este ejemplo.', 'El conjunto de datos alternativo suma 100.'],
       labels: ['Hogar', 'Entorno comunitario', 'Otro', 'Zona de servicio norte', 'Zona de servicio central', 'Zona de servicio sur', 'Informes completos', 'Informes pendientes', 'No informado', 'Hombres', 'Mujeres', 'Entorno del hogar', 'Entorno comunitario', 'Otro entorno']
     }
   } as const)[locale];

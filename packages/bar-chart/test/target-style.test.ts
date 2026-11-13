@@ -8,7 +8,7 @@ const sample: A11yBarChartDatum[] = [
   { id: 'miss', label: 'Missed', value: 5, target: { min: 2, max: 4 } },
   { id: 'plain', label: 'No target', value: 2 },
   { id: 'missing', label: 'Missing', value: null, target: 2 },
-  { id: 'protected', label: 'Protected', value: 3, target: 2, targetSuppressed: true },
+  { id: 'zero-target', label: 'Zero with target', value: 0, target: 2 },
   { id: 'suppressed', label: 'Suppressed', value: 0, target: { min: 0, max: 2 } }
 ];
 

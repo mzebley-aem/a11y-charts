@@ -8,12 +8,12 @@ const categories = [
   { id: 'other', label: 'Other Setting', definition: 'Services provided in other settings.' }
 ];
 const rows = (values: (number | null)[], withheld = false): A11yBarChartDatum[] => categories.map((category, index) => ({
-  ...category, value: values[index] ?? null, valueSuppressed: withheld && index > 0
+  ...category, value: withheld && index > 0 ? 0 : values[index] ?? null
 }));
 function view(id: string, label: string, total: number, data: A11yBarChartDatum[], filtered: boolean, screenshot: boolean, description: string): PreparedBarView {
-  return { id, label, chartTitle: label, total, data, filtered, suppressed: screenshot || data.some(row => row.valueSuppressed),
+  return { id, label, chartTitle: label, total, data, filtered, suppressed: screenshot || data.some(row => row.value === 0),
     context: description,
-    explanation: `<p>The selected population is <strong>${total}</strong> children, or ${(total / 510 * 100).toFixed(2)}% of the overall population of 510. Each bar’s percentage uses the selected population as its denominator.</p><p>Suppressed values are intentionally withheld and are not treated as reported zeros.</p>`,
+    explanation: `<p>The selected population is <strong>${total}</strong> children, or ${(total / 510 * 100).toFixed(2)}% of the overall population of 510. Each bar’s percentage uses the selected population as its denominator.</p><p>Suppressed values are intentionally withheld.</p>`,
     dataNote: screenshot ? 'Visible values and totals transcribed from the supplied screenshot. Definitions are illustrative. The full underlying dataset was not supplied.' : 'Illustrative selection data for reviewing the interaction; these values are not production data.' };
 }
 export function ageSection(): BarViewSection {
@@ -35,20 +35,19 @@ export function raceSection(): BarViewSection {
 }
 export function availabilitySection(): BarViewSection {
   return prepareBarViewSection({
-    id: 'availability', label: 'Data availability', description: 'Compare reported zero, withheld, missing, and empty results.',
+    id: 'availability', label: 'Data availability', description: 'Compare reported, suppressed, missing, and empty results.', suppressed: true,
     all: { id: 'availability-all', label: 'All demonstration records', total: 100 },
-    options: [{ id: 'mixed', label: 'Mixed availability', total: 100 }, { id: 'zero', label: 'Reported zeros', total: 0 }, { id: 'empty', label: 'No matching records' }],
+    options: [{ id: 'mixed', label: 'Mixed availability', total: 100 }, { id: 'zero', label: 'Fully suppressed', total: 0 }, { id: 'empty', label: 'No matching records' }],
     records: [
       { filterId: 'mixed', id: 'reported', label: 'Reported', value: 40 },
-      { filterId: 'mixed', id: 'zero', label: 'Reported zero', value: 0, valueSuppressed: false },
-      { filterId: 'mixed', id: 'withheld', label: 'Withheld', value: null, valueSuppressed: true },
+      { filterId: 'mixed', id: 'withheld', label: 'Small group', value: 0 },
       { filterId: 'mixed', id: 'missing', label: 'Not reported', value: null },
-      { filterId: 'zero', id: 'zero', label: 'Reported zero', value: 0, valueSuppressed: false }
+      { filterId: 'zero', id: 'withheld', label: 'Small group', value: 0 }
     ],
     describe: ({ option }) => ({ chartTitle: option.label,
       emptyMessage: 'No records match this selection. Choose another population to continue.',
-      context: 'Fictional records demonstrate distinct availability states. Unknown values are never converted into zero.',
-      explanation: '<p>A reported zero is a known count. A withheld value is protected. A missing value has not been reported. A view with no records has no categories to display.</p>',
+      context: 'Fictional records demonstrate distinct availability states. Protected values were replaced with zero before reaching the chart, and the chart is flagged as suppressed.',
+      explanation: '<p>A suppressed value is protected and arrives as zero. A missing value has not been reported. A view with no records has no categories to display.</p>',
       dataNote: 'Entirely illustrative data. The population total is supplied separately from the disclosed counts.' })
   });
 }

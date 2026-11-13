@@ -53,16 +53,16 @@ describe('public API consistency', () => {
   it('provides optional safe navigation without trapping segment controls in a link', async () => {
     const chart = setup(); chart.config = { presentation: 'compact', showDetails: true };
     document.body.append(chart); await settle();
-    expect(chart.querySelector('.title a')).toBeNull();
+    expect(chart.querySelector('.a11y-segmented-bar-chart__title a')).toBeNull();
     chart.href = 'javascript:alert(1)'; await settle();
-    expect(chart.querySelector('.title a')).toBeNull();
+    expect(chart.querySelector('.a11y-segmented-bar-chart__title a')).toBeNull();
     chart.href = '#destination'; await settle();
-    expect(chart.querySelector('.title a')?.getAttribute('href')).toBe('#destination');
+    expect(chart.querySelector('.a11y-segmented-bar-chart__title a')?.getAttribute('href')).toBe('#destination');
     expect(chart.querySelector('a button')).toBeNull();
-    expect(chart.querySelector('.title a')?.classList.contains('card-link')).toBe(false);
+    expect(chart.querySelector('.a11y-segmented-bar-chart__title a')?.classList.contains('a11y-segmented-bar-chart__card-link')).toBe(false);
     chart.config = { presentation: 'compact', showDetails: false, showActions: false };
     await settle();
-    expect(chart.querySelector('.title a')?.classList.contains('card-link')).toBe(true);
+    expect(chart.querySelector('.a11y-segmented-bar-chart__title a')?.classList.contains('a11y-segmented-bar-chart__card-link')).toBe(true);
   });
 
   it('does not inject inline style tags and preserves host-authored children', async () => {
@@ -76,23 +76,119 @@ describe('public API consistency', () => {
 
   it('preserves missing/suppressed status when numeric annotations are hidden', async () => {
     const chart = setup();
-    chart.data = [{ id: 'a', label: 'Protected', value: 999, valueSuppressed: true }, { id: 'b', label: 'Missing record', value: null }];
+    chart.data = [{ id: 'a', label: 'Protected', value: 0 }, { id: 'b', label: 'Missing record', value: null }];
+    chart.suppressed = true;
     chart.config = { showCounts: false, showPercentages: false, showSummary: false };
     document.body.append(chart); await settle();
-    expect(chart.querySelector('.legend')?.textContent).toContain('Suppressed');
-    expect(chart.querySelector('.legend')?.textContent).toContain('Missing');
-    expect(chart.textContent).not.toContain('999');
+    expect(chart.querySelector('.a11y-segmented-bar-chart__legend')?.textContent).toContain('Suppressed');
+    expect(chart.querySelector('.a11y-segmented-bar-chart__legend')?.textContent).toContain('Not reported');
   });
-  it('keeps inline data available in screen-reader table mode and reports invalid replacements', async () => {
+  it('keeps inline data and its CSV export available and reports invalid replacements', async () => {
     const chart = setup();
-    chart.config = { dataView: 'inline', tableVisibility: 'screen-reader', showActions: false };
+    chart.config = { dataView: 'inline', showActions: false };
     document.body.append(chart); await settle();
-    expect(chart.querySelector('.inline-data summary')).not.toBeNull();
-    expect(chart.querySelector('.inline-data [data-focus-key="export:csv"]')).not.toBeNull();
+    expect(chart.querySelector('.a11y-segmented-bar-chart__inline-data summary')).not.toBeNull();
+    expect(chart.querySelector('.a11y-segmented-bar-chart__inline-data [data-focus-key="export:csv"]')).not.toBeNull();
     const changed = vi.fn(); chart.addEventListener('a11y-segmented-bar-chart-data-change', changed);
     chart.data = [{ id: 'invalid', label: 'Invalid', value: -1 }]; await settle();
     expect(chart.querySelector('[role="alert"]')).not.toBeNull();
     expect((changed.mock.calls[0]![0] as CustomEvent).detail.model).toBeNull();
   });
 
+  it('does not dispatch any event when chartTitle or config change after the first render', async () => {
+    const chart = setup();
+    document.body.append(chart); await settle();
+    const dispatch = vi.spyOn(chart, 'dispatchEvent');
+    chart.chartTitle = 'Updated requests';
+    chart.config = { showDetails: true, percentageDecimals: 1 };
+    await settle();
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+});
+
+describe('data view, percent scale, and export attributes', () => {
+  const dataTools = (chart: Element) => [...chart.querySelectorAll<HTMLButtonElement>('.a11y-segmented-bar-chart__data-tools button')];
+
+  it('dataView none removes the data action, table, inline view, and exports', async () => {
+    const chart = setup();
+    chart.config = { dataView: 'none' };
+    document.body.append(chart); await settle();
+    expect(chart.querySelector('[data-focus-key="data"]')).toBeNull();
+    expect(chart.querySelector('dialog')).toBeNull();
+    expect(chart.querySelector('details.a11y-segmented-bar-chart__inline-data')).toBeNull();
+    expect(chart.querySelector('table')).toBeNull();
+    expect(dataTools(chart)).toHaveLength(0);
+    expect(chart.textContent).not.toContain('Download CSV');
+  });
+
+  it('data-view attribute takes precedence over config when valid', async () => {
+    const chart = setup();
+    chart.config = { dataView: 'none' };
+    chart.setAttribute('data-view', 'inline');
+    document.body.append(chart); await settle();
+    expect(chart.querySelector('details.a11y-segmented-bar-chart__inline-data')).not.toBeNull();
+
+    chart.setAttribute('data-view', 'dialog');
+    await settle();
+    expect(chart.querySelector('details.a11y-segmented-bar-chart__inline-data')).toBeNull();
+    expect(chart.querySelector('[data-focus-key="data"]')).not.toBeNull();
+
+    chart.setAttribute('data-view', 'none');
+    await settle();
+    expect(chart.querySelector('[data-focus-key="data"]')).toBeNull();
+    expect(chart.querySelector('table')).toBeNull();
+  });
+
+  it('ignores an invalid data-view attribute and uses config', async () => {
+    const chart = setup();
+    chart.config = { dataView: 'inline' };
+    chart.setAttribute('data-view', 'bogus');
+    document.body.append(chart); await settle();
+    expect(chart.querySelector('details.a11y-segmented-bar-chart__inline-data')).not.toBeNull();
+  });
+
+  it('percent-scale attribute overrides config, and config alone controls the default', async () => {
+    const formatValue = vi.fn((_context: { value: number; series: string }) => `v`);
+    const chart = setup();
+    const percents = () => formatValue.mock.calls.filter(([context]) => context.series === 'percentage').map(([context]) => context.value);
+    chart.formatValue = formatValue;
+    chart.config = { percentScale: 'fraction' };
+    chart.setAttribute('percent-scale', 'whole');
+    document.body.append(chart); await settle();
+    expect(percents()).toContain(60);
+
+    formatValue.mockClear();
+    chart.removeAttribute('percent-scale');
+    await settle();
+    expect(percents()).toContain(0.6);
+
+    formatValue.mockClear();
+    chart.config = {};
+    await settle();
+    expect(percents()).toContain(60);
+  });
+
+  it('offers only a CSV download, with no Excel button', async () => {
+    const chart = setup();
+    chart.config = { dataView: 'inline', showActions: false };
+    document.body.append(chart); await settle();
+    expect(dataTools(chart).map(button => button.textContent)).toEqual(['Download CSV']);
+    expect(chart.textContent).not.toMatch(/excel|xlsx/i);
+  });
+
+  it('downloads CSV prefixed with the UTF-8 byte-order mark', async () => {
+    const createObjectURL = vi.fn((_blob: Blob) => 'blob:csv');
+    URL.createObjectURL = createObjectURL;
+    URL.revokeObjectURL = vi.fn();
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+    const chart = setup();
+    chart.config = { dataView: 'inline', showActions: false };
+    document.body.append(chart); await settle();
+    dataTools(chart)[0]!.click();
+    const blob = createObjectURL.mock.calls[0]![0];
+    const text = await blob.text();
+    expect(text.charCodeAt(0)).toBe(0xfeff);
+    expect(text.slice(1)).toContain('Resolved');
+    expect(text.slice(1).startsWith('\ufeff')).toBe(false);
+  });
 });

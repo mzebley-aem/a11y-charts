@@ -37,7 +37,7 @@ for (const kind of ['line', 'bar']) {
       await expect(chart.getByRole('heading', { name: `${kind} chart`, exact: true })).toBeVisible();
       if (kind === 'line') await expect(chart.locator('canvas').first()).toBeVisible();
       else await expect(chart.locator('.a11y-bar-chart__bar').first()).toBeVisible();
-      await chart.getByRole('button', { name: kind === 'line' ? 'Data' : 'View complete data', exact: true }).click();
+      await chart.getByRole('button', { name: 'View complete data', exact: true }).click();
       expect(await chart.locator('dialog').evaluate(dialog => dialog.matches(':modal'))).toBe(true);
       await expect(chart.locator('dialog table')).toBeVisible();
       await page.keyboard.press('Escape');
@@ -89,7 +89,7 @@ test('packed chart modals follow opening order across packages and restore the u
   const bar = page.locator('a11y-bar-chart');
   await bar.getByRole('button', { name: 'View complete data', exact: true }).click();
   // The earlier DOM sibling opens last and is now above the bar modal.
-  await line.getByRole('button', { name: 'Data', exact: true }).evaluate(button => button.click());
+  await line.getByRole('button', { name: 'View complete data', exact: true }).evaluate(button => button.click());
   for (const chart of [line, bar]) {
     const dialog = chart.locator('dialog');
     await expect(dialog).toHaveJSProperty('open', true);

@@ -55,66 +55,60 @@ describe('line chart event contract', () => {
     expect(listener).toHaveBeenCalledTimes(1);
   });
 
-  it('emits the first property update after initial render', async () => {
-    const chart = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    chart.data = [{ x: 2025, actual: 1, target: 2 }];
-    document.body.append(chart);
-    await settle();
-    const listener = vi.fn();
-    chart.addEventListener('a11y-line-chart-display-change', listener);
-    chart.subtitle = 'Updated after initial render';
-    await settle();
-    expect(listener).toHaveBeenCalledTimes(1);
-    expect(listener.mock.calls[0]?.[0].detail.source).toBe('properties');
-  });
-
-  it('emits one copied properties display-change after actual updates and none for equivalent assignments', async () => {
-    const chart = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    chart.data = [{ x: 2025, actual: 1, target: 2 }];
-    document.body.append(chart);
-    await settle();
-    const listener = vi.fn();
-    chart.addEventListener('a11y-line-chart-display-change', listener);
-
-    chart.theme = { ...chart.theme };
-    chart.config = { ...chart.config };
-    chart.context = undefined;
-    await settle();
-    expect(listener).not.toHaveBeenCalled();
-
-    chart.chartTitle = 'Updated title';
-    chart.theme = { ...chart.theme, actualColor: '#123456' };
-    chart.definitions = [{ id: 'term', label: 'Term', definition: 'Definition' }];
-    await settle();
-    expect(listener).toHaveBeenCalledTimes(1);
-    const detail = listener.mock.calls[0]?.[0].detail;
-    expect(detail.source).toBe('properties');
-    expect(detail.chartTitle).toBe('Updated title');
-    expect(detail.definitions).toEqual([{ id: 'term', label: 'Term', definition: 'Definition' }]);
-
-    chart.dataNote = 'Changed note';
-    await settle();
-    expect(listener).toHaveBeenCalledTimes(2);
-  });
-
-  it('keeps user controls on their existing source and avoids a duplicate properties event', async () => {
+  it('never emits settings-change for host-driven property, config, or message updates', async () => {
     const chart = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
     chart.config = { showControls: true };
     chart.data = [{ x: 2025, actual: 1, target: 2 }];
     document.body.append(chart);
     await settle();
     const listener = vi.fn();
-    chart.addEventListener('a11y-line-chart-display-change', listener);
-    chart.subtitle = 'Concurrent property update';
+    chart.addEventListener('a11y-line-chart-settings-change', listener);
+
+    chart.subtitle = 'Host subtitle';
+    chart.chartTitle = 'Host title';
+    chart.theme = { actualColor: '#123456' };
+    chart.definitions = [{ id: 'term', label: 'Term', definition: 'Definition' }];
+    chart.dataNote = 'Host note';
+    chart.context = 'Host context';
+    chart.formatValue = () => 'Formatted';
+    chart.config = { showActualValues: true, showTargetLine: false };
+    chart.messages = { noData: 'Host message' };
+    chart.filtered = true;
+    chart.setAttribute('filtered', '');
+    await settle();
+
+    expect(listener).not.toHaveBeenCalled();
+    expect(chart.config.showActualValues).toBe(true);
+    expect(chart.config.showTargetLine).toBe(false);
+  });
+
+  it('emits exactly one bubbling settings-change per reader control change, after config reflects it', async () => {
+    const chart = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
+    chart.config = { showControls: true };
+    chart.data = [{ x: 2025, actual: 1, target: 2 }];
+    document.body.append(chart);
+    await settle();
+    const listener = vi.fn();
+    const configAtEvent: unknown[] = [];
+    chart.addEventListener('a11y-line-chart-settings-change', (event) => {
+      listener(event);
+      configAtEvent.push(chart.config.showActualValues);
+    });
+    const bubbled = vi.fn();
+    document.body.addEventListener('a11y-line-chart-settings-change', bubbled);
+
     chart.querySelector<HTMLInputElement>('[data-control="showActualValues"]')!.click();
     await settle();
-    expect(listener).toHaveBeenCalledTimes(2);
-    expect(listener.mock.calls[0]?.[0].detail.source).toBe('controls');
-    expect(listener.mock.calls[1]?.[0].detail.source).toBe('properties');
 
-    chart.subtitle = 'An independent property update';
+    expect(listener).toHaveBeenCalledOnce();
+    expect(bubbled).toHaveBeenCalledOnce();
+    expect(listener.mock.calls[0]?.[0].bubbles).toBe(true);
+    expect(listener.mock.calls[0]?.[0].detail).toEqual({ setting: 'showActualValues', value: true, source: 'controls' });
+    expect(configAtEvent).toEqual([true]);
+
+    chart.subtitle = 'Host update after reader change';
     await settle();
-    expect(listener).toHaveBeenCalledTimes(3);
-    expect(listener.mock.calls[2]?.[0].detail.source).toBe('properties');
+    expect(listener).toHaveBeenCalledOnce();
+    document.body.removeEventListener('a11y-line-chart-settings-change', bubbled);
   });
 });

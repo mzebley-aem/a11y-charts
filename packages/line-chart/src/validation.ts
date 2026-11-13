@@ -88,10 +88,6 @@ export function validateData(value: unknown, translate: Translate = english): Da
     }
 
     const item = candidate as Record<string, unknown>;
-    if ((item['actualSuppressed'] !== undefined && typeof item['actualSuppressed'] !== 'boolean')
-      || (item['targetSuppressed'] !== undefined && typeof item['targetSuppressed'] !== 'boolean')) {
-      return { valid: false, message: translate('validationSuppressionFlag', { index: index + 1 }) };
-    }
     const xValue = item['x'] ?? item['year'];
     if (!isValidXValue(xValue)) {
       return {
@@ -118,14 +114,11 @@ export function validateData(value: unknown, translate: Translate = english): Da
       }
     }
 
-    const normalized: A11yLineChartDatum = {
+    data.push({
       x: xValue instanceof Date ? new Date(xValue.getTime()) : xValue,
-      actual: item['actualSuppressed'] === true ? null : item['actual'] ?? null,
-      target: item['targetSuppressed'] === true ? null : copyTarget(target as A11yLineChartDatum['target'])
-    };
-    if (item['actualSuppressed'] === true) normalized.actualSuppressed = true;
-    if (item['targetSuppressed'] === true) normalized.targetSuppressed = true;
-    data.push(normalized);
+      actual: item['actual'] ?? null,
+      target: copyTarget(target as A11yLineChartDatum['target'])
+    });
   }
 
   return { valid: true, data };

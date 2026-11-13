@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        chart: [line-chart, bar-chart]
+        chart: [line-chart, bar-chart, segmented-bar-chart]
     defaults:
       run:
         working-directory: packages/${{ matrix.chart }}
@@ -23,7 +23,8 @@ jobs:
       - run: npm test
       - run: npm run typecheck
       - run: npm run build
-      - run: npm run demo:build
+      - if: matrix.chart != 'segmented-bar-chart'
+        run: npm run demo:build
       - if: matrix.chart == 'line-chart'
         run: npm run report:build
   browser:
@@ -40,6 +41,7 @@ jobs:
           node-version: 24
       - run: npm ci --prefix packages/line-chart
       - run: npm ci --prefix packages/bar-chart
+      - run: npm ci --prefix packages/segmented-bar-chart
       - run: npx playwright install --with-deps ${{ matrix.browser }}
         working-directory: packages/line-chart
       - run: npm run demo:build --prefix packages/line-chart
@@ -49,6 +51,10 @@ jobs:
       - run: npm run site:build
       - if: matrix.browser == 'chromium'
         run: npm run browser:grouped && npm run browser:themes
+        env:
+          PLAYWRIGHT_CHROMIUM_CHANNEL: chromium
+      - if: matrix.browser == 'chromium'
+        run: npm run browser:segmented && npm run browser:dispute-resolution && npm run browser:spp-apr
         env:
           PLAYWRIGHT_CHROMIUM_CHANNEL: chromium
       - if: matrix.browser == 'chromium'

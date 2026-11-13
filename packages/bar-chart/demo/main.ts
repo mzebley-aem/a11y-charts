@@ -12,7 +12,6 @@ const localeSelect = document.querySelector<HTMLSelectElement>('#locale')!;
 const filtered = document.querySelector<HTMLInputElement>('#filtered')!;
 const suppressed = document.querySelector<HTMLInputElement>('#suppressed')!;
 const replaceData = document.querySelector<HTMLInputElement>('#replace-data')!;
-const tableVisibility = document.querySelector<HTMLSelectElement>('#table-visibility')!;
 const themeSelect = document.querySelector<HTMLSelectElement>('#theme')!;
 const textureSelect = document.querySelector<HTMLSelectElement>('#texture')!;
 const formatterSelect = document.querySelector<HTMLSelectElement>('#formatter')!;
@@ -42,8 +41,10 @@ const text = (selector: string, value: string) => {
   if (element) element.textContent = value;
 };
 
-const prefixedValueFormatter = ({ value, series, locale }: A11yBarChartValueFormatContext): string =>
-  `≈ ${new Intl.NumberFormat(locale, { style: series === 'percentage' ? 'percent' : 'decimal', maximumFractionDigits: series === 'percentage' ? 1 : 0 }).format(value)}`;
+// Percentage values arrive as whole percents (45.5 for 45.5%) under the default percentScale.
+const prefixedValueFormatter = ({ value, series, locale }: A11yBarChartValueFormatContext): string => series === 'percentage'
+  ? `≈ ${new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 1 }).format(value / 100)}`
+  : `≈ ${new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(value)}`;
 
 function update(): void {
   const locale = localeSelect.value as BarDemoLocale;
@@ -68,14 +69,11 @@ function update(): void {
   text('#data-view-label', page.dataViewLabel);
   text('#data-view option[value="dialog"]', page.dialogMode);
   text('#data-view option[value="inline"]', page.inlineMode);
+  text('#data-view option[value="none"]', page.noneMode);
   text('#locale-label', page.localeLabel);
   text('#filtered-label', page.filteredLabel);
   text('#suppressed-label', page.suppressedLabel);
   text('#replace-data-label', page.alternateLabel);
-  text('#table-visibility-label', page.tableVisibilityLabel);
-  text('#table-visibility option[value="visible"]', page.tableVisible);
-  text('#table-visibility option[value="screen-reader"]', page.tableScreenReader);
-  text('#table-visibility option[value="hidden"]', page.tableHidden);
   text('#theme-label', page.themeLabel);
   text('#theme option[value="reference"]', page.themeDefault);
   text('#theme option[value="high-contrast"]', page.themeHighContrast);
@@ -122,9 +120,8 @@ function update(): void {
   charts.forEach((chart, index) => {
     const config: A11yBarChartConfig = {
       ...chart.config,
-      dataView: dataView.value as 'dialog' | 'inline',
+      dataView: dataView.value as 'dialog' | 'inline' | 'none',
       scaleMode: scale.value as 'largest' | 'population-share',
-      tableVisibility: tableVisibility.value as 'hidden' | 'screen-reader' | 'visible',
       targetStyle: targetStyle.value as A11yBarChartTargetStyle,
       positiveDirection: positiveDirection.value as 'above' | 'below',
       locale,
@@ -156,5 +153,5 @@ function update(): void {
   });
 }
 
-for (const control of [scale, dataView, localeSelect, filtered, suppressed, replaceData, tableVisibility, themeSelect, textureSelect, formatterSelect, targetStyle, positiveDirection, positiveColor, negativeColor, positiveTexture, negativeTexture, ...Object.values(optionControls)]) control.addEventListener('change', update);
+for (const control of [scale, dataView, localeSelect, filtered, suppressed, replaceData, themeSelect, textureSelect, formatterSelect, targetStyle, positiveDirection, positiveColor, negativeColor, positiveTexture, negativeTexture, ...Object.values(optionControls)]) control.addEventListener('change', update);
 update();

@@ -207,6 +207,7 @@ a11y-bar-chart {
 .a11y-bar-chart__screen-reader-table { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
 .a11y-bar-chart__data-note { margin-block: 0.75rem; overflow-wrap: anywhere; }
 .a11y-bar-chart__data-note > strong { display: block; }
+.a11y-bar-chart__suppression-note { margin-block: 0.75rem; overflow-wrap: anywhere; }
 .a11y-bar-chart__table { width: 100%; border-collapse: collapse; margin-block-start: 0.5rem; }
 .a11y-bar-chart__table caption { text-align: start; font-weight: 600; padding-block: 0.5rem; }
 .a11y-bar-chart__table th,

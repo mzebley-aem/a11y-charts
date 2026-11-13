@@ -24,12 +24,7 @@ export function validateBarData(input: unknown): BarValidationResult {
     if (typeof record.label !== 'string') {
       return { valid: false, code: 'validationInvalidLabel', message: message('validationInvalidLabel', undefined, { id: record.id }), params: { id: record.id } };
     }
-    if (record.valueSuppressed !== undefined && typeof record.valueSuppressed !== 'boolean') {
-      return { valid: false, code: 'validationInvalidRecord', message: message('validationInvalidRecord', undefined, { position: index + 1 }), params: { position: index + 1 } };
-    }
-    // Do not read a protected value. This also avoids invoking an accessor that
-    // could expose it while a copied record is being prepared.
-    const value = record.valueSuppressed === true ? null : record.value;
+    const value = record.value;
     if (value !== null && (!isFiniteNumber(value) || value < 0)) {
       return { valid: false, code: 'validationInvalidValue', message: message('validationInvalidValue', undefined, { id: record.id }), params: { id: record.id } };
     }
@@ -37,8 +32,7 @@ export function validateBarData(input: unknown): BarValidationResult {
       return { valid: false, code: 'validationInvalidRecord', message: message('validationInvalidRecord', undefined, { position: index + 1 }), params: { position: index + 1 } };
     }
     const target = record.target;
-    if ((record.targetSuppressed !== undefined && typeof record.targetSuppressed !== 'boolean') ||
-      (target != null && !isFiniteScalarOrRange(target, false))) {
+    if (target != null && !isFiniteScalarOrRange(target, false)) {
       return { valid: false, code: 'validationInvalidTarget', message: message('validationInvalidTarget', undefined, { id: record.id }), params: { id: record.id } };
     }
     ids.add(record.id);
@@ -46,9 +40,7 @@ export function validateBarData(input: unknown): BarValidationResult {
       id: record.id,
       label: record.label,
       value: value as number | null,
-      ...(typeof record.valueSuppressed === 'boolean' ? { valueSuppressed: record.valueSuppressed } : {}),
-      ...(target !== undefined || record.targetSuppressed === true ? { target: record.targetSuppressed === true ? null : copyTarget(target as A11yBarChartDatum['target']) } : {}),
-      ...(typeof record.targetSuppressed === 'boolean' ? { targetSuppressed: record.targetSuppressed } : {}),
+      ...(target !== undefined ? { target: copyTarget(target as A11yBarChartDatum['target']) } : {}),
       ...(typeof record.definition === 'string' ? { definition: record.definition } : {})
     });
   }

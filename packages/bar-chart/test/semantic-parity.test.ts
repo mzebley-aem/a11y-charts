@@ -4,54 +4,55 @@ import { buildBarModel } from '../src/semantic-model.js';
 import { validateBarData } from '../src/validation.js';
 
 describe('replacement parity value status and shared scale', () => {
-  it('redacts explicitly suppressed values in validated and semantic data without formatting them', () => {
-    const valueGetter = vi.fn(() => 9876);
-    const source = [Object.defineProperties({ id: 'secret', label: 'Secret', value: 0, valueSuppressed: true }, {
-      value: { get: valueGetter, enumerable: true }
-    })];
+  it('redacts suppressed zeros in validated and semantic data without formatting them', () => {
+    const source = [{ id: 'secret', label: 'Secret', value: 0 }];
     const validated = validateBarData(source);
-    expect(validated).toMatchObject({ valid: true, data: [{ value: null, valueSuppressed: true }] });
-    expect(valueGetter).not.toHaveBeenCalled();
+    expect(validated).toMatchObject({ valid: true, data: [{ value: 0 }] });
     const formatter = vi.fn(() => 'formatted');
-    const model = buildBarModel(validated.valid ? validated.data : [], { formatValue: formatter });
+    const model = buildBarModel(validated.valid ? validated.data : [], { suppressed: true, formatValue: formatter });
     expect(model.rows[0]).toMatchObject({ value: null, status: 'suppressed', valueText: 'Suppressed', percentage: null });
     expect(model.total).toBeNull();
     expect(formatter).not.toHaveBeenCalled();
-    expect(buildBarModel(source).rows[0]?.value).toBeNull();
   });
 
-  it('keeps explicit zero reported under legacy global suppression and reports other suppressed rows', () => {
+  it('suppresses zeros but keeps other reported values and missing values distinct when the flag is on', () => {
     const model = buildBarModel([
-      { id: 'zero', label: 'Zero', value: 0, valueSuppressed: false },
-      { id: 'hidden', label: 'Hidden', value: 13, valueSuppressed: true },
+      { id: 'zero', label: 'Zero', value: 0 },
+      { id: 'shown', label: 'Shown', value: 13 },
       { id: 'missing', label: 'Missing', value: null }
     ], { suppressed: true, total: 40 });
     expect(model.rows.map(({ status, value, percentage }) => ({ status, value, percentage }))).toEqual([
-      { status: 'reported', value: 0, percentage: 0 },
       { status: 'suppressed', value: null, percentage: null },
+      { status: 'reported', value: 13, percentage: 0.325 },
       { status: 'missing', value: null, percentage: null }
     ]);
     expect(model.total).toBe(40);
     expect(model.indicators).toContain('Suppressed');
   });
 
-  it('keeps omitted totals unknown when any explicit value is suppressed', () => {
-    const model = buildBarModel([
+  it('keeps omitted totals unknown when a zero is suppressed and infers them otherwise', () => {
+    const suppressed = buildBarModel([
       { id: 'shown', label: 'Shown', value: 7 },
-      { id: 'hidden', label: 'Hidden', value: 99, valueSuppressed: true }
+      { id: 'zero', label: 'Zero', value: 0 }
+    ], { suppressed: true });
+    expect(suppressed.total).toBeNull();
+    expect(suppressed.totalText).toBe('Suppressed');
+    const plain = buildBarModel([
+      { id: 'shown', label: 'Shown', value: 7 },
+      { id: 'zero', label: 'Zero', value: 0 }
     ]);
-    expect(model.rows[0]?.value).toBe(7);
-    expect(model.total).toBeNull();
+    expect(plain.total).toBe(7);
+    expect(plain.rows[1]).toMatchObject({ status: 'reported', value: 0, valueText: '0' });
   });
 
-  it('keeps omitted totals unknown in legacy global suppression mode even when every visible count is positive', () => {
+  it('infers omitted totals under the flag when no zero is suppressed', () => {
     const model = buildBarModel([
       { id: 'a', label: 'A', value: 7 },
       { id: 'b', label: 'B', value: 3 }
     ], { suppressed: true });
     expect(model.rows.map((row) => row.status)).toEqual(['reported', 'reported']);
-    expect(model.total).toBeNull();
-    expect(model.totalText).toBe('Suppressed');
+    expect(model.total).toBe(10);
+    expect(model.totalText).toBe('10');
   });
 
   it('uses the selected total for percentages while retaining a shared count scale and warning on clipping', () => {

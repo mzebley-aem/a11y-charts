@@ -18,7 +18,7 @@ describe('A11yLineChartElement foundation', () => {
 
   it('retains the focused inline download and disclosure action through source updates', async () => {
     const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    element.config = { dataView: 'inline', tableVisibility: 'visible' };
+    element.config = { dataView: 'inline' };
     element.data = [{ x: 'Q1', actual: 1, target: 2 }];
     document.body.append(element);
     await settle();
@@ -91,7 +91,7 @@ describe('A11yLineChartElement foundation', () => {
     expect(element.querySelector('.a11y-line-chart__summary-context')).toBeNull();
   });
 
-  it('keeps a background table relationship and a visible explicit inline table in both data visibility modes', async () => {
+  it('keeps a background table relationship and a visible explicit inline table for the inline data view', async () => {
     const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
     element.config = { showSummary: true };
     element.data = [{ x: 2025, actual: 72, target: 80 }];
@@ -100,29 +100,27 @@ describe('A11yLineChartElement foundation', () => {
     const summary = element.querySelector('.a11y-line-chart__summary')!;
     expect(summary.getAttribute('role')).toBe('group');
     expect(summary.getAttribute('aria-label')).toBe('Chart summary');
-    for (const tableVisibility of ['visible', 'screen-reader'] as const) {
-      element.config = { dataView: 'inline', tableVisibility };
-      await settle();
-      const inlineTable = element.querySelector('.a11y-line-chart__inline-data .a11y-line-chart__table-region')!;
-      expect(inlineTable.classList.contains('a11y-line-chart__table-region--visually-hidden')).toBe(false);
-      expect(inlineTable.querySelector('table')).toBeTruthy();
-      const navigator = element.querySelector('.a11y-line-chart__navigator')!;
-      for (const id of navigator.getAttribute('aria-describedby')!.split(/\s+/)) expect(document.getElementById(id)).toBeTruthy();
-      const background = element.querySelector('.a11y-line-chart__table-region--visually-hidden')!;
-      expect(background.querySelector('button,a[href],input,summary')).toBeNull();
-      const disclosure = element.querySelector<HTMLDetailsElement>('.a11y-line-chart__inline-data')!;
-      disclosure.open = true;
-      disclosure.dispatchEvent(new Event('toggle'));
-      expect(background.getAttribute('aria-hidden')).toBe('true');
-      disclosure.open = false;
-      disclosure.dispatchEvent(new Event('toggle'));
-      expect(background.hasAttribute('aria-hidden')).toBe(false);
-    }
+    element.config = { dataView: 'inline' };
+    await settle();
+    const inlineTable = element.querySelector('.a11y-line-chart__inline-data .a11y-line-chart__table-region')!;
+    expect(inlineTable.classList.contains('a11y-line-chart__table-region--visually-hidden')).toBe(false);
+    expect(inlineTable.querySelector('table')).toBeTruthy();
+    const navigator = element.querySelector('.a11y-line-chart__navigator')!;
+    for (const id of navigator.getAttribute('aria-describedby')!.split(/\s+/)) expect(document.getElementById(id)).toBeTruthy();
+    const background = element.querySelector('.a11y-line-chart__table-region--visually-hidden')!;
+    expect(background.querySelector('button,a[href],input,summary')).toBeNull();
+    const disclosure = element.querySelector<HTMLDetailsElement>('.a11y-line-chart__inline-data')!;
+    disclosure.open = true;
+    disclosure.dispatchEvent(new Event('toggle'));
+    expect(background.getAttribute('aria-hidden')).toBe('true');
+    disclosure.open = false;
+    disclosure.dispatchEvent(new Event('toggle'));
+    expect(background.hasAttribute('aria-hidden')).toBe(false);
   });
 
   it('uses formatted bounds consistently in the summary, table, navigator, and events', async () => {
     const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    element.config = { decimalPlaces: 1, tableVisibility: 'visible', dataView: 'inline', autoPerPointMinWidth: true };
+    element.config = { decimalPlaces: 1, dataView: 'inline', autoPerPointMinWidth: true };
     element.formatValue = ({ value }) => value === null ? 'Missing' : `${value.toFixed(1)} units`;
     element.data = [
       { x: 'Q1', actual: 68, target: { min: 70, max: 80 } },
@@ -154,9 +152,9 @@ describe('A11yLineChartElement foundation', () => {
     expect(element.data[0]?.target).toEqual({ min: 70, max: 80 });
   });
 
-  it('keeps suppression separate from missing and zero and emits defensive normalized data-change details', async () => {
+  it('treats a zero as suppressed only under the chart-wide suppressed flag and keeps missing values distinct', async () => {
     const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    element.config = { valuePreset: 'number', dataView: 'inline', tableVisibility: 'visible', showControls: false, showActions: false };
+    element.config = { valuePreset: 'number', dataView: 'inline', showControls: false, showActions: false };
     element.data = [{ x: 'Initial', actual: 1, target: 1 }];
     document.body.append(element); await settle();
     const format = vi.fn(({ value }: { value: number | null }) => value === null ? 'Missing' : `Value ${value}`);
@@ -165,33 +163,75 @@ describe('A11yLineChartElement foundation', () => {
     format.mockClear();
     const changes: CustomEvent[] = [];
     element.addEventListener('a11y-line-chart-data-change', (event) => changes.push(event as CustomEvent));
+    element.suppressed = true;
     element.data = [
-      { x: 'Protected actual', actual: 77, actualSuppressed: true, target: 90 },
-      { x: 'Protected target', actual: 0, target: 88, targetSuppressed: true },
-      { x: 'Missing', actual: null, target: null },
-      { x: 'Zero', actual: 0, target: 0 }
+      { x: 'Protected', actual: 0, target: 90 },
+      { x: 'Target zero', actual: 50, target: 0 },
+      { x: 'Missing', actual: null, target: null }
     ];
     await settle();
-    expect(element.data[0]).toMatchObject({ actual: null, actualSuppressed: true });
-    expect(element.data[1]).toMatchObject({ actual: 0, target: null, targetSuppressed: true });
+    expect(element.data[0]).toEqual({ x: 'Protected', actual: 0, target: 90 });
+    expect(element.querySelector('.a11y-line-chart__suppression-indicator')?.textContent).toBe('Suppressed');
+    expect(element.querySelector('.a11y-line-chart__suppression-note')?.textContent).toBe('Some values are suppressed to protect privacy.');
+    const rows = element.querySelectorAll('tbody tr');
+    expect(rows[0]?.textContent).toContain('Suppressed');
+    expect(rows[0]?.textContent).not.toContain('Value 0');
+    expect(rows[1]?.textContent).toContain('Value 50');
+    expect(rows[1]?.textContent).toContain('Value 0');
+    expect(rows[2]?.textContent).toContain('Not reported');
     expect(element.textContent).toContain('Suppressed');
-    expect(element.textContent).toContain('Missing');
-    expect(element.querySelector('tbody')?.textContent).toContain('Value 0');
-    expect(format).not.toHaveBeenCalledWith(expect.objectContaining({ value: 77 }));
-    expect(format).not.toHaveBeenCalledWith(expect.objectContaining({ value: 88 }));
+    expect(format).not.toHaveBeenCalledWith(expect.objectContaining({ value: 0, series: 'actual' }));
+    expect(format).toHaveBeenCalledWith(expect.objectContaining({ value: 0, series: 'target' }));
     expect(changes).toHaveLength(1);
-    const detail = changes[0]!.detail as { data: Array<{ actual: number | null; target: unknown }>; model: { points: Array<{ actualValue: number | null; targetValue: unknown }> } };
-    expect(detail.data[0]?.actual).toBeNull();
-    expect(detail.model.points[0]?.actualValue).toBeNull();
-    expect(JSON.stringify(detail)).not.toContain('77');
-    expect(JSON.stringify(detail)).not.toContain('88');
-    detail.data[1]!.actual = 123;
-    expect(element.data[1]?.actual).toBe(0);
+    const detail = changes[0]!.detail as { model: { points: Array<{ actualValue: number | null; actualSuppressed: boolean; targetValue: unknown }> } };
+    expect(detail.model.points[0]).toMatchObject({ actualValue: null, actualSuppressed: true, targetValue: 90 });
+    expect(detail.model.points[1]).toMatchObject({ actualValue: 50, actualSuppressed: false, targetValue: 0 });
+    expect(JSON.stringify(detail.model)).not.toContain('"actualValue":0');
+  });
+
+  it('reflects the suppressed attribute and property and reports zeros as real values when the flag is off', async () => {
+    const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
+    element.config = { valuePreset: 'number', dataView: 'inline', showControls: false, showActions: false };
+    element.formatValue = vi.fn(({ value }: { value: number | null }) => value === null ? 'Missing' : `Value ${value}`);
+    element.data = [{ x: 'Zero', actual: 0, target: 80 }];
+    document.body.append(element); await settle();
+    expect(element.suppressed).toBe(false);
+    expect(element.querySelector('.a11y-line-chart__suppression-indicator')).toBeNull();
+    expect(element.querySelector('.a11y-line-chart__suppression-note')).toBeNull();
+    expect(element.querySelector('tbody tr')?.textContent).toContain('Value 0');
+    expect(element.textContent).not.toContain('Suppressed');
+
+    element.setAttribute('suppressed', '');
+    await settle();
+    expect(element.suppressed).toBe(true);
+    expect(element.querySelector('tbody tr')?.textContent).toContain('Suppressed');
+    expect(element.querySelector('.a11y-line-chart__suppression-note')).not.toBeNull();
+
+    element.removeAttribute('suppressed');
+    await settle();
+    expect(element.suppressed).toBe(false);
+    expect(element.querySelector('tbody tr')?.textContent).toContain('Value 0');
+
+    element.suppressed = true;
+    await settle();
+    expect(element.hasAttribute('suppressed')).toBe(true);
+    expect(element.querySelector('tbody tr')?.textContent).toContain('Suppressed');
+  });
+
+  it('shows the suppression indicator and note whenever the flag is on, even without zero points', async () => {
+    const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
+    element.config = { valuePreset: 'number', dataView: 'inline', showControls: false, showActions: false };
+    element.suppressed = true;
+    element.data = [{ x: 'Q1', actual: 4, target: 3 }, { x: 'Q2', actual: null, target: 3 }];
+    document.body.append(element); await settle();
+    expect(element.querySelector('.a11y-line-chart__suppression-indicator')?.textContent).toBe('Suppressed');
+    expect(element.querySelector('.a11y-line-chart__suppression-note')).not.toBeNull();
+    expect(element.querySelector('tbody tr')?.textContent).not.toContain('Suppressed');
   });
 
   it('renders sanitized context, data notes, definitions, and inline export without the action strip', async () => {
     const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    element.config = { dataView: 'inline', tableVisibility: 'visible', showActions: false, showControls: false, showSummary: false };
+    element.config = { dataView: 'inline', showActions: false, showControls: false, showSummary: false };
     element.context = '<p>Context <strong>detail</strong><script>bad()</script></p>';
     element.dataNote = '<p>Source note</p>';
     element.definitions = [{ id: 'result', label: '<img>Result', definition: '<p>A <em>definition</em><iframe>bad</iframe></p>' }];
@@ -238,19 +278,75 @@ describe('A11yLineChartElement foundation', () => {
     expect(events[0]?.detail).toEqual({ disclosure: 'explanation', expanded: true });
   });
 
-  it('emits only real data-view transitions and closes explicit hidden views', async () => {
+  it('toggles the Explain button label with its expanded state', async () => {
     const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    element.config = { dataView: 'inline', tableVisibility: 'visible', showActions: false, showControls: false };
+    element.data = [{ x: 'Q1', actual: 1, target: 2 }]; document.body.append(element); await settle();
+    const explain = element.querySelector<HTMLButtonElement>('[data-focus-key="explanation-action"]')!;
+    expect(explain.textContent).toBe('Explain');
+    explain.click();
+    expect(explain.getAttribute('aria-expanded')).toBe('true');
+    expect(explain.textContent).toBe('Hide explanation');
+    explain.click();
+    expect(explain.getAttribute('aria-expanded')).toBe('false');
+    expect(explain.textContent).toBe('Explain');
+  });
+
+  it('toggles the Glossary button label with its expanded state', async () => {
+    const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
+    element.definitions = [{ id: 'one', label: 'Term', definition: 'Meaning' }];
+    element.data = [{ x: 'Q1', actual: 1, target: 2 }]; document.body.append(element); await settle();
+    const glossary = element.querySelector<HTMLButtonElement>('[data-focus-key="glossary-action"]')!;
+    expect(glossary.textContent).toBe('Glossary');
+    glossary.click();
+    expect(glossary.getAttribute('aria-expanded')).toBe('true');
+    expect(glossary.textContent).toBe('Hide glossary');
+    glossary.click();
+    expect(glossary.textContent).toBe('Glossary');
+  });
+
+  it('reflects the locale attribute through the locale property', () => {
+    const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
+    expect(element.locale).toBe('en-US');
+    element.locale = 'fr-FR';
+    expect(element.getAttribute('locale')).toBe('fr-FR');
+    expect(element.locale).toBe('fr-FR');
+    element.locale = '';
+    expect(element.hasAttribute('locale')).toBe(false);
+    expect(element.locale).toBe('en-US');
+    element.setAttribute('locale', 'de-DE');
+    expect(element.locale).toBe('de-DE');
+  });
+
+  it('dispatches an invalid-messages error with the localized message', async () => {
+    const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
+    element.data = [{ x: 2024, actual: 72, target: 80 }];
+    const listener = vi.fn();
+    element.addEventListener('a11y-line-chart-error', listener);
+    document.body.append(element);
+    await settle();
+    element.setAttribute('messages', '{bad json');
+    await settle();
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener.mock.calls[0]?.[0].detail).toEqual({
+      code: 'invalid-messages',
+      message: ENGLISH_LINE_CHART_MESSAGES.invalidMessages
+    });
+    expect(listener.mock.calls[0]?.[0].bubbles).toBe(true);
+  });
+
+  it('emits only real data-view transitions and closes the open view when dataView becomes none', async () => {
+    const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
+    element.config = { dataView: 'inline', showActions: false, showControls: false };
     element.data = [{ x: 'Q1', actual: 1, target: 2 }]; document.body.append(element); await settle();
     const events: CustomEvent[] = [];
     element.addEventListener('a11y-line-chart-data-view-change', (event) => events.push(event as CustomEvent));
     const details = element.querySelector<HTMLDetailsElement>('.a11y-line-chart__inline-data')!;
     details.open = true; await settle();
     expect(events.map((event) => event.detail)).toEqual([{ open: true, dataView: 'inline' }]);
-    element.config = { ...element.config, tableVisibility: 'hidden' }; await settle();
+    element.config = { ...element.config, dataView: 'none' }; await settle();
     expect(events.map((event) => event.detail)).toEqual([{ open: true, dataView: 'inline' }, { open: false, dataView: 'inline' }]);
     expect(element.querySelector('table')).toBeNull();
-    element.config = { ...element.config, tableVisibility: 'visible' }; await settle();
+    element.config = { ...element.config, dataView: 'inline' }; await settle();
     expect(element.querySelector<HTMLDetailsElement>('.a11y-line-chart__inline-data')?.open).toBe(false);
     expect(events).toHaveLength(2);
   });
@@ -316,7 +412,7 @@ describe('A11yLineChartElement foundation', () => {
 
     expect(element.querySelector('tbody')?.textContent).not.toContain('2024');
     expect(element.querySelector('tbody')?.textContent).toContain('2030');
-    expect(element.querySelector('tbody')?.textContent).toContain('Missing');
+    expect(element.querySelector('tbody')?.textContent).toContain('Not reported');
   });
 
   it('restores the one-tab-stop keyboard model and announces point changes', async () => {
@@ -350,7 +446,7 @@ describe('A11yLineChartElement foundation', () => {
     element.config = { wrapAround: true };
     element.data = [{ x: 2024, actual: 72, target: 80 }, { x: 2025, actual: 85, target: 80 }];
     const listener = vi.fn();
-    element.addEventListener('a11y-line-chart-config-change', listener);
+    element.addEventListener('a11y-line-chart-settings-change', listener);
     document.body.append(element);
     await settle();
 
@@ -363,6 +459,7 @@ describe('A11yLineChartElement foundation', () => {
     await settle();
     expect(element.config.showActualValues).toBe(true);
     expect(listener).toHaveBeenCalledOnce();
+    expect(listener.mock.calls[0]?.[0].detail).toEqual({ setting: 'showActualValues', value: true, source: 'controls' });
   });
 
   it('exposes end-user Y-axis zoom and fill-pattern controls', async () => {
@@ -488,9 +585,9 @@ describe('A11yLineChartElement foundation', () => {
     expect(element.querySelector('.a11y-line-chart__stepper')).toBeNull();
   });
 
-  it('accepts the Angular year/showTable contract and direct sizing inputs', async () => {
+  it('accepts the Angular year contract and direct sizing inputs', async () => {
     const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    element.a11y = { decimalPlaces: 2, showTable: false };
+    element.a11y = { decimalPlaces: 2, dataView: 'none' };
     element.minWidth = 640;
     element.dynamicMinWidth = true;
     element.perPointMinWidth = 80;
@@ -498,9 +595,9 @@ describe('A11yLineChartElement foundation', () => {
     document.body.append(element);
     await settle();
 
-    expect(element.querySelector('tbody')?.textContent).toContain('2024');
-    expect(element.querySelector('tbody')?.textContent).toContain('72.50%');
-    expect(element.querySelector('.a11y-line-chart__table-region')?.hasAttribute('hidden')).toBe(true);
+    expect(element.querySelector('table')).toBeNull();
+    expect(element.querySelector('.a11y-line-chart__data-action')).toBeNull();
+    expect(element.querySelector('.a11y-line-chart__table-region')).toBeNull();
     expect((element.querySelector('.a11y-line-chart__resizable') as HTMLElement).style.minWidth).toBe('320px');
     expect(element.minWidth).toBe(640);
   });
@@ -545,7 +642,7 @@ describe('A11yLineChartElement foundation', () => {
 
   it('describes the baseline once on the chart without repeating it in period announcements', async () => {
     const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    element.config = { decimalPlaces: 2, tableVisibility: 'visible', dataView: 'inline' };
+    element.config = { decimalPlaces: 2, dataView: 'inline' };
     element.baseline = {
       x: 2015,
       value: 38,
@@ -731,7 +828,7 @@ describe('A11yLineChartElement foundation', () => {
     });
     try {
       const element = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-      element.config = { tableVisibility: 'visible' };
+      element.config = { dataView: 'dialog' };
       element.data = [{ x: 2024, actual: 72, target: 80 }];
       document.body.append(element);
       await settle();
@@ -831,8 +928,8 @@ describe('A11yLineChartElement foundation', () => {
     element.messages = { inlineData: 'Ver la tabla' };
     await settle();
     expect(element.querySelector<HTMLDetailsElement>('.a11y-line-chart__inline-data')?.open).toBe(true);
-    element.config = { dataView: 'dialog', tableVisibility: 'visible' };
+    element.config = { dataView: 'dialog' };
     await settle();
-    expect(element.querySelector('.a11y-line-chart__data-action')?.textContent).toBe('Data');
+    expect(element.querySelector('.a11y-line-chart__data-action')?.textContent).toBe('View complete data');
   });
 });

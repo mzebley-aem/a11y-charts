@@ -29,7 +29,7 @@ export interface PrepareBarViewsOptions {
   all: BarPopulationOption;
   options: readonly BarPopulationOption[];
   records: readonly BarPopulationRecord[];
-  /** Chart-wide legacy suppression of zeros. Explicit row flags take precedence. */
+  /** Chart-wide suppression: zeros read as Suppressed, and aggregates never infer a total. */
   suppressed?: boolean;
   filtered?: boolean;
   sort?: 'source' | 'value-descending';
@@ -63,28 +63,29 @@ export function prepareBarViewSection(input: PrepareBarViewsOptions): BarViewSec
     if (record.filterId === input.all.id || !ids.has(record.filterId)) throw new TypeError(`Record filter ID ${record.filterId} must match an individual option, not the generated All view.`);
     const validation = validateBarData([record]);
     if (!validation.valid) throw new TypeError(validation.message);
-    const safe = validation.data[0]!;
-    const protectedValue = safe.valueSuppressed === true ||
-      (safe.valueSuppressed !== false && input.suppressed === true && safe.value === 0);
-    return { ...safe, filterId: record.filterId, ...(protectedValue ? { value: null, valueSuppressed: true } : {}) };
+    return { ...validation.data[0]!, filterId: record.filterId };
   });
   const aggregate = (rows: typeof records): A11yBarChartDatum[] => {
     const groups = new Map<string, A11yBarChartDatum>();
+    // With suppression on, a zero contributor makes the whole aggregate a protected zero, so its
+    // partial sum is never shown as a reported count.
+    const protectedIds = new Set<string>();
     for (const row of rows) {
       const { filterId: _filter, ...datum } = row;
-      if (datum.target != null || datum.targetSuppressed) throw new TypeError('Assign targets after aggregation; targets cannot be summed across populations.');
+      if (datum.target != null) throw new TypeError('Assign targets after aggregation; targets cannot be summed across populations.');
       const prior = groups.get(datum.id);
-      if (!prior) { groups.set(datum.id, { ...datum }); continue; }
+      if (!prior) {
+        groups.set(datum.id, { ...datum });
+        if (input.suppressed === true && datum.value === 0) protectedIds.add(datum.id);
+        continue;
+      }
       if (prior.label !== datum.label || prior.definition !== datum.definition) throw new TypeError('Repeated category IDs must have consistent labels and definitions.');
-      if (prior.valueSuppressed || datum.valueSuppressed) {
-        prior.value = null;
-        prior.valueSuppressed = true;
-      } else if (prior.value === null || datum.value === null) prior.value = null;
+      if (input.suppressed === true && datum.value === 0) protectedIds.add(datum.id);
+      if (protectedIds.has(datum.id)) prior.value = 0;
+      else if (prior.value === null || datum.value === null) prior.value = null;
       else {
         prior.value += datum.value;
         if (!Number.isFinite(prior.value)) throw new TypeError('Aggregated count exceeds the numeric limit.');
-        // Rows have already resolved the legacy suppression mode.
-        prior.valueSuppressed = false;
       }
     }
     const data = [...groups.values()];
@@ -98,7 +99,7 @@ export function prepareBarViewSection(input: PrepareBarViewsOptions): BarViewSec
       if (!result.valid) throw new TypeError(result.message);
       return result.total;
     }
-    if (input.suppressed || data.some(row => row.value === null || row.valueSuppressed)) return null;
+    if (input.suppressed || data.some(row => row.value === null)) return null;
     const sum = data.reduce((total, row) => total + row.value!, 0);
     if (!Number.isFinite(sum)) throw new TypeError('Population total exceeds the numeric limit.');
     return sum;
@@ -110,7 +111,9 @@ export function prepareBarViewSection(input: PrepareBarViewsOptions): BarViewSec
     const data = isAll ? allData : aggregate(records.filter(record => record.filterId === option.id));
     const total = isAll ? populationTotal : resolveTotal(option, data);
     const populationShare = total !== null && populationTotal !== null && populationTotal > 0 ? total / populationTotal : null;
-    const content = input.describe?.({ option: { ...option }, isAll, data: structuredClone(data), total, populationTotal,
+    // Authored text callbacks never see a suppressed raw zero.
+    const callbackData = structuredClone(data).map(row => input.suppressed === true && row.value === 0 ? { ...row, value: null } : row);
+    const content = input.describe?.({ option: { ...option }, isAll, data: callbackData, total, populationTotal,
       populationShare: populationShare !== null && Number.isFinite(populationShare) ? populationShare : null });
     return {
       id: option.id, label: option.label, ...(option.definition !== undefined ? { definition: option.definition } : {}),
@@ -120,7 +123,7 @@ export function prepareBarViewSection(input: PrepareBarViewsOptions): BarViewSec
       ...(typeof content?.explanation === 'string' ? { explanation: content.explanation } : {}),
       ...(typeof content?.emptyMessage === 'string' ? { emptyMessage: content.emptyMessage } : {}),
       data, total,
-      suppressed: input.suppressed === true || data.some(row => row.valueSuppressed === true),
+      suppressed: input.suppressed === true,
       filtered: input.filtered === true || !isAll
     };
   });

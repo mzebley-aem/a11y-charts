@@ -5,7 +5,7 @@ const fixture = (): PrepareBarViewsOptions => ({
   options: [{ id: 'young', label: 'Birth to 1', total: 102 }, { id: 'older', label: '1 to 2' }],
   records: [{ filterId: 'young', id: 'home', label: 'Home', value: 102 },
     { filterId: 'older', id: 'home', label: 'Home', value: 220 },
-    { filterId: 'older', id: 'other', label: 'Other', value: 789, valueSuppressed: true }]
+    { filterId: 'older', id: 'other', label: 'Other', value: null }]
 });
 describe('population view preparation', () => {
   it('rejects preaggregated All records to avoid counting the population twice', () => {
@@ -23,18 +23,44 @@ describe('population view preparation', () => {
     expect(result.views[1]!.context).toBe('0.2');
     expect(result.views[2]!.total).toBeNull();
     expect(JSON.stringify([result, contexts])).not.toContain('789');
+    expect(result.views[0]!.data.find(row => row.id === 'other')).toMatchObject({ value: null });
     expect(input.records).toEqual(original.records);
   });
-  it('conservatively suppresses aggregates and retains true zero and missing', () => {
+  it('turns an aggregate with any suppressed zero into a protected zero and never sums it into a count', () => {
     const input = fixture();
-    input.records = [...input.records, { filterId: 'young', id: 'other', label: 'Other', value: 12 }];
-    input.records = [...input.records, { filterId: 'young', id: 'zero', label: 'Zero', value: 0, valueSuppressed: false }];
-    input.records = [...input.records, { filterId: 'young', id: 'missing', label: 'Missing', value: null }];
+    input.records = [...input.records,
+      { filterId: 'young', id: 'zero', label: 'Zero', value: 0 },
+      { filterId: 'older', id: 'zero', label: 'Zero', value: 5 },
+      { filterId: 'young', id: 'missing', label: 'Missing', value: null }];
     input.suppressed = true;
     const result = prepareBarViewSection(input);
-    expect(result.views[0]!.data.find(row => row.id === 'other')).toMatchObject({ value: null, valueSuppressed: true });
-    expect(result.views[1]!.data.find(row => row.id === 'zero')).toMatchObject({ value: 0, valueSuppressed: false });
-    expect(result.views[1]!.data.find(row => row.id === 'missing')!.valueSuppressed).not.toBe(true);
+    expect(result.views[0]!.data.find(row => row.id === 'zero')).toMatchObject({ value: 0 });
+    expect(result.views[0]!.data.find(row => row.id === 'home')).toMatchObject({ value: 322 });
+    expect(result.views[1]!.data.find(row => row.id === 'zero')).toMatchObject({ value: 0 });
+    expect(result.views[1]!.data.find(row => row.id === 'missing')).toMatchObject({ value: null });
+    expect(result.views[1]!.suppressed).toBe(true);
+    expect(result.views[1]!.total).toBe(102); // authored population total stays authoritative
+  });
+
+  it('sums zero counts as ordinary reported values when suppression is off', () => {
+    const input = fixture();
+    input.records = [...input.records,
+      { filterId: 'young', id: 'zero', label: 'Zero', value: 0 },
+      { filterId: 'older', id: 'zero', label: 'Zero', value: 5 }];
+    const result = prepareBarViewSection(input);
+    expect(result.views[0]!.data.find(row => row.id === 'zero')).toMatchObject({ value: 5 });
+    expect(result.views[1]!.data.find(row => row.id === 'zero')).toMatchObject({ value: 0 });
+    expect(result.views[1]!.suppressed).toBe(false);
+  });
+
+  it('keeps a protected aggregate protected when a later populated record is added to it', () => {
+    const input = fixture();
+    input.records = [{ filterId: 'young', id: 'zero', label: 'Zero', value: 0 },
+      { filterId: 'older', id: 'zero', label: 'Zero', value: 5 },
+      { filterId: 'older', id: 'zero', label: 'Zero', value: 7 }];
+    input.suppressed = true;
+    const result = prepareBarViewSection(input);
+    expect(result.views[0]!.data.find(row => row.id === 'zero')).toMatchObject({ value: 0 });
   });
   it('allows a real option named all, preserves order, and retains external filtering on reset', () => {
     const input = fixture(); input.filtered = true; input.options = [{ id: 'all', label: 'All' }, ...input.options];
@@ -57,12 +83,10 @@ describe('population view preparation', () => {
     const inconsistent = fixture(); inconsistent.records[1]!.label = 'Different label';
     expect(() => prepareBarViewSection(inconsistent)).toThrow(/consistent labels/);
   });
-  it('does not read a protected count getter and gives callbacks only redacted rows', () => {
+  it('gives authored callbacks no raw suppressed zero and lets them mutate only copies', () => {
     const input = fixture();
-    const valueGetter = vi.fn(() => 123456);
-    input.records = [Object.defineProperties({ filterId: 'young', id: 'private', label: 'Private', valueSuppressed: true }, {
-      value: { enumerable: true, get: valueGetter }
-    }) as unknown as PrepareBarViewsOptions['records'][number]];
+    input.records = [{ filterId: 'young', id: 'private', label: 'Private', value: 0 }];
+    input.suppressed = true;
     const callbackRows: unknown[] = [];
     delete input.all.total;
     delete input.options[0]!.total;
@@ -73,9 +97,8 @@ describe('population view preparation', () => {
       return { chartTitle: 'Safe title' };
     };
     const result = prepareBarViewSection(input);
-    expect(valueGetter).not.toHaveBeenCalled();
-    expect(JSON.stringify(callbackRows)).not.toContain('123456');
-    expect(result.views[1]!.data[0]).toMatchObject({ value: null, valueSuppressed: true });
+    expect(JSON.stringify(callbackRows)).not.toMatch(/"value":0[,}]/);
+    expect(result.views[1]!.data[0]).toMatchObject({ value: 0 });
     expect(result.views[0]!.total).toBeNull();
     expect(result.views[1]!.total).toBeNull();
     expect(result.views[1]!.chartTitle).toBe('Safe title');

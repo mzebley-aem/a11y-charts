@@ -26,24 +26,25 @@ describe('segmented bar element', () => {
     };
     document.body.append(chart);
     await settled();
-    expect(chart?.querySelector('.total')?.textContent).toContain('3');
-    expect(chart?.querySelector('.total')?.textContent).toContain('10');
+    expect(chart?.querySelector('.a11y-segmented-bar-chart__total')?.textContent).toContain('3');
+    expect(chart?.querySelector('.a11y-segmented-bar-chart__total')?.textContent).toContain('10');
     expect(chart?.querySelector('table')?.textContent).toContain('30.00%');
   });
 
-  it('never exposes a suppressed value in the getter, table, legend, or segment geometry', async () => {
+  it('never exposes a suppressed zero in the getter, table, legend, or segment geometry', async () => {
     const chart = new A11ySegmentedBarChartElement();
     chart.data = [
-      { id: 'a', label: 'Protected', value: 37, valueSuppressed: true },
+      { id: 'a', label: 'Protected', value: 0 },
       { id: 'b', label: 'Other', value: 63 },
     ];
     chart.total = 100;
+    chart.suppressed = true;
     chart.config = { dataView: 'inline', showDetails: true };
     document.body.append(chart);
     await settled();
     expect(chart.data[0]?.value).toBeNull();
-    expect(chart?.textContent).not.toContain('37');
-    expect(chart?.querySelectorAll('.segment')).toHaveLength(0);
+    expect(chart.querySelector('table')?.textContent).toContain('Suppressed');
+    expect(chart?.querySelectorAll('.a11y-segmented-bar-chart__segment')).toHaveLength(0);
   });
 
   it('provides independent inline table and dismissible detail controls', async () => {
@@ -59,7 +60,7 @@ describe('segmented bar element', () => {
     document.body.append(chart);
     await settled();
     expect(chart?.querySelector('table')).not.toBeNull();
-    const button = chart.querySelector<HTMLButtonElement>('.legend button')!;
+    const button = chart.querySelector<HTMLButtonElement>('.a11y-segmented-bar-chart__legend button')!;
     button.click();
     expect(button.getAttribute('aria-pressed')).toBe('true');
     document.dispatchEvent(
@@ -70,7 +71,7 @@ describe('segmented bar element', () => {
 });
 
 describe('data view invalidation', () => {
-  it('closes stale data and recovers focus when data becomes invalid or its table is hidden', async () => {
+  it('closes stale data and recovers focus when data becomes invalid or data view is none', async () => {
     const chart = new A11ySegmentedBarChartElement();
     chart.chartTitle = 'Data';
     chart.data = [{ id: 'a', label: 'A', value: 1 }];
@@ -78,10 +79,10 @@ describe('data view invalidation', () => {
     await settled();
     chart.querySelector<HTMLButtonElement>('[data-focus-key="data"]')!.click();
     expect(chart.querySelector('dialog')?.open).toBe(true);
-    chart.config = { tableVisibility: 'hidden' };
+    chart.config = { dataView: 'none' };
     await settled();
     expect(chart.querySelector('dialog')).toBeNull();
-    expect(document.activeElement).toBe(chart.querySelector('.title'));
+    expect(document.activeElement).toBe(chart.querySelector('.a11y-segmented-bar-chart__title'));
     chart.config = {};
     await settled();
     chart.querySelector<HTMLButtonElement>('[data-focus-key="data"]')!.click();
@@ -90,5 +91,72 @@ describe('data view invalidation', () => {
     expect(chart.querySelector('dialog')).toBeNull();
     expect(document.activeElement).toBe(chart.querySelector('[role="alert"]'));
     expect(chart.textContent).not.toContain('Download CSV');
+  });
+});
+
+describe('detail trigger keyboard movement', () => {
+  const press = (target: HTMLElement, key: string, init: KeyboardEventInit = {}) => {
+    const event = new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true, ...init });
+    target.dispatchEvent(event);
+    return event;
+  };
+
+  it('moves focus between detail triggers with arrow, Home, and End keys only when focus moves', async () => {
+    const chart = new A11ySegmentedBarChartElement();
+    chart.data = [
+      { id: 'a', label: 'First', value: 1 },
+      { id: 'b', label: 'Second', value: 2 },
+      { id: 'c', label: 'Third', value: 3 },
+    ];
+    chart.config = { showDetails: true, dataView: 'inline', showActions: false };
+    document.body.append(chart);
+    await settled();
+    const triggers = [...chart.querySelectorAll<HTMLButtonElement>('.a11y-segmented-bar-chart__legend-item > button')];
+    expect(triggers).toHaveLength(3);
+
+    triggers[0]!.focus();
+    let event = press(triggers[0]!, 'ArrowDown');
+    expect(document.activeElement).toBe(triggers[1]);
+    expect(event.defaultPrevented).toBe(true);
+
+    event = press(triggers[1]!, 'ArrowRight');
+    expect(document.activeElement).toBe(triggers[2]);
+    expect(event.defaultPrevented).toBe(true);
+
+    event = press(triggers[2]!, 'ArrowDown');
+    expect(document.activeElement).toBe(triggers[2]);
+    expect(event.defaultPrevented).toBe(false);
+    event = press(triggers[2]!, 'End');
+    expect(document.activeElement).toBe(triggers[2]);
+    expect(event.defaultPrevented).toBe(false);
+
+    event = press(triggers[2]!, 'Home');
+    expect(document.activeElement).toBe(triggers[0]);
+    expect(event.defaultPrevented).toBe(true);
+
+    event = press(triggers[0]!, 'ArrowUp');
+    expect(document.activeElement).toBe(triggers[0]);
+    expect(event.defaultPrevented).toBe(false);
+    event = press(triggers[0]!, 'ArrowLeft');
+    expect(document.activeElement).toBe(triggers[0]);
+    expect(event.defaultPrevented).toBe(false);
+
+    event = press(triggers[0]!, 'End');
+    expect(document.activeElement).toBe(triggers[2]);
+    expect(event.defaultPrevented).toBe(true);
+
+    event = press(triggers[2]!, 'ArrowLeft');
+    expect(document.activeElement).toBe(triggers[1]);
+    expect(event.defaultPrevented).toBe(true);
+
+    event = press(triggers[1]!, 'ArrowDown', { shiftKey: true });
+    expect(document.activeElement).toBe(triggers[1]);
+    expect(event.defaultPrevented).toBe(false);
+    event = press(triggers[1]!, 'ArrowDown', { ctrlKey: true });
+    expect(document.activeElement).toBe(triggers[1]);
+    expect(event.defaultPrevented).toBe(false);
+    event = press(triggers[1]!, 'a');
+    expect(document.activeElement).toBe(triggers[1]);
+    expect(event.defaultPrevented).toBe(false);
   });
 });

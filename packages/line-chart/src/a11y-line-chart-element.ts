@@ -1,21 +1,23 @@
 import type {
   A11yLineChartMessages,
   A11yLineChartConfig,
-  A11yLineChartConfigChangeDetail,
+  A11yLineChartDataView,
   A11yLineChartBaseline,
   A11yLineChartDatum,
   A11yLineChartDefinition,
   A11yLineChartDataChangeDetail,
-  A11yLineChartDisplayChangeDetail,
+  A11yLineChartSettingsChangeDetail,
   A11yLineChartDataViewChangeDetail,
   A11yLineChartDisclosureChangeDetail,
   A11yLineChartDifferenceFormatter,
   A11yLineChartErrorDetail,
   A11yLineChartLegacyDatum,
   A11yLineChartPattern,
+  A11yLineChartPercentScale,
   A11yLineChartPointChangeDetail,
   A11yLineChartSemanticModel,
   A11yLineChartSeries,
+  A11yLineChartTarget,
   A11yLineChartTheme,
   A11yLineChartTooltipAriaLabelBuilder,
   A11yLineChartTooltipHtmlBuilder,
@@ -33,6 +35,7 @@ import { buildSemanticModel } from './semantic-model.js';
 import { copyTarget, formatTarget } from './target.js';
 import { validateBaseline, validateData } from './validation.js';
 import { buildLineCsv } from './csv.js';
+import { CSV_BYTE_ORDER_MARK, fractionToWholePercent, wholePercentToFraction } from '../../chart-core/src/csv.js';
 import { renderLineRichContent, lineRichContentToText } from './rich-content.js';
 import { ModalController } from '../../chart-core/src/ui/modal-controller.js';
 import { setDisclosure, toggleDisclosure } from '../../chart-core/src/ui/disclosure.js';
@@ -49,13 +52,16 @@ function isHeadingLevel(value: number): value is 1 | 2 | 3 | 4 | 5 | 6 {
   return value >= 1 && value <= 6;
 }
 
-function stableSerialize(value: unknown): string {
-  if (value instanceof Date) return JSON.stringify(value.toISOString());
-  if (Array.isArray(value)) return `[${value.map(stableSerialize).join(',')}]`;
-  if (value && typeof value === 'object') {
-    return `{${Object.keys(value).filter((key) => (value as Record<string, unknown>)[key] !== undefined).sort().map((key) => `${JSON.stringify(key)}:${stableSerialize((value as Record<string, unknown>)[key])}`).join(',')}}`;
-  }
-  return JSON.stringify(value) ?? String(value);
+/** Applies a percent-scale conversion to one series value; null and undefined pass through unchanged. */
+function scaleSeriesValue<T extends number | null | undefined>(value: T, scale: (value: number) => number): T {
+  return (typeof value === 'number' ? scale(value) : value) as T;
+}
+
+/** Applies a percent-scale conversion to a numeric target or range; absent targets pass through unchanged. */
+function scaleTarget<T extends A11yLineChartTarget | null | undefined>(target: T, scale: (value: number) => number): T {
+  if (typeof target === 'number') return scale(target) as T;
+  if (target && typeof target === 'object') return { min: scale(target.min), max: scale(target.max) } as T;
+  return target;
 }
 
 function copyX(value: A11yLineChartXValue): A11yLineChartXValue {
@@ -75,7 +81,7 @@ interface StepperElements {
 }
 
 export class A11yLineChartElement extends HTMLElement {
-  static readonly observedAttributes = ['chart-title', 'heading-level', 'locale', 'messages', 'subtitle', 'value-preset', 'filtered'];
+  static readonly observedAttributes = ['chart-title', 'data-view', 'heading-level', 'locale', 'messages', 'percent-scale', 'subtitle', 'value-preset', 'filtered', 'suppressed'];
 
   readonly instanceId = nextId();
 
@@ -90,6 +96,7 @@ export class A11yLineChartElement extends HTMLElement {
   #dataNote = '';
   #definitions: A11yLineChartDefinition[] = [];
   #filtered = false;
+  #suppressed = false;
   #explanationOpen = false;
   #glossaryOpen = false;
   #dataViewOpen = false;
@@ -104,11 +111,10 @@ export class A11yLineChartElement extends HTMLElement {
   #sourceRevision = 0;
   #renderedSourceRevision = -1;
   #lastDataSourceSignature = '';
-  #displayDirty = false;
-  #displaySnapshotReady = false;
-  #lastDisplaySignature = '';
-  #lastDisplayCallbacks: unknown[] = [];
   #inlineOpen = false;
+  /** Validated data exactly as the author supplied it (author scale). */
+  #sourceData: A11yLineChartDatum[] = [];
+  /** Data in whole percent (or the author's scale for number presets); every internal consumer reads this. */
   #data: A11yLineChartDatum[] = [];
   #errorMessage = '';
   #dataValidationError: { key: keyof typeof ENGLISH_LINE_CHART_MESSAGES; values: Record<string, unknown> } | undefined;
@@ -140,6 +146,15 @@ export class A11yLineChartElement extends HTMLElement {
 
   set chartTitle(value: string) {
     this.setAttribute('chart-title', value);
+  }
+
+  get locale(): string {
+    return this.#locale();
+  }
+
+  set locale(value: string) {
+    if (value) this.setAttribute('locale', value);
+    else this.removeAttribute('locale');
   }
 
   get subtitle(): string {
@@ -186,7 +201,7 @@ export class A11yLineChartElement extends HTMLElement {
     if (next.glossaryExpanded !== previous.glossaryExpanded) this.#glossaryOpen = next.glossaryExpanded === true;
     this.#legendSelection = undefined;
     this.#focusedIndex = Math.min(this.#focusedIndex, Math.max(0, this.#data.length - 1));
-    this.#markDisplayChanged();
+    this.#queueRender();
   }
 
   get messages(): A11yLineChartMessages { return { ...this.#messages }; }
@@ -194,13 +209,13 @@ export class A11yLineChartElement extends HTMLElement {
     this.#messages = value && typeof value === 'object' ? { ...value } : {};
     this.#messagesError = false;
     this.#refreshValidationMessages();
-    this.#markDisplayChanged();
+    this.#queueRender();
   }
 
   get context(): string | undefined { return this.#context; }
-  set context(value: string | undefined) { this.#context = typeof value === 'string' ? value : undefined; this.#markDisplayChanged(); }
+  set context(value: string | undefined) { this.#context = typeof value === 'string' ? value : undefined; this.#queueRender(); }
   get dataNote(): string { return this.#dataNote; }
-  set dataNote(value: string) { this.#dataNote = typeof value === 'string' ? value : ''; this.#markDisplayChanged(); }
+  set dataNote(value: string) { this.#dataNote = typeof value === 'string' ? value : ''; this.#queueRender(); }
   get definitions(): A11yLineChartDefinition[] { return this.#definitions.map((definition) => ({ ...definition })); }
   set definitions(value: A11yLineChartDefinition[]) {
     const seen = new Set<string>();
@@ -213,10 +228,12 @@ export class A11yLineChartElement extends HTMLElement {
         this.#definitions.push({ id: item.id, label: item.label, definition: item.definition });
       }
     }
-    this.#markDisplayChanged();
+    this.#queueRender();
   }
   get filtered(): boolean { return this.#filtered; }
-  set filtered(value: boolean) { this.#filtered = Boolean(value); this.toggleAttribute('filtered', this.#filtered); this.#markDisplayChanged(); }
+  set filtered(value: boolean) { this.#filtered = Boolean(value); this.toggleAttribute('filtered', this.#filtered); this.#queueRender(); }
+  get suppressed(): boolean { return this.#suppressed; }
+  set suppressed(value: boolean) { this.#suppressed = Boolean(value); this.toggleAttribute('suppressed', this.#suppressed); this.#queueRender(); }
 
   /** Compatibility alias for the Angular component's accessibility input. */
   get a11y(): A11yLineChartConfig {
@@ -228,7 +245,7 @@ export class A11yLineChartElement extends HTMLElement {
   }
 
   get data(): A11yLineChartDatum[] {
-    return this.#data.map((item) => ({ ...item, target: copyTarget(item.target), x: item.x instanceof Date ? new Date(item.x.getTime()) : item.x }));
+    return this.#sourceData.map((item) => ({ ...item, target: copyTarget(item.target), x: item.x instanceof Date ? new Date(item.x.getTime()) : item.x }));
   }
 
   set data(value: Array<A11yLineChartDatum | A11yLineChartLegacyDatum>) {
@@ -239,13 +256,15 @@ export class A11yLineChartElement extends HTMLElement {
     });
     this.#sourceRevision++;
     if (result.valid) {
-      this.#data = result.data;
+      this.#sourceData = result.data;
+      this.#recomputeData();
       this.#focusedIndex = this.#findFocusedPeriodIndex(this.#data);
       this.#errorMessage = '';
       this.#dataValidationError = undefined;
       this.#focusedIndex = Math.min(this.#focusedIndex, Math.max(0, this.#data.length - 1));
       this.#updateBaselineValidation(true);
     } else {
+      this.#sourceData = [];
       this.#data = [];
       this.#dataValidationError = validationError;
       this.#errorMessage = result.message;
@@ -258,25 +277,25 @@ export class A11yLineChartElement extends HTMLElement {
   }
 
   get formatValue(): A11yLineChartValueFormatter | undefined { return this.#formatValue; }
-  set formatValue(value: A11yLineChartValueFormatter | undefined) { this.#formatValue = value; this.#markDisplayChanged(); }
+  set formatValue(value: A11yLineChartValueFormatter | undefined) { this.#formatValue = value; this.#queueRender(); }
 
   get formatDifference(): A11yLineChartDifferenceFormatter | undefined { return this.#formatDifference; }
-  set formatDifference(value: A11yLineChartDifferenceFormatter | undefined) { this.#formatDifference = value; this.#markDisplayChanged(); }
+  set formatDifference(value: A11yLineChartDifferenceFormatter | undefined) { this.#formatDifference = value; this.#queueRender(); }
 
   get formatXValue(): A11yLineChartXFormatter | undefined { return this.#formatX; }
-  set formatXValue(value: A11yLineChartXFormatter | undefined) { this.#formatX = value; this.#markDisplayChanged(); }
+  set formatXValue(value: A11yLineChartXFormatter | undefined) { this.#formatX = value; this.#queueRender(); }
 
   get buildTooltipHtml(): A11yLineChartTooltipHtmlBuilder | undefined { return this.#buildTooltipHtml; }
-  set buildTooltipHtml(value: A11yLineChartTooltipHtmlBuilder | undefined) { this.#buildTooltipHtml = value; this.#markDisplayChanged(); }
+  set buildTooltipHtml(value: A11yLineChartTooltipHtmlBuilder | undefined) { this.#buildTooltipHtml = value; this.#queueRender(); }
 
   get buildTooltipAriaLabel(): A11yLineChartTooltipAriaLabelBuilder | undefined { return this.#buildTooltipAriaLabel; }
-  set buildTooltipAriaLabel(value: A11yLineChartTooltipAriaLabelBuilder | undefined) { this.#buildTooltipAriaLabel = value; this.#markDisplayChanged(); }
+  set buildTooltipAriaLabel(value: A11yLineChartTooltipAriaLabelBuilder | undefined) { this.#buildTooltipAriaLabel = value; this.#queueRender(); }
 
   get renderTooltip(): A11yLineChartTooltipRenderer | undefined { return this.#renderTooltip; }
-  set renderTooltip(value: A11yLineChartTooltipRenderer | undefined) { this.#renderTooltip = value; this.#markDisplayChanged(); }
+  set renderTooltip(value: A11yLineChartTooltipRenderer | undefined) { this.#renderTooltip = value; this.#queueRender(); }
 
   get theme(): A11yLineChartTheme { return { ...this.#theme }; }
-  set theme(value: A11yLineChartTheme) { this.#theme = value && typeof value === 'object' ? { ...value } : {}; this.#markDisplayChanged(); }
+  set theme(value: A11yLineChartTheme) { this.#theme = value && typeof value === 'object' ? { ...value } : {}; this.#queueRender(); }
 
   get xAxisTitle(): string { return this.#resolvedConfig().xAxisTitle; }
   set xAxisTitle(value: string) { this.#setConfigField('xAxisTitle', value); }
@@ -318,7 +337,8 @@ export class A11yLineChartElement extends HTMLElement {
 
   attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null): void {
     if (oldValue === newValue) return;
-    if (_name === 'filtered') { this.#filtered = newValue !== null; this.#markDisplayChanged(); return; }
+    if (_name === 'filtered') { this.#filtered = newValue !== null; this.#queueRender(); return; }
+    if (_name === 'suppressed') { this.#suppressed = newValue !== null; this.#queueRender(); return; }
     if (_name === 'messages') {
       if (newValue === null) { this.#messages = {}; this.#messagesError = false; }
       else {
@@ -329,11 +349,17 @@ export class A11yLineChartElement extends HTMLElement {
           if (entries.some(([key, value]) => !isLineChartMessageKey(key) || typeof value !== 'string')) throw new Error(this.#t('invalidMessages'));
           this.#messages = Object.fromEntries(entries) as A11yLineChartMessages;
           this.#messagesError = false;
-        } catch { this.#messagesError = true; }
+        } catch {
+          this.#messagesError = true;
+          this.dispatchEvent(new CustomEvent<A11yLineChartErrorDetail>('a11y-line-chart-error', {
+            bubbles: true,
+            detail: { code: 'invalid-messages', message: this.#t('invalidMessages') }
+          }));
+        }
       }
     }
     if (_name === 'messages') this.#refreshValidationMessages();
-    this.#markDisplayChanged();
+    this.#queueRender();
   }
 
   #refreshValidationMessages(): void {
@@ -348,7 +374,7 @@ export class A11yLineChartElement extends HTMLElement {
 
   #createOwnedRoot(): HTMLElement {
     const root = document.createElement('section');
-    root.className = 'a11y-line-chart__root perf-chart';
+    root.className = 'a11y-line-chart__root';
     root.setAttribute(OWNED_ROOT_ATTRIBUTE, this.instanceId);
     root.setAttribute('role', 'group');
     this.append(root);
@@ -367,100 +393,30 @@ export class A11yLineChartElement extends HTMLElement {
       yAxisTitle: this.#config.yAxisTitle ?? this.#t('defaultYAxisTitle'),
       headingLevel: this.#headingLevel(),
       locale: this.#locale(),
+      dataView: this.#dataView(),
+      percentScale: this.#percentScale(),
       valuePreset: this.#valuePreset()
     });
   }
 
   #setConfigField<Key extends keyof A11yLineChartConfig>(key: Key, value: A11yLineChartConfig[Key]): void {
     this.#config = { ...this.#config, [key]: value };
-    this.#markDisplayChanged();
-  }
-
-  #displaySnapshot(): { signature: string; callbacks: unknown[] } {
-    return {
-      signature: stableSerialize({
-        chartTitle: this.chartTitle,
-        subtitle: this.subtitle,
-        locale: this.#locale(),
-        headingLevel: this.#headingLevel(),
-        filtered: this.#filtered,
-        context: this.#context,
-        dataNote: this.#dataNote,
-        definitions: this.#definitions,
-        theme: this.#theme,
-        config: this.#config,
-        messages: this.#messages
-      }),
-      callbacks: [this.#formatValue, this.#formatDifference, this.#formatX, this.#buildTooltipHtml, this.#buildTooltipAriaLabel, this.#renderTooltip]
-    };
-  }
-
-  #hasDisplaySnapshotChanged(): boolean {
-    if (!this.#displaySnapshotReady) return false;
-    const snapshot = this.#displaySnapshot();
-    return snapshot.signature !== this.#lastDisplaySignature
-      || snapshot.callbacks.some((callback, index) => callback !== this.#lastDisplayCallbacks[index]);
-  }
-
-  #recordDisplaySnapshot(preservePendingProperties = false): void {
-    if (preservePendingProperties) return;
-    const snapshot = this.#displaySnapshot();
-    this.#lastDisplaySignature = snapshot.signature;
-    this.#lastDisplayCallbacks = snapshot.callbacks;
-    this.#displayDirty = false;
-  }
-
-  #markDisplayChanged(): void {
-    this.#displayDirty = true;
     this.#queueRender();
-  }
-
-  #dispatchPropertyDisplayChange(): void {
-    if (!this.#displayDirty && this.#displaySnapshotReady) return;
-    const snapshot = this.#displaySnapshot();
-    const changed = this.#displayDirty && this.#displaySnapshotReady && (
-      snapshot.signature !== this.#lastDisplaySignature
-      || snapshot.callbacks.some((callback, index) => callback !== this.#lastDisplayCallbacks[index])
-    );
-    if (changed) {
-      const detail: A11yLineChartDisplayChangeDetail = {
-        chartTitle: this.chartTitle,
-        config: this.config,
-        ...(this.#context !== undefined ? { context: this.#context } : {}),
-        dataNote: this.#dataNote,
-        definitions: this.definitions,
-        filtered: this.#filtered,
-        messages: this.messages,
-        source: 'properties',
-        subtitle: this.subtitle,
-        theme: this.theme,
-        ...(this.#formatValue ? { formatValue: this.#formatValue } : {}),
-        ...(this.#formatDifference ? { formatDifference: this.#formatDifference } : {}),
-        ...(this.#formatX ? { formatXValue: this.#formatX } : {}),
-        ...(this.#buildTooltipHtml ? { buildTooltipHtml: this.#buildTooltipHtml } : {}),
-        ...(this.#buildTooltipAriaLabel ? { buildTooltipAriaLabel: this.#buildTooltipAriaLabel } : {}),
-        ...(this.#renderTooltip ? { renderTooltip: this.#renderTooltip } : {})
-      };
-      this.dispatchEvent(new CustomEvent<A11yLineChartDisplayChangeDetail>('a11y-line-chart-display-change', { bubbles: true, detail }));
-    }
-    this.#lastDisplaySignature = snapshot.signature;
-    this.#lastDisplayCallbacks = snapshot.callbacks;
-    this.#displaySnapshotReady = true;
-    this.#displayDirty = false;
   }
 
   #formatSeriesValue(value: number | null | undefined, series: A11yLineChartSeries, x: A11yLineChartXValue): string {
     const config = this.#resolvedConfig();
     const normalized = value ?? null;
+    if (normalized === null) return config.describeMissingAs;
     if (this.#formatValue) {
       try {
-        const formatted = this.#formatValue({ value: normalized, series, x: copyX(x), locale: config.locale });
+        const authorValue = this.#usesFractionScale(config) ? wholePercentToFraction(normalized) : normalized;
+        const formatted = this.#formatValue({ value: authorValue, series, x: copyX(x), locale: config.locale });
         if (typeof formatted === 'string' && formatted.trim()) return formatted;
       } catch {
         // Fall through to the canonical formatter.
       }
     }
-    if (normalized === null) return config.describeMissingAs;
     const formatter = config.valuePreset === 'percent'
       ? new Intl.NumberFormat(config.locale, { style: 'percent', minimumFractionDigits: config.decimalPlaces, maximumFractionDigits: config.decimalPlaces })
       : new Intl.NumberFormat(config.locale, { minimumFractionDigits: config.decimalPlaces, maximumFractionDigits: config.decimalPlaces });
@@ -514,7 +470,9 @@ export class A11yLineChartElement extends HTMLElement {
     const result = validateBaseline(this.#baselineInput, this.#data, (key, values = {}) => this.#t(key, values));
     if (result.valid) {
       this.#baselineErrorMessage = '';
-      return result.baseline;
+      const baseline = result.baseline;
+      if (!baseline || !this.#usesFractionScale(this.#resolvedConfig())) return baseline;
+      return { ...baseline, value: fractionToWholePercent(baseline.value) };
     }
     const changed = result.message !== this.#baselineErrorMessage;
     this.#baselineErrorMessage = result.message;
@@ -533,6 +491,7 @@ export class A11yLineChartElement extends HTMLElement {
       ...(baseline ? { baseline } : {}),
       config,
       data: this.#data,
+      suppressed: this.#suppressed,
       formatDifference: ({ comparison, value, x }) => this.#formatDifferenceValue(value, comparison, x),
       formatValue: (value, series, x) => this.#formatSeriesValue(value, series, x),
       formatXValue: (value) => this.#formatXValue(value),
@@ -594,6 +553,7 @@ export class A11yLineChartElement extends HTMLElement {
   #render(): void {
     this.#renderQueued = false;
     this.#lifecycleGeneration++;
+    this.#recomputeData();
     const config = this.#resolvedConfig();
     const dialogWasOpen = Boolean(this.#dialogReopenOnConnect || this.#dataDialog?.open || this.#dataDialog?.hasAttribute('open'));
     const inlineDetails = this.querySelector<HTMLDetailsElement>('.a11y-line-chart__inline-data');
@@ -615,16 +575,16 @@ export class A11yLineChartElement extends HTMLElement {
     root.setAttribute('aria-label', this.chartTitle);
 
     const header = document.createElement('header');
-    header.className = 'a11y-line-chart__header chart-head';
+    header.className = 'a11y-line-chart__header';
     const heading = document.createElement(`h${this.#headingLevel()}`);
-    heading.className = 'a11y-line-chart__title chart-title';
+    heading.className = 'a11y-line-chart__title';
     heading.id = `${this.instanceId}-title`;
     heading.textContent = this.chartTitle;
     root.setAttribute('aria-labelledby', heading.id);
     header.append(heading);
     if (this.subtitle) {
       const subtitle = document.createElement('p');
-      subtitle.className = 'a11y-line-chart__subtitle chart-sub';
+      subtitle.className = 'a11y-line-chart__subtitle';
       subtitle.textContent = this.subtitle;
       header.append(subtitle);
     }
@@ -632,7 +592,7 @@ export class A11yLineChartElement extends HTMLElement {
 
     if (this.#errorMessage) {
       this.#disposeChart(true);
-      if (config.dataView === 'inline' && this.#dataViewOpen) this.#setDataViewState(false, 'inline');
+      this.#closeInlineViewIfOpen();
       this.#semanticModel = undefined;
       const error = document.createElement('p');
       error.className = 'a11y-line-chart__message a11y-line-chart__message--error';
@@ -644,13 +604,12 @@ export class A11yLineChartElement extends HTMLElement {
       if (hadOwnedRootFocus || (dialogWasOpen && this.#unavailableViewClosesDialog(config)) || inlineHadFocus) error.focus();
       this.#discardDataDialogForUnavailableView(config);
       this.#dispatchDataChange();
-      this.#dispatchPropertyDisplayChange();
       return;
     }
 
     if (!this.#data.length) {
       this.#disposeChart(true);
-      if (config.dataView === 'inline' && this.#dataViewOpen) this.#setDataViewState(false, 'inline');
+      this.#closeInlineViewIfOpen();
       this.#semanticModel = undefined;
       const empty = document.createElement('p');
       empty.className = 'a11y-line-chart__message a11y-line-chart__message--empty';
@@ -664,7 +623,6 @@ export class A11yLineChartElement extends HTMLElement {
       this.#dispatchReady();
       this.#dispatchDataChange();
       this.#announceDataUpdate(this.#resolvedConfig());
-      this.#dispatchPropertyDisplayChange();
       return;
     }
 
@@ -676,7 +634,7 @@ export class A11yLineChartElement extends HTMLElement {
       const filtered = document.createElement('p'); filtered.className = 'a11y-line-chart__filtered';
       filtered.textContent = this.#t('filteredIndicator'); root.append(filtered);
     }
-    if (this.#data.some((datum) => datum.actualSuppressed || datum.targetSuppressed)) {
+    if (this.#suppressed) {
       const suppressed = document.createElement('p'); suppressed.className = 'a11y-line-chart__suppression-indicator';
       suppressed.textContent = this.#t('suppressionIndicator'); root.append(suppressed);
     }
@@ -711,15 +669,15 @@ export class A11yLineChartElement extends HTMLElement {
     overflowHelp.textContent = this.#t('overflowHelp');
 
     const viewport = document.createElement('div');
-    viewport.className = 'a11y-line-chart__viewport chart-responsive-viewport';
+    viewport.className = 'a11y-line-chart__viewport';
     const resizable = document.createElement('div');
-    resizable.className = 'a11y-line-chart__resizable chart-resizable';
+    resizable.className = 'a11y-line-chart__resizable';
     const intrinsic = this.#intrinsicWidths(config);
     resizable.style.minWidth = `${intrinsic.min}px`;
     if (intrinsic.max !== undefined) resizable.style.maxWidth = `${intrinsic.max}px`;
 
     const chartGroup = document.createElement('div');
-    chartGroup.className = 'a11y-line-chart__chart-group chart-container';
+    chartGroup.className = 'a11y-line-chart__chart-group';
     chartGroup.setAttribute('role', 'group');
     chartGroup.setAttribute('aria-roledescription', this.#t('chartRole'));
     chartGroup.setAttribute('aria-labelledby', heading.id);
@@ -739,7 +697,7 @@ export class A11yLineChartElement extends HTMLElement {
     chart.setAttribute('aria-hidden', 'true');
 
     const navigator = document.createElement('input');
-    navigator.className = 'a11y-line-chart__navigator chart-focus-layer';
+    navigator.className = 'a11y-line-chart__navigator';
     navigator.dataset['focusKey'] = 'navigator';
     navigator.type = 'range';
     navigator.min = '0';
@@ -773,7 +731,7 @@ export class A11yLineChartElement extends HTMLElement {
       const matchingControl = activeRootKey && config.dataView === 'inline'
         ? Array.from(root.querySelectorAll<HTMLElement>('.a11y-line-chart__inline-data [data-focus-key]')).find((item) => item.dataset['focusKey'] === activeRootKey)
         : undefined;
-      const focusTarget = config.tableVisibility === 'hidden'
+      const focusTarget = config.dataView === 'none'
         ? root.querySelector<HTMLInputElement>('.a11y-line-chart__navigator')
         : config.dataView === 'inline'
           ? matchingControl ?? root.querySelector<HTMLElement>('.a11y-line-chart__inline-data > summary')
@@ -807,7 +765,6 @@ export class A11yLineChartElement extends HTMLElement {
     this.#dispatchReady();
     this.#dispatchDataChange();
     this.#announceDataUpdate(config);
-    this.#dispatchPropertyDisplayChange();
     this.#rendered = true;
   }
 
@@ -815,7 +772,7 @@ export class A11yLineChartElement extends HTMLElement {
     if (this.#renderedSourceRevision === this.#sourceRevision) return;
     const result = validateBaseline(this.#baselineInput, this.#data);
     const signature = JSON.stringify({
-      data: this.#data.map((item) => ({ ...item, x: typedX(item.x) })),
+      data: this.#sourceData.map((item) => ({ ...item, x: typedX(item.x) })),
       baseline: result.valid && result.baseline ? { ...result.baseline, x: typedX(result.baseline.x) } : null,
       invalid: Boolean(this.#dataValidationError)
     });
@@ -862,17 +819,17 @@ export class A11yLineChartElement extends HTMLElement {
   }
 
   #appendDataView(root: HTMLElement, config: ResolvedA11yLineChartConfig, model: A11yLineChartSemanticModel, tableRegion: HTMLElement, wasOpen: boolean, focusKey?: string): void {
-    if (this.#activeDataView !== config.dataView && this.#dataViewOpen) this.#setDataViewState(false, this.#activeDataView);
-    this.#activeDataView = config.dataView;
-    if (config.tableVisibility === 'hidden') {
+    if (config.dataView === 'none') {
+      // Closing reports the view that was open; the active view itself is kept for the next visible render.
       this.#modalController?.close(false);
-      if (this.#activeDataView === 'inline' && this.#dataViewOpen) this.#setDataViewState(false, 'inline');
+      if (this.#dataViewOpen) this.#setDataViewState(false, this.#activeDataView);
       this.#inlineOpen = false;
       this.#dataDialog?.querySelector('.a11y-line-chart__table-region')?.remove();
-      if (this.#config.tableVisibility === undefined && this.#config.showTable === false) root.append(tableRegion);
       if (wasOpen) root.querySelector<HTMLInputElement>('.a11y-line-chart__navigator')?.focus();
       return;
     }
+    if (this.#activeDataView !== config.dataView && this.#dataViewOpen) this.#setDataViewState(false, this.#activeDataView);
+    this.#activeDataView = config.dataView;
     if (config.dataView === 'inline') {
       this.#modalController?.close(false);
       this.#dataDialog?.querySelector('.a11y-line-chart__table-region')?.remove();
@@ -899,10 +856,7 @@ export class A11yLineChartElement extends HTMLElement {
       return;
     }
 
-    if (config.tableVisibility === 'screen-reader' || config.tableVisibility === 'visible') {
-      if (config.tableVisibility === 'visible') tableRegion.classList.add('a11y-line-chart__table-region--visually-hidden');
-      root.append(tableRegion);
-    }
+    root.append(tableRegion);
     let dialog = this.#dataDialog;
     if (!dialog) {
       dialog = document.createElement('dialog');
@@ -949,7 +903,7 @@ export class A11yLineChartElement extends HTMLElement {
   }
 
   #unavailableViewClosesDialog(config: ResolvedA11yLineChartConfig): boolean {
-    return config.tableVisibility === 'hidden' || config.dataView === 'inline';
+    return config.dataView === 'none' || config.dataView === 'inline';
   }
 
   #focusDataOpener(): void {
@@ -964,7 +918,7 @@ export class A11yLineChartElement extends HTMLElement {
   #discardDataDialogForUnavailableView(config: ResolvedA11yLineChartConfig): void {
     if (!this.#unavailableViewClosesDialog(config)) return;
     this.#modalController?.close(false);
-    if (config.tableVisibility === 'hidden') this.#dataDialog?.querySelector('.a11y-line-chart__table-region')?.remove();
+    if (config.dataView === 'none') this.#dataDialog?.querySelector('.a11y-line-chart__table-region')?.remove();
   }
 
   #updateOpenDialogStatus(message: string): void {
@@ -1162,28 +1116,33 @@ export class A11yLineChartElement extends HTMLElement {
       });
       strip.append(zoom);
     }
-    if (config.tableVisibility !== 'hidden' && config.dataView === 'dialog') {
+    if (config.dataView === 'dialog') {
       const data = document.createElement('button'); data.type = 'button'; data.className = 'a11y-line-chart__data-action'; data.textContent = this.#t('dataAction');
       data.dataset['focusKey'] = 'data-action';
       data.addEventListener('click', () => {
         this.#modalController?.open(this.#dataDialog?.querySelector<HTMLButtonElement>('[data-focus-key="close"]') ?? undefined);
       }); strip.append(data);
     }
-    if (config.showExplanation) strip.append(this.#disclosureAction('explanation', this.#t('explain')));
-    if (config.showGlossary && this.#definitions.length) strip.append(this.#disclosureAction('glossary', this.#t('glossary')));
+    if (config.showExplanation) strip.append(this.#disclosureAction('explanation'));
+    if (config.showGlossary && this.#definitions.length) strip.append(this.#disclosureAction('glossary'));
     return strip;
   }
 
-  #disclosureAction(name: 'explanation' | 'glossary', label: string): HTMLButtonElement {
-    const button = document.createElement('button'); button.type = 'button'; button.textContent = label;
+  #disclosureAction(name: 'explanation' | 'glossary'): HTMLButtonElement {
+    const labelFor = (expanded: boolean): string => this.#t(name === 'explanation'
+      ? (expanded ? 'hideExplanation' : 'explain')
+      : (expanded ? 'hideGlossary' : 'glossary'));
+    const initialExpanded = name === 'explanation' ? this.#explanationOpen : this.#glossaryOpen;
+    const button = document.createElement('button'); button.type = 'button'; button.textContent = labelFor(initialExpanded);
     button.dataset['focusKey'] = `${name}-action`; button.setAttribute('aria-controls', `${this.instanceId}-${name}`);
     const initialContent = this.querySelector<HTMLElement>(`#${this.instanceId}-${name}`);
-    if (initialContent) setDisclosure(button, initialContent, name === 'explanation' ? this.#explanationOpen : this.#glossaryOpen);
-    else button.setAttribute('aria-expanded', String(name === 'explanation' ? this.#explanationOpen : this.#glossaryOpen));
+    if (initialContent) setDisclosure(button, initialContent, initialExpanded);
+    else button.setAttribute('aria-expanded', String(initialExpanded));
     button.addEventListener('click', () => {
       const content = this.querySelector<HTMLElement>(`#${this.instanceId}-${name}`);
       const expanded = content ? toggleDisclosure(button, content) : button.getAttribute('aria-expanded') !== 'true';
       if (name === 'explanation') this.#explanationOpen = expanded; else this.#glossaryOpen = expanded;
+      button.textContent = labelFor(expanded);
       if (content) content.hidden = !expanded;
       else button.setAttribute('aria-expanded', String(expanded));
       this.dispatchEvent(new CustomEvent<A11yLineChartDisclosureChangeDetail>('a11y-line-chart-disclosure-change', { bubbles: true, detail: { disclosure: name, expanded } }));
@@ -1201,7 +1160,7 @@ export class A11yLineChartElement extends HTMLElement {
       ...(context ? { context } : {}),
       ...(this.#dataNote ? { dataNote: this.#dataNote } : {}), contextLabel: this.#t('contextLabel'), dataNoteLabel: this.#t('dataNoteLabel'), rangeSeparator: this.#t('rangeSeparator'), unavailableOutcome: this.#t('outcomeUnavailable')
     });
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const blob = new Blob([CSV_BYTE_ORDER_MARK + csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url;
     const filename = (this.chartTitle || 'chart-data').normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'chart-data';
     link.download = `${filename}.csv`;
@@ -1252,7 +1211,7 @@ export class A11yLineChartElement extends HTMLElement {
 
   #createControls(config: ResolvedA11yLineChartConfig): HTMLElement {
     const controls = document.createElement('div');
-    controls.className = 'a11y-line-chart__controls controls';
+    controls.className = 'a11y-line-chart__controls';
     controls.setAttribute('role', 'group');
     controls.setAttribute('aria-label', this.#t('controlsLabel'));
     const fieldset = document.createElement('fieldset');
@@ -1285,7 +1244,7 @@ export class A11yLineChartElement extends HTMLElement {
     appendChoices(lineChoices);
 
     const patterns = document.createElement('div');
-    patterns.className = 'a11y-line-chart__pattern-selects pattern-selects';
+    patterns.className = 'a11y-line-chart__pattern-selects';
     patterns.append(
       this.#createPatternSelect('actualPattern', config.actualSeriesLabel, config.actualPattern),
       this.#createPatternSelect('targetPattern', config.targetSeriesLabel, config.targetPattern)
@@ -1315,8 +1274,14 @@ export class A11yLineChartElement extends HTMLElement {
     return label;
   }
 
+  /** The only dispatch path for reader-driven settings; host-driven updates never reach this. */
+  #dispatchSettingsChange(setting: keyof A11yLineChartConfig, value: A11yLineChartConfig[keyof A11yLineChartConfig], source: 'controls' | 'legend'): void {
+    const detail: A11yLineChartSettingsChangeDetail = { setting, value, source };
+    this.dispatchEvent(new CustomEvent<A11yLineChartSettingsChangeDetail>('a11y-line-chart-settings-change', { bubbles: true, detail }));
+  }
+
   #changeControl(key: keyof A11yLineChartConfig, value: A11yLineChartConfig[keyof A11yLineChartConfig], label: string, source: HTMLElement): void {
-    const preservePendingProperties = this.#displayDirty && this.#hasDisplaySnapshotChanged();
+    const previous = this.#resolvedConfig()[key];
     this.#config = { ...this.#config, [key]: value };
     const resolved = this.#resolvedConfig();
     if (key === 'showActualLine' || key === 'showTargetLine') {
@@ -1326,15 +1291,7 @@ export class A11yLineChartElement extends HTMLElement {
     const message = key === 'actualPattern' || key === 'targetPattern'
       ? this.#t('patternSet', { series: key === 'actualPattern' ? this.#resolvedConfig().actualSeriesLabel : this.#resolvedConfig().targetSeriesLabel, value: this.#t(`pattern${String(value).charAt(0).toUpperCase()}${String(value).slice(1)}` as keyof typeof ENGLISH_LINE_CHART_MESSAGES) })
       : this.#t(value ? 'enabled' : 'disabled', { label });
-    this.dispatchEvent(new CustomEvent<A11yLineChartConfigChangeDetail>('a11y-line-chart-config-change', {
-      bubbles: true,
-      detail: { config: this.config, source: 'controls' }
-    }));
-    this.#recordDisplaySnapshot(preservePendingProperties);
-    this.dispatchEvent(new CustomEvent<A11yLineChartConfigChangeDetail>('a11y-line-chart-display-change', {
-      bubbles: true,
-      detail: { config: this.config, source: 'controls' }
-    }));
+    if (resolved[key] !== previous) this.#dispatchSettingsChange(key, value, 'controls');
     const controlName = source.dataset['control'];
     if (key === 'initialZoomY') this.#render();
     else if (this.#chartUpdate) this.#chartUpdate();
@@ -1358,13 +1315,12 @@ export class A11yLineChartElement extends HTMLElement {
     const explicitView = suffix === 'dialog' || suffix === 'inline';
     if (explicitView && config.showContext && contentContext) region.append(this.#richBlock(contentContext, 'a11y-line-chart__data-context'));
     if (explicitView && this.#dataNote) region.append(this.#richBlock(this.#dataNote, 'a11y-line-chart__data-note'));
-    if (explicitView && config.showExport && config.tableVisibility !== 'hidden') {
+    if (explicitView && config.showExport && config.dataView !== 'none') {
       const exportButton = document.createElement('button'); exportButton.type = 'button'; exportButton.textContent = this.#t('exportCsv');
       exportButton.className = 'a11y-line-chart__export'; exportButton.dataset['focusKey'] = 'csv-export';
       exportButton.addEventListener('click', () => this.#downloadCsv(config, model)); region.append(exportButton);
     }
-    if (config.tableVisibility === 'screen-reader' && !explicitView) region.classList.add('a11y-line-chart__table-region--visually-hidden');
-    if (config.tableVisibility === 'hidden') region.hidden = true;
+    if (!explicitView) region.classList.add('a11y-line-chart__table-region--visually-hidden');
     const table = document.createElement('table');
     table.className = 'a11y-line-chart__table';
     table.id = `${this.instanceId}-data${suffix ? `-${suffix}` : ''}`;
@@ -1403,7 +1359,12 @@ export class A11yLineChartElement extends HTMLElement {
       }
       body.append(row);
     }
-    table.append(caption, head, body); region.append(table); return region;
+    table.append(caption, head, body);
+    if (this.#suppressed) {
+      const note = document.createElement('p'); note.className = 'a11y-line-chart__suppression-note';
+      note.textContent = this.#t('suppressionNote'); region.append(note);
+    }
+    region.append(table); return region;
   }
 
   #intrinsicWidths(config: ResolvedA11yLineChartConfig): { min: number; max?: number } {
@@ -1415,7 +1376,8 @@ export class A11yLineChartElement extends HTMLElement {
     if (!config.autoPerPointMinWidth && Number.isFinite(cssMin) && config.perPointMinWidth === 70) minPerPoint = cssMin;
     if (!config.autoPerPointMaxWidth && Number.isFinite(cssMax) && config.perPointMaxWidth === 110) maxPerPoint = cssMax;
     if (config.autoPerPointMinWidth || config.autoPerPointMaxWidth) {
-      const longest = this.#data.reduce((length, item) => Math.max(length, this.#formatSeriesValue(item.actual, 'actual', item.x).length, formatTarget(item.target, (value) => this.#formatSeriesValue(value, 'target', item.x)).length), 0);
+      const points = this.#semanticModel?.points ?? [];
+      const longest = this.#data.reduce((length, item, index) => Math.max(length, (points[index]?.actualFormatted ?? '').length, formatTarget(item.target, (value) => this.#formatSeriesValue(value, 'target', item.x)).length), 0);
       const base = 58 + (config.showActualValues || config.showTargetValues ? longest * 6 : 0);
       if (config.autoPerPointMinWidth) minPerPoint = Math.round(base);
       if (config.autoPerPointMaxWidth) maxPerPoint = Math.max(minPerPoint + 20, Math.round(base * 1.4));
@@ -1466,7 +1428,9 @@ export class A11yLineChartElement extends HTMLElement {
     this.#updateStepper(stepper, this.#resolvedConfig());
     const datum = this.#data[this.#focusedIndex];
     if (!datum) return;
-    const preferred = (!this.#resolvedConfig().showActualLine || datum.actual == null) && this.#resolvedConfig().showTargetLine && datum.target != null ? 'target-main' : 'actual-main';
+    const point = this.#semanticModel?.points[this.#focusedIndex];
+    const actualMissing = point ? point.actualValue === null : datum.actual == null;
+    const preferred = (!this.#resolvedConfig().showActualLine || actualMissing) && this.#resolvedConfig().showTargetLine && datum.target != null ? 'target-main' : 'actual-main';
     const selectedIndex = this.#focusedIndex;
     const revealSelectedTip = (): void => {
       if (revealGeneration === this.#selectionRevealGeneration && this.#focusedIndex === selectedIndex && navigator.isConnected && viewport.isConnected) {
@@ -1480,18 +1444,18 @@ export class A11yLineChartElement extends HTMLElement {
     this.#announce(announcement, true);
     const interpretation = this.#semanticModel?.points[this.#focusedIndex];
     if (!interpretation) return;
+    const toAuthorScale = this.#usesFractionScale(this.#resolvedConfig()) ? wholePercentToFraction : (value: number): number => value;
     this.dispatchEvent(new CustomEvent<A11yLineChartPointChangeDetail>('a11y-line-chart-point-change', {
       bubbles: true,
       detail: {
-        actual: interpretation.actualValue,
+        actual: scaleSeriesValue(interpretation.actualValue, toAuthorScale),
         actualSuppressed: interpretation.actualSuppressed,
         announcement,
         baselineDifference: interpretation.baseline?.difference ? { ...interpretation.baseline.difference } : null,
         index: this.#focusedIndex,
         outcome: interpretation.outcome,
         outcomeLabel: interpretation.outcomeLabel,
-        target: copyTarget(interpretation.targetValue),
-        targetSuppressed: interpretation.targetSuppressed,
+        target: scaleTarget(copyTarget(interpretation.targetValue), toAuthorScale),
         targetDifference: interpretation.targetDifference ? { ...interpretation.targetDifference } : null,
         x: datum.x instanceof Date ? new Date(datum.x.getTime()) : datum.x
       }
@@ -1624,7 +1588,7 @@ export class A11yLineChartElement extends HTMLElement {
     };
     this.#chartUpdate();
     this.#legendCleanup = this.#chartAdapter.onLegendSelection((selected, name) => {
-      const preservePendingProperties = this.#displayDirty && this.#hasDisplaySnapshotChanged();
+      const before = this.#resolvedConfig();
       this.#legendSelection = { ...selected };
       this.#config = {
         ...this.#config,
@@ -1635,10 +1599,9 @@ export class A11yLineChartElement extends HTMLElement {
       const targetControl = this.querySelector<HTMLInputElement>('[data-control="showTargetLine"]');
       if (actualControl) actualControl.checked = this.#resolvedConfig().showActualLine;
       if (targetControl) targetControl.checked = this.#resolvedConfig().showTargetLine;
-      const detail: A11yLineChartConfigChangeDetail = { config: this.config, source: 'legend' };
-      this.dispatchEvent(new CustomEvent<A11yLineChartConfigChangeDetail>('a11y-line-chart-config-change', { bubbles: true, detail }));
-      this.#recordDisplaySnapshot(preservePendingProperties);
-      this.dispatchEvent(new CustomEvent<A11yLineChartConfigChangeDetail>('a11y-line-chart-display-change', { bubbles: true, detail }));
+      const after = this.#resolvedConfig();
+      if (after.showActualLine !== before.showActualLine) this.#dispatchSettingsChange('showActualLine', after.showActualLine, 'legend');
+      if (after.showTargetLine !== before.showTargetLine) this.#dispatchSettingsChange('showTargetLine', after.showTargetLine, 'legend');
       if (name && config.announceChanges) this.#announce(this.#t(selected[name] ? 'seriesShown' : 'seriesHidden', { series: name }));
     });
     if (typeof ResizeObserver === 'function') {
@@ -1668,5 +1631,37 @@ export class A11yLineChartElement extends HTMLElement {
   #valuePreset(): A11yLineChartValuePreset {
     const value = this.getAttribute('value-preset');
     return value === 'number' || value === 'percent' ? value : this.#config.valuePreset ?? 'percent';
+  }
+
+  #dataView(): A11yLineChartDataView {
+    const value = this.getAttribute('data-view');
+    return value === 'dialog' || value === 'inline' || value === 'none' ? value : this.#config.dataView ?? 'dialog';
+  }
+
+  #percentScale(): A11yLineChartPercentScale {
+    const value = this.getAttribute('percent-scale');
+    return value === 'whole' || value === 'fraction' ? value : this.#config.percentScale ?? 'whole';
+  }
+
+  /** True when author percent values arrive as fractions (0.45 for 45%) and must be scaled to whole percent. */
+  #usesFractionScale(config: ResolvedA11yLineChartConfig): boolean {
+    return config.valuePreset === 'percent' && config.percentScale === 'fraction';
+  }
+
+  /** Rebuilds the whole-percent working data from the author-scale source data. */
+  #recomputeData(): void {
+    if (!this.#usesFractionScale(this.#resolvedConfig())) {
+      this.#data = this.#sourceData;
+      return;
+    }
+    this.#data = this.#sourceData.map((datum) => ({
+      ...datum,
+      actual: typeof datum.actual === 'number' ? fractionToWholePercent(datum.actual) : datum.actual ?? null,
+      target: scaleTarget(datum.target ?? null, fractionToWholePercent)
+    }));
+  }
+
+  #closeInlineViewIfOpen(): void {
+    if (this.#dataViewOpen && this.#activeDataView === 'inline') this.#setDataViewState(false, 'inline');
   }
 }

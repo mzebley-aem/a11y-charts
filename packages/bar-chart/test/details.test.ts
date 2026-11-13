@@ -56,7 +56,6 @@ describe('experimental category cards', () => {
     chart.data = [
       { id: 'missing', label: 'Missing', value: null, target: { min: 2, max: 4 } },
       { id: 'masked', label: 'Masked', value: 0, target: { min: 0, max: 4 } },
-      { id: 'protected', label: 'Protected', value: 3, target: { min: 2, max: 4 }, targetSuppressed: true },
       { id: 'absent', label: 'Absent', value: 3 }
     ];
     await flush();
@@ -209,16 +208,15 @@ describe('experimental category cards', () => {
     expect(card(chart, 1).hidden).toBe(false);
   });
 
-  it('uses safe semantic text for missing and suppressed values and protected targets', async () => {
+  it('uses safe semantic text for missing and suppressed values', async () => {
     const chart = await makeChart();
     chart.suppressed = true;
     chart.data = [
-      { id: 'masked', label: '<img src=x>', value: 0, target: 99, targetSuppressed: true },
+      { id: 'masked', label: '<img src=x>', value: 0, target: 99 },
       { id: 'missing', label: 'Missing', value: null }
     ];
     await flush();
     expect(card(chart).textContent).toContain('Suppressed');
-    expect(card(chart).textContent).not.toContain('99');
     expect(card(chart).querySelector('img')).toBeNull();
     expect(card(chart, 1).textContent).toContain('Not reported');
   });

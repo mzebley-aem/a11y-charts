@@ -8,7 +8,6 @@ import type {
   ResolvedA11yBarChartConfig
 } from './model.js';
 import { buildBarCsv } from './csv.js';
-import { buildBarXlsx } from './xlsx.js';
 import { ENGLISH_MESSAGES, message, type MessageDictionary, type MessageKey } from './messages.js';
 import { resolveConfig } from './config.js';
 import { buildBarModel } from './semantic-model.js';
@@ -20,6 +19,7 @@ import { BarDetailsController } from './details-controller.js';
 import { createCardContent } from '../../chart-core/src/ui/card-content.js';
 import { ModalController, type ModalOpenResult } from '../../chart-core/src/ui/modal-controller.js';
 import { setDisclosure } from '../../chart-core/src/ui/disclosure.js';
+import { CSV_BYTE_ORDER_MARK } from '../../chart-core/src/csv.js';
 
 export interface A11yBarChartErrorDetail {
   code: string;
@@ -30,20 +30,6 @@ export interface A11yBarChartErrorDetail {
 export interface A11yBarChartDataChangeDetail {
   data: A11yBarChartDatum[];
   model: A11yBarChartSemanticModel | null;
-}
-
-export interface A11yBarChartDisplayChangeDetail {
-  filtered: boolean;
-  suppressed: boolean;
-  chartTitle: string;
-  subtitle: string;
-  context: string;
-  explanation: string;
-  dataNote: string;
-  theme: A11yBarChartTheme;
-  formatValue?: A11yBarChartValueFormatter;
-  config: A11yBarChartConfig;
-  messages: MessageDictionary;
 }
 
 export interface A11yBarChartDataViewChangeDetail {
@@ -91,10 +77,11 @@ function actionIcon(kind: 'toggle' | 'table', active = false): SVGSVGElement {
   return icon;
 }
 
-function copyData(data: A11yBarChartDatum[], redactProtectedValues = false, globallySuppressed = false): A11yBarChartDatum[] {
+/** Copy data for consumers. While suppression is on, zeros are redacted so the raw count never leaks. */
+function copyData(data: A11yBarChartDatum[], suppressed = false): A11yBarChartDatum[] {
   return data.map((datum) => ({
     ...datum,
-    ...(redactProtectedValues && (datum.valueSuppressed === true || (globallySuppressed && datum.valueSuppressed !== false && datum.value === 0)) ? { value: null, valueSuppressed: true } : {}),
+    ...(suppressed && datum.value === 0 ? { value: null } : {}),
     ...(datum.target !== undefined ? { target: copyTarget(datum.target) } : {})
   }));
 }
@@ -118,7 +105,7 @@ function validHeading(value: number): value is 1 | 2 | 3 | 4 | 5 | 6 {
 }
 
 export class A11yBarChartElement extends HTMLElement {
-  static readonly observedAttributes = ['chart-title', 'subtitle', 'locale', 'filtered', 'suppressed', 'heading-level', 'messages'];
+  static readonly observedAttributes = ['chart-title', 'subtitle', 'locale', 'filtered', 'suppressed', 'heading-level', 'data-view', 'percent-scale', 'messages'];
 
   readonly instanceId: string;
   #data: A11yBarChartDatum[] = [];
@@ -147,8 +134,6 @@ export class A11yBarChartElement extends HTMLElement {
   #dialogClose: HTMLButtonElement | undefined;
   #showDataButton: HTMLButtonElement | undefined;
   #model: A11yBarChartSemanticModel | undefined;
-  #lastDisplaySignature = '';
-  #lastDisplayFormatter: A11yBarChartValueFormatter | undefined;
   #lastDataSignature = '';
   #wasDialogOpen = false;
   #lastExpansionInput: { explanationExpanded: boolean | null; glossaryExpanded: boolean | null } = { explanationExpanded: null, glossaryExpanded: null };
@@ -171,9 +156,10 @@ export class A11yBarChartElement extends HTMLElement {
   set locale(value: string) { value ? this.setAttribute('locale', value) : this.removeAttribute('locale'); }
   get filtered(): boolean { return booleanAttribute(this, 'filtered'); }
   set filtered(value: boolean) { this.toggleAttribute('filtered', Boolean(value)); }
+  /** While true, zero values read as Suppressed. The host replaces protected values with 0 upstream. */
   get suppressed(): boolean { return booleanAttribute(this, 'suppressed'); }
   set suppressed(value: boolean) { this.toggleAttribute('suppressed', Boolean(value)); }
-  get data(): A11yBarChartDatum[] { return copyData(this.#data, true, this.suppressed); }
+  get data(): A11yBarChartDatum[] { return copyData(this.#data, this.suppressed); }
   set data(value: A11yBarChartDatum[]) {
     const result = validateBarData(value);
     if (result.valid) {
@@ -274,7 +260,15 @@ export class A11yBarChartElement extends HTMLElement {
 
   #resolvedConfig() {
     const level = Number(this.getAttribute('heading-level'));
-    return resolveConfig({ ...this.#config, locale: this.locale, ...(validHeading(level) ? { headingLevel: level } : {}) });
+    const dataView = this.getAttribute('data-view');
+    const percentScale = this.getAttribute('percent-scale');
+    return resolveConfig({
+      ...this.#config,
+      locale: this.locale,
+      ...(validHeading(level) ? { headingLevel: level } : {}),
+      ...(dataView === 'dialog' || dataView === 'inline' || dataView === 'none' ? { dataView } : {}),
+      ...(percentScale === 'whole' || percentScale === 'fraction' ? { percentScale } : {})
+    });
   }
 
   #text(key: MessageKey, params: Record<string, string | number> = {}): string {
@@ -384,11 +378,11 @@ export class A11yBarChartElement extends HTMLElement {
       ? this.#localizedValidation(this.#dataErrorCode, '', this.#dataErrorParams)
       : this.#totalInvalid ? this.#text('validationInvalidTotal') : '';
     const errorMessage = this.#messageError ? this.#text('invalidMessages') : validationMessage;
-    if (this.#dataViewState.open && this.#dataViewState.dataView === 'inline' && (config.dataView !== 'inline' || config.tableVisibility === 'hidden' || Boolean(errorMessage) || !this.#data.length)) {
-      // Closing for hidden/invalid/empty content clears the preference. A
+    if (this.#dataViewState.open && this.#dataViewState.dataView === 'inline' && (config.dataView !== 'inline' || Boolean(errorMessage) || !this.#data.length)) {
+      // Closing for no-data/invalid/empty content clears the preference. A
       // temporary data-view mode switch closes the public view but preserves
       // the user's inline disclosure preference for a later return to inline.
-      if (config.tableVisibility === 'hidden' || Boolean(errorMessage) || !this.#data.length) this.#inlineDataOpen = false;
+      if (config.dataView === 'none' || Boolean(errorMessage) || !this.#data.length) this.#inlineDataOpen = false;
       this.#dispatchDataViewChange(false, 'inline');
     }
     if (errorMessage) {
@@ -452,7 +446,7 @@ export class A11yBarChartElement extends HTMLElement {
         root.append(total);
       }
       if (model.warnings.length) root.append(this.#message(model.warnings.join(' ')));
-      if (config.tableVisibility !== 'hidden') root.append(this.#backgroundData(model));
+      if (config.dataView !== 'none') root.append(this.#backgroundData(model));
     }
 
     const actions = document.createElement('div');
@@ -487,9 +481,8 @@ export class A11yBarChartElement extends HTMLElement {
       });
       actions.append(glossary);
     }
-    const tableVisible = config.tableVisibility !== 'hidden';
     this.#showDataButton = undefined;
-    if (config.dataView === 'dialog' && tableVisible && !this.#messageError && config.showActions) {
+    if (config.dataView === 'dialog' && !this.#messageError && config.showActions) {
         const show = document.createElement('button');
         show.type = 'button';
         show.className = 'a11y-bar-chart__action';
@@ -518,7 +511,7 @@ export class A11yBarChartElement extends HTMLElement {
       root.append(failure);
     }
 
-    if (model && config.dataView === 'inline' && tableVisible) {
+    if (model && config.dataView === 'inline') {
       if (dialogWasOpen) this.#inlineDataOpen = true;
       const details = this.#inlineData(model, config);
       root.append(details);
@@ -532,11 +525,11 @@ export class A11yBarChartElement extends HTMLElement {
       else if (rows) root.insertBefore(explanation, rows);
       else root.append(explanation);
     }
-    if (config.dataView === 'dialog' && tableVisible) this.#updateDialog(dialog, model, errorMessage, config);
+    if (config.dataView === 'dialog') this.#updateDialog(dialog, model, errorMessage, config);
     else {
       if (dialog.open) this.#closeDialog(true);
       else this.#modal?.disconnect(false);
-      if (config.tableVisibility === 'hidden') {
+      if (config.dataView === 'none') {
         dialog.replaceChildren();
         dialog.removeAttribute('aria-labelledby');
         dialog.setAttribute('aria-label', this.#text('dataDialogTitle', { title: this.chartTitle }));
@@ -545,11 +538,11 @@ export class A11yBarChartElement extends HTMLElement {
     if (dialog.parentElement !== this) this.append(dialog);
     if (this.#live!.parentElement !== this) this.append(this.#stableLive());
 
-    if (dialogWasOpen && dialog.isConnected && config.dataView === 'dialog' && tableVisible) {
+    if (dialogWasOpen && dialog.isConnected && config.dataView === 'dialog') {
       if (reconnectDialog) this.#handleDialogOpenResult(this.#modal?.reconnect() ?? 'not-requested');
       else if (!this.#modal?.isOpen) this.#openDialog(false);
     }
-    if (config.dataView === 'inline' && tableVisible && root.querySelector<HTMLDetailsElement>('.a11y-bar-chart__inline-data')?.open) {
+    if (config.dataView === 'inline' && root.querySelector<HTMLDetailsElement>('.a11y-bar-chart__inline-data')?.open) {
       this.#dispatchDataViewChange(true, 'inline');
     }
     const dataSignature = JSON.stringify({ data: this.#data, total: this.#total, dataError: this.#dataErrorCode, totalInvalid: this.#totalInvalid, messageError: this.#messageError });
@@ -557,31 +550,10 @@ export class A11yBarChartElement extends HTMLElement {
       if (config.announceChanges) this.#announce(errorMessage ? this.#text('announcementDataError') : this.#text('announcementDataUpdated', { count: this.#data.length }));
       this.dispatchEvent(new CustomEvent<A11yBarChartDataChangeDetail>('a11y-bar-chart-data-change', {
         bubbles: true,
-        detail: { data: copyData(this.#data, true, this.suppressed), model: model ? copyModel(model) : null }
+        detail: { data: copyData(this.#data, this.suppressed), model: model ? copyModel(model) : null }
       }));
     }
     this.#lastDataSignature = dataSignature;
-    const displaySignature = JSON.stringify({ filtered: this.filtered, suppressed: this.suppressed, chartTitle: this.chartTitle, subtitle: this.subtitle, context: this.#context, explanation: this.#authoredExplanation, dataNote: this.#dataNote, theme: this.#theme, config, messages: this.#messages });
-    if (this.#hasRendered && (displaySignature !== this.#lastDisplaySignature || this.#formatValue !== this.#lastDisplayFormatter)) {
-      this.dispatchEvent(new CustomEvent<A11yBarChartDisplayChangeDetail>('a11y-bar-chart-display-change', {
-        bubbles: true,
-        detail: {
-          filtered: this.filtered,
-          suppressed: this.suppressed,
-          chartTitle: this.chartTitle,
-          subtitle: this.subtitle,
-          context: this.#context,
-          explanation: this.#authoredExplanation,
-          dataNote: this.#dataNote,
-          theme: { ...this.#theme },
-          ...(this.#formatValue ? { formatValue: this.#formatValue } : {}),
-          config: { ...this.#config },
-          messages: { ...ENGLISH_MESSAGES, ...this.#messages }
-        }
-      }));
-    }
-    this.#lastDisplaySignature = displaySignature;
-    this.#lastDisplayFormatter = this.#formatValue;
     if (!this.#hasRendered) this.dispatchEvent(new CustomEvent('a11y-bar-chart-ready', { bubbles: true, detail: { instanceId: this.instanceId } }));
     this.#hasRendered = true;
     if (activeKey) this.#focusKey(activeKey);
@@ -695,7 +667,7 @@ export class A11yBarChartElement extends HTMLElement {
       if (valueText.childNodes.length) trackWrap.append(valueText);
       value.append(trackWrap);
       item.append(value);
-      if (row.target !== null || row.targetSuppressed) {
+      if (row.target !== null) {
         const targetText = document.createElement('p');
         targetText.className = 'a11y-bar-chart__target-text';
         targetText.textContent = row.targetNarrative;
@@ -762,7 +734,7 @@ export class A11yBarChartElement extends HTMLElement {
       rows: [
         { label: this.#text('countHeader'), value: row.valueText },
         { label: this.#text('percentageHeader'), value: row.percentageText },
-        ...((row.target !== null || row.targetSuppressed) ? [{ label: this.#text('targetHeader'), value: row.targetText }] : [])
+        ...(row.target !== null ? [{ label: this.#text('targetHeader'), value: row.targetText }] : [])
       ],
       ...(row.targetNarrative ? { description: row.targetNarrative } : {}),
       ...(row.targetOutcome !== 'unavailable' ? {
@@ -879,6 +851,12 @@ export class A11yBarChartElement extends HTMLElement {
       explanation.append(label, body);
       content.append(explanation);
     }
+    if (this.suppressed) {
+      const note = document.createElement('p');
+      note.className = 'a11y-bar-chart__suppression-note';
+      note.textContent = this.#text('suppressionNote');
+      content.append(note);
+    }
     content.append(this.#table(model, suffix));
     return content;
   }
@@ -910,7 +888,7 @@ export class A11yBarChartElement extends HTMLElement {
     table.append(caption);
     const head = document.createElement('thead');
     const headerRow = document.createElement('tr');
-    const hasTargets = model.rows.some((row) => row.target !== null || row.targetSuppressed);
+    const hasTargets = model.rows.some((row) => row.target !== null);
     for (const key of ['categoryHeader', 'countHeader', 'percentageHeader', ...(hasTargets ? ['targetHeader'] : [])] as MessageKey[]) {
       const th = document.createElement('th');
       th.scope = 'col';
@@ -972,34 +950,31 @@ export class A11yBarChartElement extends HTMLElement {
 
   #exportButtons(model: A11yBarChartSemanticModel): DocumentFragment {
     const buttons = document.createDocumentFragment();
-    const createButton = (kind: 'csv' | 'xlsx'): HTMLButtonElement => {
-      const button = document.createElement('button');
-      button.type = 'button';
-      button.className = 'a11y-bar-chart__action';
-      button.dataset.focusKey = kind === 'csv' ? 'export' : 'export-xlsx';
-      button.textContent = this.#text(kind === 'csv' ? 'exportCsv' : 'exportXlsx');
-      button.addEventListener('click', () => {
-        const metadata = {
-          messages: { ...ENGLISH_MESSAGES, ...this.#messages },
-          locale: this.#resolvedConfig().locale,
-          contextText: richContentToText(this.#context),
-          explanationText: richContentToText(this.#authoredExplanation),
-          dataNoteText: richContentToText(this.#dataNote),
-          chartTitle: this.chartTitle
-        };
-        const blob = kind === 'csv'
-          ? new Blob([buildBarCsv(model, metadata)], { type: 'text/csv;charset=utf-8' })
-          : new Blob([buildBarXlsx(model, metadata)], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const url = URL.createObjectURL(blob);
-        const anchor = document.createElement('a');
-        anchor.href = url;
-        anchor.download = `${this.#safeId(this.chartTitle)}.${kind}`;
-        anchor.click();
-        window.setTimeout(() => URL.revokeObjectURL(url), 0);
-      });
-      return button;
-    };
-    buttons.append(createButton('xlsx'), createButton('csv'));
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'a11y-bar-chart__action';
+    button.dataset.focusKey = 'export';
+    button.textContent = this.#text('exportCsv');
+    button.addEventListener('click', () => {
+      const metadata = {
+        messages: { ...ENGLISH_MESSAGES, ...this.#messages },
+        locale: this.#resolvedConfig().locale,
+        contextText: richContentToText(this.#context),
+        explanationText: richContentToText(this.#authoredExplanation),
+        dataNoteText: richContentToText(this.#dataNote),
+        suppressed: this.suppressed,
+        chartTitle: this.chartTitle
+      };
+      // The byte-order mark lets spreadsheet applications detect UTF-8.
+      const blob = new Blob([CSV_BYTE_ORDER_MARK + buildBarCsv(model, metadata)], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `${this.#safeId(this.chartTitle)}.csv`;
+      anchor.click();
+      window.setTimeout(() => URL.revokeObjectURL(url), 0);
+    });
+    buttons.append(button);
     return buttons;
   }
 
@@ -1098,7 +1073,7 @@ export class A11yBarChartElement extends HTMLElement {
   #dispatchError(code: string, message: string): void {
     this.dispatchEvent(new CustomEvent<A11yBarChartErrorDetail>('a11y-bar-chart-error', {
       bubbles: true,
-      detail: { code, message, data: copyData(this.#data, true, this.suppressed) }
+      detail: { code, message, data: copyData(this.#data, this.suppressed) }
     }));
   }
 }

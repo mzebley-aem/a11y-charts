@@ -7,12 +7,12 @@ import type { A11yLineChartDatum } from '../src/model.js';
 
 const settle = async (): Promise<void> => { await Promise.resolve(); };
 
-function makeModel(data: A11yLineChartDatum[], overrides: Record<string, unknown> = {}) {
+function makeModel(data: A11yLineChartDatum[], overrides: Record<string, unknown> = {}, suppressed = false) {
   const config = resolveConfig(overrides);
   const formatValue = (value: number | null): string => value === null ? 'Missing' : String(value);
   return {
     config,
-    model: buildSemanticModel({ config, data, formatDifference: ({ value }) => String(value), formatValue, formatXValue: String })
+    model: buildSemanticModel({ config, data, suppressed, formatDifference: ({ value }) => String(value), formatValue, formatXValue: String })
   };
 }
 
@@ -36,14 +36,15 @@ describe('Y-axis zoom recommendation and action', () => {
     const rangeModel = makeModel(ranges);
     expect(shouldSuggestYAxisZoom(rangeModel.config, rangeModel.model)).toBe(true);
 
-    const protectedValues = [
-      { x: 'A', actual: 0, actualSuppressed: true, target: 0, targetSuppressed: true },
-      { x: 'B', actual: 50, target: null },
-      { x: 'C', actual: null, target: null },
-      { x: 'D', actual: 100, actualSuppressed: true, target: 100, targetSuppressed: true }
+    const zeroValues = [
+      { x: 'A', actual: 0, target: null },
+      { x: 'B', actual: 47, target: null },
+      { x: 'C', actual: 54, target: null }
     ];
-    const protectedModel = makeModel(protectedValues);
-    expect(shouldSuggestYAxisZoom(protectedModel.config, protectedModel.model)).toBe(false);
+    const plainZero = makeModel(zeroValues);
+    expect(shouldSuggestYAxisZoom(plainZero.config, plainZero.model)).toBe(false);
+    const suppressedZero = makeModel(zeroValues, {}, true);
+    expect(shouldSuggestYAxisZoom(suppressedZero.config, suppressedZero.model)).toBe(true);
 
     const withBaseline = makeModel(
       [{ x: 'A', actual: 49, target: 50 }, { x: 'B', actual: 51, target: 50 }],
@@ -74,10 +75,10 @@ describe('Y-axis zoom recommendation and action', () => {
 
   it('adds a zoom and restore action, synchronizes the checkbox, retains focus, and preserves the chart node', async () => {
     const chart = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    chart.config = { showActions: true, showControls: true, showSummary: false, tableVisibility: 'hidden' };
+    chart.config = { showActions: true, showControls: true, showSummary: false, dataView: 'none' };
     chart.data = [{ x: 'A', actual: 47, target: 50 }, { x: 'B', actual: 54, target: 52 }];
-    const configChanges = vi.fn();
-    chart.addEventListener('a11y-line-chart-config-change', configChanges);
+    const settingsChanges = vi.fn();
+    chart.addEventListener('a11y-line-chart-settings-change', settingsChanges);
     document.body.append(chart);
     await settle();
 
@@ -95,7 +96,8 @@ describe('Y-axis zoom recommendation and action', () => {
     expect(chart.querySelector<HTMLInputElement>('[data-control="initialZoomY"]')?.checked).toBe(true);
     expect(document.activeElement).toBe(action);
     expect(chart.querySelector('.a11y-line-chart__chart')).toBe(canvas);
-    expect(configChanges).toHaveBeenCalledTimes(1);
+    expect(settingsChanges).toHaveBeenCalledTimes(1);
+    expect(settingsChanges.mock.calls[0]?.[0].detail).toEqual({ setting: 'initialZoomY', value: true, source: 'controls' });
 
     action.click();
     await settle();
@@ -104,13 +106,14 @@ describe('Y-axis zoom recommendation and action', () => {
     expect(action.textContent).toBe('Zoom Y-axis');
     expect(action.getAttribute('aria-pressed')).toBe('false');
     expect(chart.querySelector<HTMLInputElement>('[data-control="initialZoomY"]')?.checked).toBe(false);
-    expect(configChanges).toHaveBeenCalledTimes(2);
+    expect(settingsChanges).toHaveBeenCalledTimes(2);
+    expect(settingsChanges.mock.calls[1]?.[0].detail).toEqual({ setting: 'initialZoomY', value: false, source: 'controls' });
     expect(checkbox.isConnected).toBe(false);
   });
 
   it('offers restore while zoom is active and respects showActions=false', async () => {
     const chart = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    chart.config = { initialZoomY: true, showActions: true, showControls: false, tableVisibility: 'hidden' };
+    chart.config = { initialZoomY: true, showActions: true, showControls: false, dataView: 'none' };
     chart.data = [{ x: 'A', actual: 50, target: 50 }, { x: 'B', actual: 50, target: 50 }];
     document.body.append(chart);
     await settle();
@@ -123,7 +126,7 @@ describe('Y-axis zoom recommendation and action', () => {
 
   it('creates restore after manual checkbox zoom when no shortcut was suggested', async () => {
     const chart = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
-    chart.config = { showActions: true, showControls: true, showSummary: false, tableVisibility: 'hidden' };
+    chart.config = { showActions: true, showControls: true, showSummary: false, dataView: 'none' };
     chart.data = [{ x: 'A', actual: 50, target: 50 }, { x: 'B', actual: 50, target: 50 }];
     document.body.append(chart);
     await settle();

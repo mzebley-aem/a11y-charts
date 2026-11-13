@@ -34,9 +34,9 @@ describe('display grouping', () => {
   });
   it('never formats or exposes partial aggregates', () => {
     const formatValue = vi.fn(({ value }: { value: number }) => String(value));
-    const model = buildSegmentedBarModel([{ id: 'a', label: 'A', value: 12 }, { id: 'b', label: 'B', value: 999, valueSuppressed: true }, { id: 'c', label: 'C', value: null }], { total: 100, config: { separateCategoryIds: [] }, formatValue });
+    const model = buildSegmentedBarModel([{ id: 'a', label: 'A', value: 12 }, { id: 'b', label: 'B', value: 0 }, { id: 'c', label: 'C', value: null }], { total: 100, suppressed: true, config: { separateCategoryIds: [] }, formatValue });
     expect(model.displaySegments[0]).toMatchObject({ status: 'suppressed', value: null, percentage: null, ratio: 0 });
-    expect(formatValue.mock.calls.some(([ctx]) => ctx.value === 999)).toBe(false);
+    expect(formatValue.mock.calls.some(([ctx]) => ctx.value === 0)).toBe(false);
     const incomplete = buildSegmentedBarModel([{ id: 'a', label: 'A', value: 12 }, { id: 'b', label: 'B', value: null }], { total: 100, config: { separateCategoryIds: [] } });
     expect(incomplete.displaySegments[0]).toMatchObject({ status: 'incomplete', value: null, percentage: null, ratio: 0 });
   });

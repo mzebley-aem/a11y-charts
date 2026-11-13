@@ -22,15 +22,15 @@ try {
     const core = await import('${manifest.name}/core');
     if (typeof globalThis.HTMLElement !== 'undefined') throw new Error('Expected DOM-free Node.');
     const model = core.buildSegmentedBarModel([{ id: 'smoke', label: 'Smoke', value: 1 }]);
-    if (model.total !== 1 || core.buildSegmentedBarXlsx(model)[0] !== 80) throw new Error('Packed core failed.');
+    if (model.total !== 1 || !core.buildSegmentedBarCsv(model).includes('Smoke')) throw new Error('Packed core failed.');
   `;
   execFileSync(process.execPath, ['--input-type=module', '-e', runtimeSmoke], { cwd: consumer, stdio: 'inherit' });
   await writeFile(join(consumer, 'smoke.mts'), `
-    import { buildSegmentedBarModel, buildSegmentedBarXlsx, type A11ySegmentedBarChartDatum } from '${manifest.name}/core';
+    import { buildSegmentedBarModel, buildSegmentedBarCsv, type A11ySegmentedBarChartDatum } from '${manifest.name}/core';
     import { A11ySegmentedBarChartElement } from '${manifest.name}';
     import { defineA11ySegmentedBarChart } from '${manifest.name}/define';
     const rows: A11ySegmentedBarChartDatum[] = [{ id: 'x', label: 'X', value: 2 }];
-    buildSegmentedBarXlsx(buildSegmentedBarModel(rows));
+    buildSegmentedBarCsv(buildSegmentedBarModel(rows));
     void A11ySegmentedBarChartElement; void defineA11ySegmentedBarChart;
   `);
   execFileSync(process.execPath, [resolve(root, 'node_modules/typescript/bin/tsc'), '--strict', '--noEmit', '--module', 'NodeNext', '--moduleResolution', 'NodeNext', '--target', 'ES2022', 'smoke.mts'], { cwd: consumer, stdio: 'inherit' });

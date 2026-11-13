@@ -17,7 +17,7 @@ const breakdown = chart('breakdown', { chartTitle: 'Request status', data: categ
 chart('comparison', { chartTitle: 'Meeting activity', data: [{ id: 'meetings', label: 'Meetings held', value: 32, definition: 'Meetings recorded during the period.' }], total: 100, totalLabel: 'requests', config: { mode: 'comparison', presentation: 'full', highlightedId: 'meetings', showDetails: true } });
 chart('linked', { chartTitle: 'Request status summary', data: categories, total: 100, totalLabel: 'requests', href: '#details', config: { mode: 'breakdown', presentation: 'compact', showSummary: false, showDetails: false, showActions: false, showExplanation: false, showGlossary: false, showExport: false } });
 chart('interactive', { chartTitle: 'Request status details', data: categories, total: 100, totalLabel: 'requests', href: '#details', config: { mode: 'breakdown', presentation: 'compact', showSummary: false, showDetails: true } });
-chart('availability', { chartTitle: 'Incomplete data', data: [{ id: 'zero', label: 'Reported zero', value: 0 }, { id: 'missing', label: 'Missing', value: null }, { id: 'hidden', label: 'Suppressed', value: 7, valueSuppressed: true }], total: 100, config: { mode: 'breakdown', presentation: 'compact', showDetails: true, showSummary: false } });
+chart('availability', { chartTitle: 'Incomplete data', suppressed: true, data: [{ id: 'reported', label: 'Reported', value: 40 }, { id: 'missing', label: 'Missing', value: null }, { id: 'hidden', label: 'Small group', value: 0 }], total: 100, config: { mode: 'breakdown', presentation: 'compact', showDetails: true, showSummary: false } });
 chart('above', { chartTitle: 'Above the reference', data: [{ id: 'value', label: 'Recorded activity', value: 120 }], total: 100, config: { mode: 'comparison', presentation: 'compact', highlightedId: 'value', showSummary: false } });
 const groupRows = [
   { id: 'delta', label: 'Delta', value: 12 }, { id: 'alpha', label: 'Alpha', value: 30 },
@@ -36,7 +36,8 @@ let chosen: string[] = [];
 function updateGrouping() {
   const rows = groupDataset.value === 'few' ? groupRows.slice(0, 3).map((row, index) => ({ ...row, value: [50, 30, 20][index] })) : groupRows.map(row => ({ ...row }));
   if (updated && rows.length > 3) { rows[0].value = 27; rows[1].value = 15; }
-  const data = groupDataset.value === 'incomplete' ? rows.map((row, index) => index === 4 ? { ...row, value: null } : index === 5 ? { ...row, valueSuppressed: true } : row) : rows;
+  const data = groupDataset.value === 'incomplete' ? rows.map((row, index) => index === 4 ? { ...row, value: null } : index === 5 ? { ...row, value: 0 } : row) : rows;
+  grouped.suppressed = groupDataset.value === 'incomplete';
   groupPicks.hidden = groupMode.value !== 'explicit';
   groupOrder.disabled = groupMode.value === 'explicit';
   grouped.data = data;

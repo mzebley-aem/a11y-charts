@@ -215,7 +215,7 @@ export class A11yBarChartGroupElement extends HTMLElement {
   #activeView(): A11yBarChartPreparedView | undefined { return this.#sections.find((section) => section.id === this.#selectedSectionId)?.views.find((view) => view.id === this.#selectedViewId); }
   #clearChart(): void {
     if (!this.#chart) return;
-    this.#chart.config = { ...this.#config, inferTotal: false, tableVisibility: 'hidden' } as A11yBarChartConfig;
+    this.#chart.config = { ...this.#config, inferTotal: false, dataView: 'none' } as A11yBarChartConfig;
     this.#chart.hidden = true;
     this.#chart.data = [];
     this.#chart.total = null;

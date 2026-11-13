@@ -13,7 +13,6 @@ const config = {
   axisDecimalPlaces: 0,
   decimalPlaces: 2,
   describeMissingAs: '-',
-  tableVisibility: 'screen-reader' as const,
   wrapAround: true
 };
 
@@ -63,7 +62,7 @@ const baselines = [
 charts.forEach((chart, index) => {
   chart.config = {
     ...config,
-    ...(index === 2 ? { tableVisibility: 'visible' as const, fillActual: false, showTargetValues: true } : {})
+    ...(index === 2 ? { fillActual: false, showTargetValues: true } : {})
   };
   chart.data = data[index] ?? [];
   chart.dataNote = LINE_DEMO_CONTENT['en-US'].dataNote;
@@ -159,9 +158,11 @@ document.querySelectorAll<HTMLInputElement>('[data-demo-option]').forEach((input
 
 document.querySelector<HTMLInputElement>('[data-demo-suppression]')?.addEventListener('change', (event) => {
   const chart = charts[2]; if (!chart) return;
+  // The host suppresses upstream: the protected value is sent as 0 and the chart-wide flag marks zeros as suppressed.
+  const checked = (event.currentTarget as HTMLInputElement).checked;
   const updated = chart.data; const sample = updated[3]; if (!sample) return;
-  if ((event.currentTarget as HTMLInputElement).checked) sample.actualSuppressed = true;
-  else { delete sample.actualSuppressed; sample.actual = data[2]?.[3]?.actual ?? null; }
+  sample.actual = checked ? 0 : data[2]?.[3]?.actual ?? null;
+  chart.suppressed = checked;
   chart.data = updated;
 });
 

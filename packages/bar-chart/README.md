@@ -30,20 +30,22 @@ chart.messages = { showData: 'View data', total: 'Population total' };
 ```
 
 Complex inputs use properties. Simple attributes include `chart-title`,
-`subtitle`, `locale`, `heading-level`, `filtered`, and `suppressed`. Boolean
+`subtitle`, `locale`, `heading-level`, `data-view`, `percent-scale`,
+`filtered`, and `suppressed`. Boolean
 attributes follow HTML presence semantics: remove the attribute for false.
 The `messages` attribute accepts a JSON object of string overrides. Malformed
 JSON or a non-object root displays a localized configuration error; updating
 the attribute or the `messages` property recovers the view.
 
-`config.dataView` is `dialog` or `inline`. An open view stays usable when data
+`config.dataView` is `dialog`, `inline`, or `none`. A valid `data-view`
+attribute (`dialog`, `inline`, or `none`) takes precedence over `config.dataView`,
+the same way `locale` and `heading-level` attributes take precedence over config.
+An open view stays usable when data
 changes; dialog updates preserve the same modal and focused control. Glossary
-and explanation visibility are per-instance preferences. Legacy chart-level suppression replaces
-only zero values with labels; positive values remain visible unless explicitly
-marked with `valueSuppressed`. The filtered flag
-adds an indicator and keeps numeric zeros visible. Supply an authoritative
-`total` when available, especially for suppressed data. Without a total,
-suppressed data has unavailable percentages.
+and explanation visibility are per-instance preferences. The `suppressed` flag changes only how zero
+values read; see [Suppression and shared scales](#suppression-and-shared-scales).
+The filtered flag adds an indicator and keeps numeric zeros visible. Supply an
+authoritative `total` when available, especially for suppressed data.
 
 ## Experimental category cards
 
@@ -74,8 +76,7 @@ experiment and includes an **Explore hover and focus cards** switch.
 
 These are nonmodal disclosure regions, with native toggle buttons exposing
 expanded and pinned (pressed) state. They use the same semantic model and
-formatter as the other views, including suppressed/missing values and protected
-targets. Counts and percentages remain available in cards when their visual
+formatter as the other views, including suppressed/missing values. Counts and percentages remain available in cards when their visual
 bar annotations are hidden. Definitions stay in the existing glossary.
 
 The component message keys are `detailsAction`, `detailsHint`, `detailsHelp`,
@@ -100,8 +101,9 @@ Component events bubble:
   localized `message`, and copied data.
 - `a11y-bar-chart-data-change`: replaced data/total/error state with copied
   `data` and a semantic `model` (null for unavailable data).
-- `a11y-bar-chart-display-change`: changed display configuration/content with
-  copied flags, config, messages, title, subtitle, and context.
+
+The bar chart has no reader-changeable settings, so it does not fire a
+settings-change event; the line chart does.
 
 `announceChanges: false` suppresses automatic live announcements without
 disabling the data-change event. The component does not filter or sort the
@@ -110,7 +112,8 @@ supplied records and does not store preferences in global localStorage.
 The package root exports the element-facing model types and pure helpers:
 `resolveConfig`, `validateBarData`, `validateBarTotal`, `buildBarModel`,
 `renderRichContent`, `richContentToText`, and `buildBarCsv`. English defaults
-are exported as `ENGLISH_MESSAGES`; `MessageKey` and `MessageDictionary` list
+are exported as `ENGLISH_BAR_CHART_MESSAGES` (with `ENGLISH_MESSAGES` kept as
+a compatibility alias of the same object); `MessageKey` and `MessageDictionary` list
 the supported message keys, and `formatMessage` formats whole templates with
 named placeholders. Plurals use whole-string keys such as
 `summaryAllZero.one` and `summaryAllZero.other`, selected by
@@ -125,14 +128,17 @@ nonnegative finite `value` or `null`, and optional rich-text `definition`.
 codes. `buildBarModel` preserves order and applies zero suppression, missing
 value, total, percentage, and scale rules consistently. `buildBarCsv` exports
 the model's displayed values, protects spreadsheet formula-like labels, and
-uses CRLF records.
+uses CRLF records. It returns text without a byte-order mark; the element's
+download prepends a UTF-8 byte-order mark so spreadsheet applications detect
+UTF-8. Server-side callers that want spreadsheet applications to detect UTF-8 should prepend
+`\uFEFF` to the string themselves.
 
 Pass validated data to `buildBarModel`. When called directly with an invalid
 supplied total, it treats the total as unavailable and adds the localized
 total validation warning to `model.warnings`.
 
-Configuration defaults to largest-value scaling, a dialog data view, `en-US`,
-zero count decimals, two percentage decimals, heading level 2, and change
+Configuration defaults to largest-value scaling, a dialog data view, whole-percent
+formatter values, `en-US`, zero count decimals, two percentage decimals, heading level 2, and change
 announcements. Invalid locales and out-of-range decimal settings fall back to
 those defaults. Rich HTML supports paragraphs, emphasis, lists, line breaks,
 and safe links; scripts, styles, embedded content, event/style attributes, and
@@ -156,7 +162,7 @@ npm run demo:build --prefix packages/bar-chart
 `definitionToggle`, `explain`, `hideExplanation`, `showData`,
 `close`, `dataDialogTitle`, `dataTableCaption`, `dataInlineSummary`,
 `exportCsv`, `scaleLargest`, `scalePopulationShare`, `missingValue`,
-`suppressedValue`, `noDefinitions`, `glossary`, `hideGlossary`, `noContext`, `summaryNoData`,
+`suppressedValue`, `suppressionNote`, `noDefinitions`, `glossary`, `hideGlossary`, `noContext`, `summaryNoData`,
 `summaryAllZero.zero`, `summaryAllZero.one`, `summaryAllZero.two`,
 `summaryAllZero.few`, `summaryAllZero.many`, `summaryAllZero.other`, `summaryTotal`,
 `summaryCategoryShare`, `summaryCategoryValue`, `summaryLargestCategory`,
@@ -177,13 +183,12 @@ npm run demo:build --prefix packages/bar-chart
 
 ## Visibility, theme, and formatting options
 
-`tableVisibility` controls the full-data table: `visible`, `screen-reader`, or
-`hidden`. It takes precedence over the legacy `showTable` boolean. In hidden
-mode the Data action, table, and CSV export are removed and an open dialog is
-closed. Visible and screen-reader modes keep a screen-reader-only background
-table available. Opening the dialog or inline disclosure presents a separate,
-visible complete table in either mode. In inline mode, the disclosure and its
-CSV action stay available independently from the chart action strip. Hiding summary, counts,
+`dataView: 'none'` removes the complete data surfaces: the Data action, the
+dialog and inline table, and the CSV export. An open dialog is closed. The
+dialog and inline modes keep a screen-reader-only background table available,
+and opening the dialog or inline disclosure presents a separate, visible
+complete table. In inline mode, the disclosure and its CSV action stay available
+independently from the chart action strip. Hiding summary, counts,
 percentages, or total affects the visual category list only; missing and
 suppressed status labels remain visible even when both numeric annotations are
 hidden. The complete table and CSV retain all supplied values. The
@@ -208,11 +213,14 @@ and CSV. Missing or suppressed category values are not passed to a custom
 formatter; empty, thrown, and non-string formatter results use canonical
 locale formatting.
 
-Percentage formatter values are population fractions (`0.25` means 25%),
-matching `Intl.NumberFormat` with `style: 'percent'`. Count/total formatter
-values are the original numeric count; total contexts have no category ID or
-label. This differs from line's percent measure preset, whose values use the
-0–100 scale.
+Percentage formatter values use the whole-percent scale by default: `45.5`
+means 45.5%. Set `config.percentScale` (or the `percent-scale` attribute) to
+`fraction` to receive the population fraction instead (`0.455`), which matches
+`Intl.NumberFormat` with `style: 'percent'`. `percentScale` changes only the
+`formatValue` input; built-in fallback text, the model's `percentage` fields,
+and bar ratios stay fractions. Count/total formatter values are the original
+numeric count; total contexts have no category ID or label. The whole-percent
+default matches line's percent measure scale.
 
 Theme keys are `color`, `targetColor`, `positiveColor`, `negativeColor`,
 `positivePatternType`, `negativePatternType`, `positivePatternColor`,
@@ -230,11 +238,9 @@ chart.theme = {
   color: '#6b2f75', track: '#efe2f2', barHeight: '2.5rem',
   patternType: 'diagonal', patternColor: '#ffffff'
 };
-chart.formatValue = ({ value, series, locale }) =>
-  new Intl.NumberFormat(locale, {
-    style: series === 'percentage' ? 'percent' : 'decimal',
-    maximumFractionDigits: series === 'percentage' ? 1 : 0
-  }).format(value);
+chart.formatValue = ({ value, series, locale }) => series === 'percentage'
+  ? new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 1 }).format(value / 100)
+  : new Intl.NumberFormat(locale, { maximumFractionDigits: 0 }).format(value);
 ```
 
 Textures apply to every bar in the chart and update when `theme` changes. They
@@ -247,7 +253,8 @@ Highlight and HighlightText colors. CSS consumers can also set
 `--a11y-bar-chart-pattern-size`; a custom image can use `currentColor` for its marks.
 
 `a11y-bar-chart-data-view-change` bubbles `{ open, dataView }` when a dialog or
-inline disclosure changes state. `a11y-bar-chart-disclosure-change` bubbles
+inline disclosure changes state. `dataView` is `dialog` or `inline`; `none`
+never opens a view. `a11y-bar-chart-disclosure-change` bubbles
 `{ disclosure, expanded }` when the explanation or glossary is toggled.
 
 ## Locale and application content
@@ -273,7 +280,7 @@ content as working examples.
 Use `config.targetStyle` to opt into `color`, `texture`, or
 `color-and-texture`. The default `none` retains the standard bar theme. Only
 bars with a reported value and an available target receive outcome styling.
-Missing/suppressed values, protected targets, and bars without a target keep
+Missing/suppressed values and bars without a target keep
 the standard treatment. General `patternType` still applies to ordinary bars;
 color-only mode changes the fill color and retains that general texture.
 
@@ -340,7 +347,7 @@ cards additionally show met/not-met outcomes as described above. Numeric
 targets use the configured positive direction. Missing or suppressed values have no comparison.
 Target text stays visible when counts/percentages are hidden. The generated
 summary includes the first target comparison; Explain includes every category's
-comparison. The semantic row exposes `target`, `targetSuppressed`, `targetText`,
+comparison. The semantic row exposes `target`, `targetText`,
 `targetRelation`, `targetOutcome`, `targetOutcomeLabel`, `targetNarrative`,
 `targetStartRatio`, and `targetEndRatio`.
 
@@ -351,15 +358,12 @@ and a localized warning explains targets beyond the total. Without a positive
 total, the marker is omitted and its target text remains available. A zero target
 on an all-zero largest-value scale is drawn at the origin.
 
-Set `targetSuppressed: true` to protect a target independently from count
-suppression. Its bounds are removed during validation and omitted from all
-rendered text, scaling, semantic/event data, getters, formatter calls, and CSV.
-The chart-wide `suppressed` flag continues to apply only to zero counts; a
-numeric target of zero remains public unless explicitly protected. Range inputs,
-getters, semantic models, and event payloads are defensively copied.
+Targets are never suppressed. A target of `0` is the numeric
+zero and is shown as `0` whether or not the chart's `suppressed` flag is on.
+Range inputs, getters, semantic models, and event payloads are defensively copied.
 
 A Target column appears in each complete data table and CSV when any row has a
-target or protected target. Other rows say Not set; total rows have no target.
+target. Other rows say Not set; total rows have no target.
 Without targets, table/CSV columns remain unchanged. Target changes use the
 existing data-change announcement/event and preserve an open dialog and focus.
 
@@ -369,9 +373,9 @@ same category ID/label and fallback number formatting as counts. Use
 (default `#172b3a`); forced-colors mode uses system colors.
 
 Additional message keys: `targetHeader`, `csvTargetHeader`, `targetUnavailable`,
-`targetSuppressed`, `targetRange` (`{min}`, `{max}`), `targetBelow`, `targetWithin`,
+`targetRange` (`{min}`, `{max}`), `targetBelow`, `targetWithin`,
 `targetAbove`, `targetEqual`, `targetIncomplete` (`{label}`, `{target}`),
-`targetProtected` (`{label}`), `warningTargetClipped`,
+`warningTargetClipped`,
 `warningTargetScaleUnavailable` (`{label}`), and `validationInvalidTarget` (`{id}`).
 The French and Spanish demo catalogs include these keys. The Reporting status
 example demonstrates range, numeric, and missing-value comparisons.
@@ -399,7 +403,7 @@ not substitute a nonmodal dialog. Applications can select `dataView: 'inline'`
 for environments without native dialog support.
 
 The ready event includes `{ instanceId }`, matching the line chart. Data-change
-and display-change events describe changed state after initial rendering;
+events describe changed state after initial rendering;
 equivalent assignments do not produce an additional event, and same-turn
 updates coalesce. Chart-specific payload fields remain distinct.
 
@@ -441,8 +445,8 @@ group.sections = [{
     context: '510 children in the overall population.',
     data: [
       { id: 'home', label: 'Home', value: 322 },
-      { id: 'community', label: 'Community-Based Setting', value: null, valueSuppressed: true },
-      { id: 'other', label: 'Other Setting', value: null, valueSuppressed: true }
+      { id: 'community', label: 'Community-Based Setting', value: 0 },
+      { id: 'other', label: 'Other Setting', value: 0 }
     ]
   }, {
     id: 'black', label: 'Black or African American',
@@ -452,8 +456,8 @@ group.sections = [{
     explanation: '<p>Home represents 100% of the selected population.</p>',
     data: [
       { id: 'home', label: 'Home', value: 102 },
-      { id: 'community', label: 'Community-Based Setting', value: null, valueSuppressed: true },
-      { id: 'other', label: 'Other Setting', value: null, valueSuppressed: true }
+      { id: 'community', label: 'Community-Based Setting', value: 0 },
+      { id: 'other', label: 'Other Setting', value: 0 }
     ]
   }]
 }];
@@ -486,7 +490,7 @@ must be included in each view's `filtered` flag, including its All view.
 `prepareBarViewSection` is a DOM-free helper for applications adapting raw
 records. Supply resolved category IDs/labels/definitions, a `filterId` per row,
 ordered options, and authoritative totals. It aggregates repeated categories,
-conservatively retains suppression/missing states, supports source or descending
+protects aggregates that include a suppressed zero, keeps missing states, supports source or descending
 value order, and passes safe copied values to a `describe` callback for authored
 localized narratives. `populationShare` uses the full population denominator;
 the chart uses the selected `total`. The helper does not parse ADAPT templates
@@ -494,15 +498,36 @@ or call its glossary service. Resolve those application concerns before this
 boundary. Targets must be supplied after aggregation because summing population
 targets is not generally valid.
 
-## Explicit suppression and shared scales
+## Suppression and shared scales
 
-`datum.valueSuppressed: true` removes the protected count at validation and model
-boundaries. Its count and percentage are unavailable in every view and export;
-formatters never receive the hidden number. `false` explicitly reports the value,
-including zero, even under global legacy suppression. Omission retains the legacy
-rule where global suppression substitutes zeros. `null` without explicit
-suppression remains missing. Global suppression still prevents total inference
-when an authoritative total is absent, even when visible rows are all positive.
+Suppression is one chart-level flag: the `suppressed` property, or the
+`suppressed` attribute on `<a11y-bar-chart>`. A group view supplies the same
+boolean as its `suppressed` field. The host decides what is protected and
+replaces each protected count with `0` before passing data. The chart never
+decides what is suppressed; it only changes how zeros are shown.
+
+A value is suppressed if and only if `suppressed` is true and its value is `0`.
+A `null` value is always missing ("Not reported"), with or without the flag.
+Targets are never suppressed.
+
+| Input | Flag off | Flag on |
+| --- | --- | --- |
+| `value: 0` | Real zero: shown as `0`, with its percentage and status `reported`. Never hidden. | Suppressed: the row stays, with no bar. Value and percentage read `Suppressed`; status `suppressed`; value `null` in the row, detail card, narrative, table, CSV, getter, and change event. |
+| `value: null` | Not reported. | Not reported. |
+| Provided `total` > 0 | Shown; percentages computed from it. | Shown; percentages for non-suppressed rows computed from it. |
+| Provided `total` = 0 | Shown as `0`; percentages unavailable. | Reads `Suppressed`; percentages unavailable. |
+| No total, at least one zero row | Inferred from complete rows when `inferTotal` is on. | Reads `Suppressed`; a computed sum would understate the total. |
+| No total, no zero rows | Inferred when `inferTotal` is on. | Inferred normally. |
+| Indicator | None. | `Suppressed` indicator next to the title, even when no zero is present. |
+| Note | None. | The `suppressionNote` paragraph appears directly above the complete table in the dialog and inline views, and as a CSV metadata row. |
+
+The getter and change-event `data` copies redact each zero to `value: null`
+while the flag is on, so the raw count never leaves the chart through them.
+`prepareBarViewSection` follows the same rule: an aggregate that includes a
+suppressed zero becomes a protected zero, so a partial sum is never reported as
+a count. Authored `describe` callbacks also receive redacted zeros.
+
+Customize the note with the `suppressionNote` message key.
 
 `config.scaleMaximum` is an optional positive finite count maximum for `largest`
 mode. Bars and targets use this common domain; percentages still use `total`.
@@ -511,19 +536,15 @@ retains the full reported value. `population-share` mode ignores this maximum.
 `config.inferTotal` defaults to `true`; set it to `false` when a missing supplied
 total must remain unknown even if all supplied rows are reported.
 
-## Authored explanations and Excel
+## Authored explanations and CSV
 
 `chart.explanation` accepts the same sanitized rich content as `context`. When
 nonempty it replaces the generated list inside Explain. Clearing it restores
 generated explanations. The authored text is included in explicit Data views and
-CSV/XLSX metadata. Applications remain responsible for keeping authored narrative
+CSV metadata. Applications remain responsible for keeping authored narrative
 consistent with their supplied numeric data.
 
-Data views offer Download Excel and Download CSV when `showExport` is enabled.
-`buildBarXlsx(model, options)` is a DOM-free helper returning a real OOXML workbook
-as `Uint8Array`. Excel cells contain numeric reported counts, percentage fractions,
-and scalar targets so arithmetic remains possible; missing/suppressed cells are
-text and labels cannot execute formulas. XLSX numeric cells retain original
-numeric precision and use workbook number formats, rather than custom
-`formatValue` display text. CSV continues to export the formatted display values.
-Both exports carry selected context, authored explanation, notes, and totals.
+Data views offer Download CSV when `showExport` is enabled. The download exports
+the formatted display values, carries selected context, authored explanation,
+notes, and totals, and begins with a UTF-8 byte-order mark. The package offers
+no workbook export; applications that need one can build it from the semantic model.

@@ -28,7 +28,7 @@ describe('bar chart validation and configuration', () => {
     result.data[0]!.label = 'changed';
     expect(source[0]!.label).toBe('A');
     expect(resolveConfig({ locale: 'no_such_locale', countDecimals: -1, headingLevel: 9 } as unknown as A11yBarChartConfig)).toEqual({
-      scaleMode: 'largest', inferTotal: true, dataView: 'dialog', tableVisibility: 'visible', showSummary: true, showContext: true,
+      scaleMode: 'largest', inferTotal: true, dataView: 'dialog', percentScale: 'whole', showSummary: true, showContext: true,
       showActions: true, showExplanation: true, showGlossary: true, showExport: true, explanationExpanded: false,
       glossaryExpanded: false, showCounts: true, showPercentages: true, showTotal: true, showDetails: false, locale: 'en-US', countDecimals: 0,
       percentageDecimals: 2, headingLevel: 2, announceChanges: true,
@@ -36,11 +36,12 @@ describe('bar chart validation and configuration', () => {
     });
   });
 
-  it('resolves explicit table visibility ahead of the legacy showTable flag', () => {
-    expect(resolveConfig({ showTable: false }).tableVisibility).toBe('hidden');
-    expect(resolveConfig({ showTable: true }).tableVisibility).toBe('visible');
-    expect(resolveConfig({ showTable: false, tableVisibility: 'screen-reader' }).tableVisibility).toBe('screen-reader');
-    expect(resolveConfig({ tableVisibility: 'hidden', showTable: true }).tableVisibility).toBe('hidden');
+  it('resolves the single data-view setting and the percent scale with safe fallbacks', () => {
+    expect(resolveConfig({ dataView: 'none' }).dataView).toBe('none');
+    expect(resolveConfig({ dataView: 'inline' }).dataView).toBe('inline');
+    expect(resolveConfig({ dataView: 'sideways' } as unknown as A11yBarChartConfig).dataView).toBe('dialog');
+    expect(resolveConfig({ percentScale: 'fraction' }).percentScale).toBe('fraction');
+    expect(resolveConfig({ percentScale: 'percent' } as unknown as A11yBarChartConfig).percentScale).toBe('whole');
     expect(resolveConfig({ showSummary: false, showExport: false, showCounts: false }).showSummary).toBe(false);
     expect(resolveConfig({ showSummary: false, showExport: false, showCounts: false })).toMatchObject({ showExport: false, showCounts: false });
   });
@@ -154,19 +155,34 @@ describe('bar semantic model', () => {
       }
     });
     expect(model.rows.map((row) => [row.valueText, row.percentageText])).toEqual([
-      ['count:4', 'percentage:0.5'],
+      ['count:4', 'percentage:50'],
       ['count:0', 'percentage:0']
     ]);
     expect(model.totalText).toBe('total:8');
     expect(model.rows[0]!.narrative).toContain('count:4');
-    expect(model.rows[0]!.narrative).toContain('percentage:0.5');
+    expect(model.rows[0]!.narrative).toContain('percentage:50');
     expect(calls).toEqual([
       { value: 8, series: 'total' },
       { value: 4, series: 'count', id: 'a' },
-      { value: 0.5, series: 'percentage', id: 'a' },
+      { value: 50, series: 'percentage', id: 'a' },
       { value: 0, series: 'count', id: 'zero' },
       { value: 0, series: 'percentage', id: 'zero' }
     ]);
+  });
+
+  it('passes fractional percentages to the formatter only when percentScale is fraction', () => {
+    const calls: number[] = [];
+    const formatValue = ({ value, series }: { value: number; series: string }) => {
+      if (series === 'percentage') calls.push(value);
+      return `${series}:${value}`;
+    };
+    const rows = [{ id: 'a', label: 'Alpha', value: 4 }, { id: 'b', label: 'Beta', value: 1 }];
+    const whole = buildBarModel(rows, { total: 8, formatValue });
+    const fraction = buildBarModel(rows, { total: 8, formatValue, config: { percentScale: 'fraction' } });
+    expect(calls).toEqual([50, 12.5, 0.5, 0.125]);
+    expect(whole.rows[0]!.percentage).toBe(0.5);
+    expect(fraction.rows[0]!.percentage).toBe(0.5);
+    expect(fraction.rows[0]!.percentageText).toBe('percentage:0.5');
   });
 
   it('never formats missing or suppressed values and falls back for invalid formatter output', () => {

@@ -12,8 +12,8 @@ describe('line pure runtime hardening', () => {
       decimalPlaces: 1000,
       axisDecimalPlaces: -1,
       headingLevel: 9 as never,
-      tableVisibility: 'invalid' as never,
       dataView: 'invalid' as never,
+      percentScale: 'invalid' as never,
       trendMode: 'invalid' as never,
       actualPattern: 'invalid' as never,
       minWidth: 1e100,
@@ -23,7 +23,7 @@ describe('line pure runtime hardening', () => {
     });
     expect(result).toMatchObject({
       showActions: true, decimalPlaces: 0, axisDecimalPlaces: 0, headingLevel: 2,
-      tableVisibility: 'screen-reader', dataView: 'dialog', trendMode: 'labels',
+      dataView: 'dialog', percentScale: 'whole', trendMode: 'labels',
       actualPattern: 'none', minWidth: 1e100, perPointMinWidth: 70,
       yAxisBaseMin: 0, yAxisBaseMax: 100
     });

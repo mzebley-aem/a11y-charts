@@ -31,27 +31,32 @@ function build(config = {}, theme = {}, chartData: A11yLineChartDatum[] = data) 
 }
 
 describe('buildChartOptions', () => {
-  it('masks explicit suppression before chart series and tooltip hooks', () => {
-    const protectedData = [
-      { x: 'A', actual: 77, actualSuppressed: true, target: 88, targetSuppressed: true }
-    ];
+  it('masks a suppressed zero before chart series and tooltip hooks while a target zero stays a value', () => {
+    const protectedData = [{ x: 'A', actual: 0, target: 88 }];
     let hookContext: import('../src/model.js').A11yLineChartTooltipContext | undefined;
     const config = resolveConfig({ initialZoomY: true, yAxisBaseMin: 0, yAxisBaseMax: 100 });
     const formatValue = (value: number | null) => value === null ? 'Missing' : `${value}`;
-    const model = buildSemanticModel({ config, data: protectedData, formatDifference: ({ value }) => `${value}`, formatValue, formatXValue: String });
+    const model = buildSemanticModel({ config, data: protectedData, suppressed: true, formatDifference: ({ value }) => `${value}`, formatValue, formatXValue: String });
     const options = buildChartOptions({
       config, data: protectedData, formatValue, formatXValue: String, model, reducedMotion: false,
       theme: resolveTheme({}), buildTooltipHtml: (context) => { hookContext = context; return context.actualFormatted; }
     });
     const series = options['series'] as Array<Record<string, unknown>>;
     expect(series.find((item) => item['id'] === 'actual-main')?.['data']).toEqual([null]);
-    expect(series.find((item) => item['id'] === 'target-main')?.['data']).toEqual([null]);
+    expect(series.find((item) => item['id'] === 'target-main')?.['data']).toEqual([88]);
     const formatter = (options['tooltip'] as { formatter: (parameters: unknown) => string }).formatter;
     expect(formatter([{ seriesName: 'Actual', dataIndex: 0 }, { seriesName: 'Target', dataIndex: 0 }])).toBe('Suppressed');
-    expect(hookContext?.datum).toMatchObject({ actual: null, target: null, actualSuppressed: true, targetSuppressed: true });
+    expect(hookContext?.datum).toEqual({ x: 'A', actual: null, target: 88 });
     expect(hookContext?.actualValue).toBeNull();
-    expect(JSON.stringify(hookContext)).not.toContain('77');
-    expect(JSON.stringify(hookContext)).not.toContain('88');
+    expect(hookContext?.actualSuppressed).toBe(true);
+    expect(hookContext?.actualFormatted).toBe('Suppressed');
+    expect(JSON.stringify(hookContext)).not.toContain('"actual":0');
+  });
+
+  it('plots a zero as a real value when the chart-wide suppressed flag is off', () => {
+    const options = build({}, {}, [{ x: 2024, actual: 0, target: 80 }]);
+    const series = options['series'] as Array<Record<string, unknown>>;
+    expect(series.find((item) => item['id'] === 'actual-main')?.['data']).toEqual([0]);
   });
   it('formats axis tick decimals and percentage affixes using the configured locale', () => {
     const percentOptions = build({ locale: 'fr-FR', axisDecimalPlaces: 1 });

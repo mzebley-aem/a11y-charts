@@ -49,15 +49,15 @@ test('desktop keyboard selection, All reset, shared scale, and screenshot fixtur
   expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
 });
 
-test('multi-section disclosure, persistent chart state, dialog Escape, focus return, and Excel download', async ({ page }) => {
+test('multi-section disclosure, persistent chart state, dialog Escape, focus return, and CSV download', async ({ page }) => {
   await openGallery(page);
   const article = page.locator('#grouped-sections');
   const group = article.locator('a11y-bar-chart-group');
   const chart = group.locator('a11y-bar-chart');
   await group.getByRole('button', { name: 'Explain' }).click();
   await expect(group.getByRole('button', { name: 'Hide explanation' })).toHaveAttribute('aria-expanded', 'true');
-  await group.getByRole('button', { name: 'Show definitions' }).click();
-  await expect(group.getByRole('button', { name: 'Hide definitions' })).toHaveAttribute('aria-expanded', 'true');
+  await group.getByRole('button', { name: 'Glossary', exact: true }).click();
+  await expect(group.getByRole('button', { name: 'Hide glossary' })).toHaveAttribute('aria-expanded', 'true');
   await page.evaluate((element) => { (window as Window & { __persistentChart?: Element }).__persistentChart = element; }, await chart.elementHandle());
 
   const ageDisclosure = group.getByRole('button', { name: 'Collapse Age range' });
@@ -74,7 +74,7 @@ test('multi-section disclosure, persistent chart state, dialog Escape, focus ret
   expect(await chart.evaluate((element) => (window as Window & { __persistentChart?: Element }).__persistentChart === element)).toBe(true);
   await group.getByRole('radio', { name: 'Black or African American' }).check();
   await expect(chart.getByRole('button', { name: 'Hide explanation' })).toHaveAttribute('aria-expanded', 'true');
-  await expect(chart.getByRole('button', { name: 'Hide definitions' })).toHaveAttribute('aria-expanded', 'true');
+  await expect(chart.getByRole('button', { name: 'Hide glossary' })).toHaveAttribute('aria-expanded', 'true');
 
   const dataTrigger = chart.getByRole('button', { name: 'View complete data' });
   await dataTrigger.focus();
@@ -84,9 +84,9 @@ test('multi-section disclosure, persistent chart state, dialog Escape, focus ret
   await expect(dialog.locator('caption')).toHaveText('Complete data for Black or African American');
   await page.evaluate((element) => { (window as Window & { __persistentDialog?: Element }).__persistentDialog = element; }, await dialog.elementHandle());
   const downloadWait = page.waitForEvent('download');
-  await dialog.getByRole('button', { name: 'Download Excel' }).click();
+  await dialog.getByRole('button', { name: 'Download CSV' }).click();
   const download = await downloadWait;
-  expect(download.suggestedFilename()).toMatch(/\.xlsx$/i);
+  expect(download.suggestedFilename()).toMatch(/\.csv$/i);
   await dialog.getByRole('button', { name: 'Close' }).focus();
   await group.evaluate((element) => { (element as HTMLElement & { selectedViewId: string }).selectedViewId = 'race-all'; });
   await expect(dialog).toBeVisible();

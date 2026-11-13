@@ -35,7 +35,7 @@ test('modal Tab handling follows opening order instead of DOM order', async ({ p
   const line = page.locator('a11y-line-chart');
   const bar = page.locator('a11y-bar-chart');
   await bar.getByRole('button', { name: 'View complete data', exact: true }).click();
-  await line.getByRole('button', { name: 'Data', exact: true }).evaluate(button => button.click());
+  await line.getByRole('button', { name: 'View complete data', exact: true }).evaluate(button => button.click());
   for (const chart of [line, bar]) {
     const dialog = chart.locator('dialog');
     const buttons = dialog.locator('button:visible:not([disabled])');
@@ -119,7 +119,7 @@ for (const kind of ['line', 'bar']) {
         el.setAttribute('data-audit-states', JSON.stringify(states));
       });
     }, kind);
-    await chart.getByRole('button', { name: kind === 'line' ? 'Data' : 'View complete data', exact: true }).click();
+    await chart.getByRole('button', { name: 'View complete data', exact: true }).click();
     await expect(chart.locator('dialog')).toHaveJSProperty('open', true);
     await chart.evaluate(el => { el.remove(); document.querySelector('#fixture')!.append(el); });
     await expect.poll(() => chart.locator('dialog').evaluate(el => el.matches(':modal'))).toBe(true);
@@ -131,13 +131,13 @@ for (const kind of ['line', 'bar']) {
     await page.keyboard.press('Escape');
     await expect(chart.locator('dialog')).toHaveJSProperty('open', false);
     await expect(chart).toHaveAttribute('data-audit-states', '[true,false,true,false]');
-    await expect(chart.getByRole('button', { name: kind === 'line' ? 'Data' : 'View complete data', exact: true })).toBeFocused();
+    await expect(chart.getByRole('button', { name: 'View complete data', exact: true })).toBeFocused();
   });
 
   test(`${kind} maintains a focused modal close button during data updates`, async ({ page }) => {
     await mount(page, kind);
     const chart = page.locator(`a11y-${kind}-chart`);
-    await chart.getByRole('button', { name: kind === 'line' ? 'Data' : 'View complete data', exact: true }).click();
+    await chart.getByRole('button', { name: 'View complete data', exact: true }).click();
     const close = chart.locator('dialog').getByRole('button', { name: /Close/ });
     await close.focus();
     await chart.evaluate((el: any) => { el.data = el.data.map(row => ({ ...row, ...(row.x ? { actual: 25 } : { value: 25 }) })); });
@@ -149,15 +149,15 @@ for (const kind of ['line', 'bar']) {
 }
 
 for (const kind of ['line', 'bar']) {
-  test(`${kind} coalesces changed-source events and reports property display changes`, async ({ page }) => {
+  test(`${kind} coalesces changed-source events and stays silent for host property changes`, async ({ page }) => {
     await mount(page, kind);
     const result = await page.locator(`a11y-${kind}-chart`).evaluate(async (el: any, kind) => {
       const settle = () => new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
       await settle();
       const dataEvents: unknown[] = [];
-      const displayEvents: unknown[] = [];
+      const settingsEvents: unknown[] = [];
       el.addEventListener(`a11y-${kind}-chart-data-change`, (event: CustomEvent) => dataEvents.push(event.detail));
-      el.addEventListener(`a11y-${kind}-chart-display-change`, (event: CustomEvent) => displayEvents.push(event.detail));
+      for (const name of ['settings-change', 'display-change', 'config-change']) el.addEventListener(`a11y-${kind}-chart-${name}`, (event: CustomEvent) => settingsEvents.push(event.detail));
       el.data = el.data;
       await settle();
       const equivalentDataEvents = dataEvents.length;
@@ -170,13 +170,9 @@ for (const kind of ['line', 'bar']) {
       el.config = { ...el.config, showSummary: false };
       el.chartTitle = 'Updated title';
       await settle();
-      const changedDisplayEvents = displayEvents.length;
-      el.config = { ...el.config };
-      el.chartTitle = 'Updated title';
-      await settle();
-      return { equivalentDataEvents, dataEvents: dataEvents.length, changedDisplayEvents, finalDisplayEvents: displayEvents.length };
+      return { equivalentDataEvents, dataEvents: dataEvents.length, settingsEvents: settingsEvents.length };
     }, kind);
-    expect(result).toEqual({ equivalentDataEvents: 0, dataEvents: 1, changedDisplayEvents: 1, finalDisplayEvents: 1 });
+    expect(result).toEqual({ equivalentDataEvents: 0, dataEvents: 1, settingsEvents: 0 });
   });
 }
 

@@ -21,6 +21,8 @@ export interface A11yLineChartSemanticContext {
   baseline?: A11yLineChartBaseline;
   config: ResolvedA11yLineChartConfig;
   data: A11yLineChartDatum[];
+  /** Chart-wide suppression: when true, an actual value of 0 is treated as suppressed. */
+  suppressed?: boolean;
   formatDifference: A11yLineChartDifferenceFormatter;
   formatValue: (
     value: number | null,
@@ -35,11 +37,14 @@ export interface A11yLineChartSemanticContext {
 export function normalizeLineData(data: readonly A11yLineChartDatum[]): A11yLineChartDatum[] {
   return data.map((datum) => ({
     x: datum.x instanceof Date ? new Date(datum.x.getTime()) : datum.x,
-    actual: datum.actualSuppressed === true ? null : datum.actual ?? null,
-    actualSuppressed: datum.actualSuppressed === true,
-    target: datum.targetSuppressed === true ? null : copyTarget(datum.target),
-    targetSuppressed: datum.targetSuppressed === true
+    actual: datum.actual ?? null,
+    target: copyTarget(datum.target)
   }));
+}
+
+/** An actual value is suppressed only when the chart-wide flag is on and the reported value is zero. */
+export function isSuppressedActual(actual: number | null | undefined, suppressed: boolean | undefined): boolean {
+  return suppressed === true && actual === 0;
 }
 
 function message(context: A11yLineChartSemanticContext, key: string, values: Record<string, unknown> = {}): string {
@@ -154,7 +159,7 @@ function pointNarrative(
 
   if (point.actualValue === null) {
     parts.push(message(context, point.actualSuppressed ? 'actualSuppressed' : 'noActual', { series: lowercaseInitial(actualName) }));
-    if (point.targetValue === null) parts.push(message(context, point.targetSuppressed ? 'targetSuppressed' : 'noTarget', { series: lowercaseInitial(targetName) }));
+    if (point.targetValue === null) parts.push(message(context, 'noTarget', { series: lowercaseInitial(targetName) }));
     else parts.push(message(context, 'targetValue', { series: targetName, value: point.targetFormatted }));
     parts.push(message(context, 'outcomeUnavailableSentence'));
     return parts.join(' ');
@@ -162,7 +167,7 @@ function pointNarrative(
 
   if (point.targetValue === null) {
     parts.push(message(context, 'actualValueSentence', { series: actualName, value: point.actualFormatted }));
-    parts.push(message(context, point.targetSuppressed ? 'targetSuppressed' : 'noTarget', { series: lowercaseInitial(targetName) }));
+    parts.push(message(context, 'noTarget', { series: lowercaseInitial(targetName) }));
     parts.push(message(context, 'outcomeUnavailableSentence'));
   } else {
     parts.push(message(context, 'narrativeOutcome', { outcome: point.outcomeLabel }));
@@ -198,9 +203,7 @@ function summaryFor(
     const latest = points[latestActualIndex]!;
     if (latest.targetValue === null) {
       primary = message(context, 'summaryCannotDetermine', { period: latest.xLabel });
-      supporting.push(latest.targetSuppressed
-        ? message(context, 'summaryTargetSuppressed', { series: context.config.targetSeriesLabel, period: latest.xLabel })
-        : message(context, 'summaryMissingTarget', { actual: context.config.actualSeriesLabel, value: latest.actualFormatted, target: lowercaseInitial(context.config.targetSeriesLabel) }));
+      supporting.push(message(context, 'summaryMissingTarget', { actual: context.config.actualSeriesLabel, value: latest.actualFormatted, target: lowercaseInitial(context.config.targetSeriesLabel) }));
     } else {
       primary = latest.outcome === 'met-equal'
         ? message(context, 'summaryMetEqual', { period: latest.xLabel })
@@ -225,11 +228,9 @@ function summaryFor(
       supporting.push(message(context, 'summaryNoLater', { series: lowercaseInitial(context.config.actualSeriesLabel), period: latest.xLabel }));
     }
   } else {
-    const protectedPoint = [...points].reverse().find((point) => point.actualSuppressed || point.targetSuppressed);
+    const protectedPoint = [...points].reverse().find((point) => point.actualSuppressed);
     if (protectedPoint) {
-      primary = protectedPoint.actualSuppressed
-        ? message(context, 'summaryAllSuppressed', { period: protectedPoint.xLabel })
-        : message(context, 'summaryTargetSuppressed', { series: context.config.targetSeriesLabel, period: protectedPoint.xLabel });
+      primary = message(context, 'summaryAllSuppressed', { period: protectedPoint.xLabel });
       supporting.push(message(context, 'outcomeUnavailableSentence'));
     }
     if (baseline) supporting.push(message(context, 'summaryBaselineOnly', { series: context.config.baselineSeriesLabel, period: baseline.xLabel, value: baseline.formatted }));
@@ -255,9 +256,8 @@ export function buildSemanticModel(context: A11yLineChartSemanticContext): A11yL
   const baseline = createBaselineInterpretation(context.baseline, context);
   const data = normalizeLineData(context.data);
   const points = data.map((datum, index) => {
-    const actualValue = datum.actual ?? null;
-    const actualSuppressed = datum.actualSuppressed === true;
-    const targetSuppressed = datum.targetSuppressed === true;
+    const actualSuppressed = isSuppressedActual(datum.actual, context.suppressed);
+    const actualValue = actualSuppressed ? null : datum.actual ?? null;
     const targetValue = copyTarget(datum.target);
     const relationValue = relation(actualValue, targetValue);
     const outcomeValue = outcome(actualValue, targetValue, context.config.positiveDirection);
@@ -290,9 +290,8 @@ export function buildSemanticModel(context: A11yLineChartSemanticContext): A11yL
       position: index + 1,
       relation: relationValue,
       targetDifference,
-      targetFormatted: targetSuppressed ? message(context, 'suppressed') : formatTarget(targetValue, (value) => context.formatValue(value, 'target', datum.x), message(context, 'rangeSeparator')),
+      targetFormatted: formatTarget(targetValue, (value) => context.formatValue(value, 'target', datum.x), message(context, 'rangeSeparator')),
       targetValue,
-      targetSuppressed,
       total: data.length,
       x: datum.x,
       xLabel: context.formatXValue(datum.x)

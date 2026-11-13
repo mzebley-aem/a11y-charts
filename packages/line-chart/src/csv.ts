@@ -39,15 +39,15 @@ export function buildLineCsv(options: BuildLineCsvOptions): string {
   rows.push([...options.headers]);
   data.forEach((datum, index) => {
     const point = options.model.points[index];
-    const actual = datum.actualSuppressed ? options.suppressed : datum.actual == null ? options.missing : point?.actualFormatted ?? options.formatValue(datum.actual, 'actual', datum.x);
+    const actualSuppressed = point?.actualSuppressed === true;
+    const actual = actualSuppressed ? options.suppressed : datum.actual == null ? options.missing : point?.actualFormatted ?? options.formatValue(datum.actual, 'actual', datum.x);
     let target = options.missing;
-    if (datum.targetSuppressed) target = options.suppressed;
-    else if (datum.target != null) target = point?.targetFormatted ?? formatTarget(datum.target as NonNullable<A11yLineChartDatum['target']>, (value) => value === null ? options.missing : options.formatValue(value, 'target', datum.x), options.rangeSeparator);
-    const outcome = datum.actualSuppressed || datum.targetSuppressed
+    if (datum.target != null) target = point?.targetFormatted ?? formatTarget(datum.target as NonNullable<A11yLineChartDatum['target']>, (value) => value === null ? options.missing : options.formatValue(value, 'target', datum.x), options.rangeSeparator);
+    const outcome = actualSuppressed
       ? (point?.outcome === 'unavailable' ? point.outcomeLabel : options.unavailableOutcome ?? options.missing)
       : point?.outcomeLabel ?? options.missing;
     const row = [point?.xLabel ?? options.formatPeriod(datum.x), actual, target, outcome];
-    if (options.model.baseline) row.push(datum.actualSuppressed ? options.suppressed : point?.baseline?.difference?.description ?? options.missing);
+    if (options.model.baseline) row.push(actualSuppressed ? options.suppressed : point?.baseline?.difference?.description ?? options.missing);
     rows.push(row);
   });
   return rows.map((row) => row.map((cell) => encodeCsvCell(cell, { alwaysQuote: true, preserveNegativeNumericLiteral: true })).join(',')).join('\r\n');

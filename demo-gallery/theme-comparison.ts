@@ -51,7 +51,7 @@ function standalone(title: string, reportPresentation = false): A11yBarChartElem
   chart.config = {
     headingLevel: 4, showActions: true, showSummary: false, showContext: true,
     showExplanation: true, explanationExpanded: false, showGlossary: true,
-    showDetails: false, dataView: 'dialog', tableVisibility: 'visible', showTotal: true
+    showDetails: false, dataView: 'dialog', showTotal: true
   };
   chart.messages = {
     explain: 'Explain', hideExplanation: 'Explain',
@@ -63,7 +63,7 @@ function standalone(title: string, reportPresentation = false): A11yBarChartElem
 
 function grouped(title: string): A11yBarChartGroupElement {
   const chart = document.createElement('a11y-bar-chart-group') as A11yBarChartGroupElement;
-  chart.config = { headingLevel: 4, showActions: true, showSummary: false, showContext: false, dataView: 'dialog', tableVisibility: 'visible' };
+  chart.config = { headingLevel: 4, showActions: true, showSummary: false, showContext: false, dataView: 'dialog' };
   chart.groupMessages = { selectorLabel: `${title}: age selection` };
   chart.sections = [ageSection()];
   return chart;

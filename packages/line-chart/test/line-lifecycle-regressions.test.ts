@@ -145,7 +145,7 @@ describe('line chart lifecycle regressions', () => {
     const chart = document.createElement(A11Y_LINE_CHART_TAG_NAME) as A11yLineChartElement;
     chart.config = null as never;
     chart.data = [{ x: 2025, actual: 12.345, target: 20 }];
-    chart.formatValue = ({ value }) => value === null ? 'missing' : `canonical ${value}`;
+    chart.formatValue = ({ value }) => `canonical ${value}`;
     document.body.append(chart);
     await settle();
     expect(chart.querySelector('tbody tr td')?.textContent).toBe('canonical 12.345');

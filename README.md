@@ -14,7 +14,7 @@ The bar chart and the localization/data-view additions to both charts follow
 The Angular replacement gap assessment and grouped-selection requirements are
 recorded in [`BAR-CHART-REPLACEMENT-PARITY.md`](./BAR-CHART-REPLACEMENT-PARITY.md).
 The grouped selector, shared scales, explicit suppression, authored explanations,
-and Excel export are implemented locally. The gallery includes four grouped
+and CSV export are implemented locally. The gallery includes four grouped
 compositions; production ADAPT integration remains separately unverified.
 
 ## Line chart
@@ -133,7 +133,7 @@ chart.config = {
   decimalPlaces: 2,
   positiveDirection: 'above',
   stepperVisibility: 'auto',
-  tableVisibility: 'screen-reader'
+  dataView: 'dialog'
 };
 ```
 
@@ -188,7 +188,7 @@ The component dispatches bubbling framework-neutral events:
 - `a11y-line-chart-ready`
 - `a11y-line-chart-error`
 - `a11y-line-chart-point-change`
-- `a11y-line-chart-display-change`
+- `a11y-line-chart-settings-change` (reader-driven changes only; detail is `{ setting, value, source }`)
 
 The point-change detail contains selected source values, canonical
 announcement, outcome, outcome label, and structured target/baseline

@@ -15,7 +15,6 @@ export const ENGLISH_MESSAGES = {
   targetHeader: 'Target',
   csvTargetHeader: 'Target',
   targetUnavailable: 'Not set',
-  targetSuppressed: 'Suppressed',
   targetRange: '{min} to {max}',
   outcomeMet: 'Target met',
   outcomeNotMet: 'Target not met',
@@ -24,7 +23,6 @@ export const ENGLISH_MESSAGES = {
   targetAbove: '{label} is above the target ({target}).',
   targetEqual: '{label} equals the target ({target}).',
   targetIncomplete: '{label}: target {target}; comparison unavailable.',
-  targetProtected: '{label}: target suppressed; comparison unavailable.',
   warningTargetClipped: 'The target for {label} exceeds the supplied total; its marker is limited to the chart track. The full target is shown in text.',
   warningTargetScaleUnavailable: 'The target for {label} cannot be positioned without a positive total. The full target is shown in text.',
   percentageHeader: 'Percentage of total',
@@ -49,9 +47,8 @@ export const ENGLISH_MESSAGES = {
   detailsPinned: 'Kept open. Select the bar again to close.',
   dataDialogTitle: 'Complete chart data',
   dataTableCaption: 'Complete data for {title}',
-  dataInlineSummary: 'Complete chart data',
+  dataInlineSummary: 'View complete data',
   exportCsv: 'Download CSV',
-  exportXlsx: 'Download Excel',
   explanationLabel: 'Explanation',
   plainLanguageSummary: 'Plain language summary',
   warningScaleClipped: 'The value or target for {label} exceeds the shared scale maximum; its marker or bar is limited to the chart track.',
@@ -60,13 +57,14 @@ export const ENGLISH_MESSAGES = {
   scalePopulationShare: 'Bars scaled to the reported total',
   missingValue: 'Not reported',
   suppressedValue: 'Suppressed',
+  suppressionNote: 'Some values are suppressed to protect privacy.',
   noDefinitions: 'No category definitions are available.',
   contextLabel: 'Context',
   dataNoteLabel: 'Data note',
   csvContextLabel: 'Context',
   csvDataNoteLabel: 'Data note',
-  glossary: 'Show definitions',
-  hideGlossary: 'Hide definitions',
+  glossary: 'Glossary',
+  hideGlossary: 'Hide glossary',
   noContext: '',
   summaryNoData: 'No category data has been reported.',
   'summaryAllZero.one': 'The single reported category has a value of zero.',
@@ -88,7 +86,7 @@ export const ENGLISH_MESSAGES = {
   validationEmptyId: 'Every category needs a non-empty identifier.',
   validationInvalidLabel: 'Category {id} needs a text label.',
   validationInvalidValue: 'Category {id} must have a finite, nonnegative value or null.',
-  validationInvalidTarget: 'Category {id} needs a finite, nonnegative target or a range with finite, nonnegative min and max and min <= max. targetSuppressed must be a boolean.',
+  validationInvalidTarget: 'Category {id} needs a finite, nonnegative target or a range with finite, nonnegative min and max and min <= max.',
   validationInvalidRecord: 'Category at position {position} must be a valid record.',
   validationInvalidTotal: 'The total must be a finite, nonnegative number.',
   warningTotalMismatch: 'The reported category values sum to {sum}, which exceeds the supplied total of {total}.',
@@ -105,6 +103,9 @@ export const ENGLISH_MESSAGES = {
   narrativeContext: 'Additional context is available.',
   scaleWarning: 'Some reported values exceed the supplied total; bar lengths are limited to the chart track.'
 } as const;
+
+/** Unambiguous name for the bar chart English catalog; safe to import alongside other chart packages. */
+export const ENGLISH_BAR_CHART_MESSAGES = ENGLISH_MESSAGES;
 
 type CatalogKey = keyof typeof ENGLISH_MESSAGES;
 type PluralBaseKey = 'summaryAllZero' | 'announcementDataUpdated';

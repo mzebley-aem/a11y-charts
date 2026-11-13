@@ -18,7 +18,7 @@ export const catalogs = {
     exceedsTotal: 'La valeur dépasse le total de référence. La barre est limitée à la piste.',
     summaryComparison: '{label} : {value}, soit {percentage} du total de référence.',
     summaryCategoryValue: '{label} : {value}.', summaryCategoryShare: '{label} : {value} ({percentage}).',
-    metricOf: 'sur {total} {label}', missingValue: 'Manquante', suppressedValue: 'Masquée',
+    metricOf: 'sur {total} {label}', missingValue: 'Non communiqué', suppressedValue: 'Masquée',
   },
   'es-MX': { ...ENGLISH_MESSAGES, ...BAR_DEMO_MESSAGES['es-ES'],
     otherCategories: 'Otras categorías', incompleteValue: 'Incompleto', validationInvalidGrouping: 'La configuración de agrupación no es válida.', validationInvalidGroupingHighlight: 'La categoría destacada {label} ({id}) se agruparía. Elija categorías que la mantengan separada.',
@@ -32,7 +32,7 @@ export const catalogs = {
     exceedsTotal: 'El valor supera el total de referencia. La barra se limita a la pista.',
     summaryComparison: '{label}: {value}, equivalente al {percentage} del total de referencia.',
     summaryCategoryValue: '{label}: {value}.', summaryCategoryShare: '{label}: {value} ({percentage}).',
-    metricOf: 'de {total} {label}', missingValue: 'Faltante', suppressedValue: 'Suprimido',
+    metricOf: 'de {total} {label}', missingValue: 'No informado', suppressedValue: 'Suprimido',
   },
 };
 export const labels = {

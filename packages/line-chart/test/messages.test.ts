@@ -1,7 +1,19 @@
 import { describe, expect, it } from 'vitest';
-import { formatLineMessage, pluralLineMessage } from '../src/messages.js';
+import { resolveConfig } from '../src/config.js';
+import { ENGLISH_LINE_CHART_MESSAGES, formatLineMessage, pluralLineMessage } from '../src/messages.js';
 
 describe('line chart messages', () => {
+  it('uses the shared complete-data, not-reported, and disclosure toggle defaults', () => {
+    expect(ENGLISH_LINE_CHART_MESSAGES.dataAction).toBe('View complete data');
+    expect(ENGLISH_LINE_CHART_MESSAGES.inlineData).toBe('View complete data');
+    expect(ENGLISH_LINE_CHART_MESSAGES.missing).toBe('Not reported');
+    expect(ENGLISH_LINE_CHART_MESSAGES.explain).toBe('Explain');
+    expect(ENGLISH_LINE_CHART_MESSAGES.hideExplanation).toBe('Hide explanation');
+    expect(ENGLISH_LINE_CHART_MESSAGES.glossary).toBe('Glossary');
+    expect(ENGLISH_LINE_CHART_MESSAGES.hideGlossary).toBe('Hide glossary');
+    expect(resolveConfig(undefined).describeMissingAs).toBe('Not reported');
+  });
+
   it('substitutes named values without evaluating markup or unknown placeholders', () => {
     expect(formatLineMessage('<b>{value}</b> {unknown}', { value: '<script>' }))
       .toBe('<b><script></b> {unknown}');

@@ -8,7 +8,7 @@ for (const kind of ['line', 'bar']) {
       document.querySelector('#fixture')!.append(chart);
     }, kind);
     const chart = page.locator(`a11y-${kind}-chart`);
-    const action = chart.getByRole('button', { name: kind === 'line' ? 'Data' : 'View complete data', exact: true });
+    const action = chart.getByRole('button', { name: 'View complete data', exact: true });
     await action.focus();
     await chart.evaluate((el:any) => { el.config = { ...el.config, showActions: false }; });
     await expect(action).toHaveCount(0);
@@ -22,7 +22,7 @@ for (const kind of ['line', 'bar']) {
       document.querySelector('#fixture')!.append(chart);
     }, kind);
     const chart = page.locator(`a11y-${kind}-chart`);
-    await chart.getByRole('button', { name: kind === 'line' ? 'Data' : 'View complete data', exact: true }).focus();
+    await chart.getByRole('button', { name: 'View complete data', exact: true }).focus();
     await chart.evaluate((el:any) => { el.data = []; });
     await expect.poll(() => chart.evaluate(el => el.contains(document.activeElement))).toBe(true);
     await chart.evaluate((el:any) => { el.data = 'invalid'; });

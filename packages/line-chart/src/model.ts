@@ -11,23 +11,19 @@ export type A11yLineChartTarget = number | A11yLineChartTargetRange;
 export interface A11yLineChartDatum {
   x: A11yLineChartXValue;
   actual?: number | null;
-  actualSuppressed?: boolean;
   target?: A11yLineChartTarget | null;
-  targetSuppressed?: boolean;
 }
 
 export interface A11yLineChartLegacyDatum {
   year: string | number;
   actual?: number | null;
-  actualSuppressed?: boolean;
   target?: A11yLineChartTarget | null;
-  targetSuppressed?: boolean;
 }
 
 export type A11yLineChartValuePreset = 'number' | 'percent';
 export type A11yLineChartPattern = 'diagonal' | 'dots' | 'horizontal' | 'none';
-export type A11yLineChartTableVisibility = 'hidden' | 'screen-reader' | 'visible';
-export type A11yLineChartDataView = 'dialog' | 'inline';
+export type A11yLineChartDataView = 'dialog' | 'inline' | 'none';
+export type A11yLineChartPercentScale = 'whole' | 'fraction';
 export type A11yLineChartStepperVisibility = 'always' | 'auto' | 'never';
 export type A11yLineChartTrendMode = 'labels' | 'arrows';
 export type A11yLineChartPositiveDirection = 'above' | 'below';
@@ -42,7 +38,7 @@ export interface A11yLineChartBaseline {
 }
 
 export interface A11yLineChartFormatContext {
-  value: number | null;
+  value: number;
   series: A11yLineChartSeries;
   x: A11yLineChartXValue;
   locale: string;
@@ -95,7 +91,6 @@ export interface A11yLineChartPointInterpretation {
   targetDifference: A11yLineChartSemanticDifference | null;
   targetFormatted: string;
   targetValue: A11yLineChartTarget | null;
-  targetSuppressed: boolean;
   total: number;
   x: A11yLineChartXValue;
   xLabel: string;
@@ -134,7 +129,6 @@ export interface A11yLineChartTooltipContext {
   relation: A11yLineChartRelation;
   relationLabel: string;
   actualSuppressed?: boolean;
-  targetSuppressed?: boolean;
   theme: Required<A11yLineChartTheme>;
 }
 
@@ -164,6 +158,7 @@ export interface A11yLineChartConfig {
   locale?: string;
   maxWidth?: number;
   minWidth?: number;
+  percentScale?: A11yLineChartPercentScale;
   positiveDirection?: A11yLineChartPositiveDirection;
   perPointMaxWidth?: number;
   perPointMinWidth?: number;
@@ -177,14 +172,12 @@ export interface A11yLineChartConfig {
   showExport?: boolean;
   showGlossary?: boolean;
   showSummary?: boolean;
-  showTable?: boolean;
   showTargetLine?: boolean;
   showTargetValues?: boolean;
   showTooltipVisual?: boolean;
   showXAxisTitle?: boolean;
   showYAxisTitle?: boolean;
   stepperVisibility?: A11yLineChartStepperVisibility;
-  tableVisibility?: A11yLineChartTableVisibility;
   targetSeriesLabel?: string;
   explanationExpanded?: boolean;
   glossaryExpanded?: boolean;
@@ -256,32 +249,11 @@ export interface A11yLineChartTheme {
   yAxisTitleFontWeight?: number | string;
 }
 
-export interface A11yLineChartConfigChangeDetail {
-  config: Readonly<A11yLineChartConfig>;
+export interface A11yLineChartSettingsChangeDetail {
+  setting: keyof A11yLineChartConfig;
+  value: A11yLineChartConfig[keyof A11yLineChartConfig];
   source: 'controls' | 'legend';
 }
-
-export interface A11yLineChartPropertyDisplayChangeDetail {
-  chartTitle: string;
-  config: Readonly<A11yLineChartConfig>;
-  context?: string;
-  dataNote: string;
-  definitions: A11yLineChartDefinition[];
-  filtered: boolean;
-  messages: A11yLineChartMessages;
-  source: 'properties';
-  subtitle: string;
-  theme: A11yLineChartTheme;
-  formatValue?: A11yLineChartValueFormatter;
-  formatDifference?: A11yLineChartDifferenceFormatter;
-  formatXValue?: A11yLineChartXFormatter;
-  buildTooltipHtml?: A11yLineChartTooltipHtmlBuilder;
-  buildTooltipAriaLabel?: A11yLineChartTooltipAriaLabelBuilder;
-  renderTooltip?: A11yLineChartTooltipRenderer;
-}
-
-/** Property updates emit once after render; controls and legend retain their action-specific payloads. */
-export type A11yLineChartDisplayChangeDetail = A11yLineChartConfigChangeDetail | A11yLineChartPropertyDisplayChangeDetail;
 
 export interface A11yLineChartPointChangeDetail {
   actual: number | null;
@@ -292,13 +264,12 @@ export interface A11yLineChartPointChangeDetail {
   outcome: A11yLineChartOutcome;
   outcomeLabel: string;
   target: A11yLineChartTarget | null;
-  targetSuppressed: boolean;
   targetDifference: A11yLineChartSemanticDifference | null;
   x: A11yLineChartXValue;
 }
 
 export interface A11yLineChartErrorDetail {
-  code: 'invalid-baseline' | 'invalid-data';
+  code: 'invalid-baseline' | 'invalid-data' | 'invalid-messages';
   message: string;
 }
 

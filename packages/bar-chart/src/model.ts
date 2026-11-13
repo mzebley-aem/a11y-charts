@@ -1,3 +1,5 @@
+import type { PercentScale } from '../../chart-core/src/csv.js';
+
 /** Inclusive target interval, expressed in the same units as value. */
 export interface A11yBarChartTargetRange {
   min: number;
@@ -12,11 +14,9 @@ export type A11yBarChartTargetStyle = 'none' | 'color' | 'texture' | 'color-and-
 export interface A11yBarChartDatum {
   id: string;
   label: string;
+  /** null means not reported. A zero is suppressed only when the chart-wide `suppressed` flag is on. */
   value: number | null;
-  /** Explicitly redact this value. false also opts a true zero out of legacy global suppression. */
-  valueSuppressed?: boolean;
   target?: A11yBarChartTarget | null;
-  targetSuppressed?: boolean;
   definition?: string;
 }
 
@@ -26,11 +26,13 @@ export interface A11yBarChartConfig {
   inferTotal?: boolean;
   /** Shared count scale across views. Positive finite values only. */
   scaleMaximum?: number;
-  dataView?: 'dialog' | 'inline';
-  /** Explicit table visibility overrides the legacy showTable boolean. */
-  tableVisibility?: 'hidden' | 'screen-reader' | 'visible';
-  /** @deprecated Use tableVisibility. */
-  showTable?: boolean;
+  /**
+   * Full-data view: 'dialog' (modal), 'inline' (disclosure under the chart), or
+   * 'none' (no data table, data action, or CSV export). Default 'dialog'.
+   */
+  dataView?: 'dialog' | 'inline' | 'none';
+  /** Scale of the percent value passed to formatValue. Default 'whole' (45.5 for 45.5%). */
+  percentScale?: PercentScale;
   showSummary?: boolean;
   showContext?: boolean;
   showActions?: boolean;
@@ -59,8 +61,8 @@ export interface ResolvedA11yBarChartConfig {
   scaleMode: 'largest' | 'population-share';
   inferTotal: boolean;
   scaleMaximum?: number;
-  dataView: 'dialog' | 'inline';
-  tableVisibility: 'hidden' | 'screen-reader' | 'visible';
+  dataView: 'dialog' | 'inline' | 'none';
+  percentScale: PercentScale;
   showSummary: boolean;
   showContext: boolean;
   showActions: boolean;
@@ -83,6 +85,12 @@ export interface ResolvedA11yBarChartConfig {
 }
 
 export interface A11yBarChartValueFormatContext {
+  /**
+   * Canonical numeric value. For series 'percentage' it is a whole percent
+   * (45.5 for 45.5%) under the default percentScale 'whole', or a fraction
+   * (0.455) when percentScale is 'fraction'. Count, total, and target values
+   * are always in their data units.
+   */
   value: number;
   series: 'count' | 'percentage' | 'total' | 'target';
   locale: string;
@@ -139,7 +147,6 @@ export interface A11yBarChartRow {
   percentageText: string;
   barRatio: number;
   target: A11yBarChartTarget | null;
-  targetSuppressed: boolean;
   targetText: string;
   targetRelation: A11yBarChartTargetRelation;
   targetOutcome: A11yBarChartTargetOutcome;
@@ -165,6 +172,7 @@ export interface A11yBarChartSemanticModel {
 
 export interface BarModelOptions {
   total?: number | null;
+  /** Chart-wide flag: zero values read as Suppressed. Hosts suppress upstream and send 0. */
   suppressed?: boolean;
   filtered?: boolean;
   config?: A11yBarChartConfig | ResolvedA11yBarChartConfig;

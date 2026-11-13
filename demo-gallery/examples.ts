@@ -19,6 +19,8 @@ interface GalleryExampleBase {
   reviewHint: string;
   context?: string;
   dataNote?: string;
+  /** The host has already replaced protected values with 0. */
+  suppressed?: boolean;
 }
 
 export interface LineChartGalleryExample extends GalleryExampleBase {
@@ -61,7 +63,7 @@ export const chartGalleryExamples: ChartGalleryExample[] = [
     config: {
       positiveDirection: 'above', valuePreset: 'percent', baselineSeriesLabel: 'Plan start',
       showSummary: true, showContext: true, showActions: true, showExplanation: true,
-      showControls: false, tableVisibility: 'visible', dataView: 'dialog', trendMode: 'labels'
+      showControls: false, dataView: 'dialog', trendMode: 'labels'
     },
     context: 'The fictional North Valley network tracks completed annual preventive visits among eligible members.',
     dataNote: 'Percentages are rounded to whole numbers.'
@@ -84,7 +86,7 @@ export const chartGalleryExamples: ChartGalleryExample[] = [
       positiveDirection: 'below', valuePreset: 'number', decimalPlaces: 1, axisDecimalPlaces: 1,
       actualSeriesLabel: 'Interruptions per 1,000 accounts', targetSeriesLabel: 'Maximum rate',
       yAxisTitle: 'Interruptions per 1,000 accounts', showSummary: true,
-      showActions: true, tableVisibility: 'screen-reader', trendMode: 'arrows'
+      showActions: true, trendMode: 'arrows'
     },
     context: 'Lower rates mean fewer customers lose service. Values describe a fictional utility service area.'
   },
@@ -106,7 +108,7 @@ export const chartGalleryExamples: ChartGalleryExample[] = [
       positiveDirection: 'above', valuePreset: 'number', decimalPlaces: 0,
       actualSeriesLabel: 'Median minutes', targetSeriesLabel: 'Acceptable range',
       xAxisTitle: 'Month', yAxisTitle: 'Minutes', showSummary: true,
-      showActions: true, showExplanation: true, tableVisibility: 'visible'
+      showActions: true, showExplanation: true
     },
     context: 'Each range is the service team’s acceptable interval. Shorter response times are not automatically better below the lower bound.'
   },
@@ -114,23 +116,24 @@ export const chartGalleryExamples: ChartGalleryExample[] = [
     id: 'line-missing-and-suppressed',
     kind: 'line',
     title: 'School meal participation',
-    description: 'Missing and privacy-suppressed observations remain distinct from reported zero values.',
+    description: 'A missing observation and a privacy-suppressed observation are reported differently.',
     reviewHint: 'Check how missing and suppressed periods are announced and that the chart does not imply fabricated values.',
     valuePreset: 'percent',
     data: [
       { x: '2021', actual: 42, target: 45 },
       { x: '2022', actual: null, target: 47 },
       { x: '2023', actual: 49, target: 48 },
-      { x: '2024', actual: null, actualSuppressed: true, target: 50 },
-      { x: '2025', actual: 56, target: null, targetSuppressed: true }
+      { x: '2024', actual: 0, target: 50 },
+      { x: '2025', actual: 56, target: null }
     ],
     config: {
       positiveDirection: 'above', valuePreset: 'percent', autoDetectGaps: true,
       showSummary: true, showActions: true, showExplanation: true,
-      showTable: true, tableVisibility: 'visible', describeMissingAs: 'not reported'
+      describeMissingAs: 'not reported'
     },
+    suppressed: true,
     context: 'Participation is fictional. A small 2024 cohort is suppressed to protect student privacy.',
-    dataNote: 'A blank target means the target was unavailable; a suppressed value is intentionally withheld.'
+    dataNote: 'A blank target means the target was unavailable. The 2024 value was replaced with zero before it reached the chart, and the chart is flagged as suppressed.'
   },
   {
     id: 'line-compact-inline',
@@ -148,8 +151,7 @@ export const chartGalleryExamples: ChartGalleryExample[] = [
     config: {
       positiveDirection: 'above', valuePreset: 'number', decimalPlaces: 0,
       xAxisTitle: 'School term', yAxisTitle: 'Visits', showActions: true,
-      showSummary: true, showExplanation: false, showGlossary: true, glossaryExpanded: false, dataView: 'inline',
-      tableVisibility: 'visible', showControls: false, autoPerPointMinWidth: true
+      showSummary: true, showExplanation: false, showGlossary: true, glossaryExpanded: false, dataView: 'inline', showControls: false, autoPerPointMinWidth: true
     },
     definitions: [
       { id: 'term', label: 'School term', definition: 'One fall or spring teaching period.' },
@@ -173,8 +175,7 @@ export const chartGalleryExamples: ChartGalleryExample[] = [
     config: {
       scaleMode: 'largest', showCounts: true, showPercentages: false, showTotal: false,
       showDetails: true, targetStyle: 'color-and-texture', positiveDirection: 'above',
-      showSummary: true, showActions: true, showExplanation: true,
-      tableVisibility: 'visible', dataView: 'dialog'
+      showSummary: true, showActions: true, showExplanation: true, dataView: 'dialog'
     },
     context: 'Fictional service requests recorded by a city operations team.',
     dataNote: 'Counts represent requests completed during the latest quarter.'
@@ -193,8 +194,7 @@ export const chartGalleryExamples: ChartGalleryExample[] = [
     ],
     config: {
       scaleMode: 'population-share', showCounts: true, showPercentages: true, showTotal: true,
-      showSummary: true, showActions: true, showExport: true,
-      tableVisibility: 'screen-reader', dataView: 'dialog'
+      showSummary: true, showActions: true, showExport: true, dataView: 'dialog'
     },
     theme: { color: '#31688e', track: '#e5edf2', surface: '#ffffff', muted: '#465766' },
     context: 'Fictional survey responses from 5,000 households; categories are mutually exclusive.'
@@ -214,8 +214,7 @@ export const chartGalleryExamples: ChartGalleryExample[] = [
     config: {
       scaleMode: 'largest', showCounts: true, showPercentages: false,
       targetStyle: 'color-and-texture', positiveDirection: 'above',
-      showSummary: true, showActions: true, showExplanation: true,
-      tableVisibility: 'visible'
+      showSummary: true, showActions: true, showExplanation: true
     },
     theme: {
       color: '#287c72', targetColor: '#574b90', patternType: 'diagonal',
@@ -227,22 +226,22 @@ export const chartGalleryExamples: ChartGalleryExample[] = [
     id: 'bar-suppression-and-missing',
     kind: 'bar',
     title: 'Community clinic referrals',
-    description: 'Reported, missing, and privacy-suppressed counts are shown without substituting zeros.',
-    reviewHint: 'Check row narratives and target status for missing and suppressed observations.',
+    description: 'Reported, missing, and privacy-suppressed counts are each described differently.',
+    reviewHint: 'Check row narratives for missing and suppressed observations.',
     data: [
       { id: 'east', label: 'East clinic', value: 42, target: 38 },
       { id: 'west', label: 'West clinic', value: null, target: 35 },
-      { id: 'central', label: 'Central clinic', value: 18, target: 20, targetSuppressed: true },
+      { id: 'central', label: 'Central clinic', value: 0, target: 20 },
       { id: 'mobile', label: 'Mobile clinic', value: 31, target: null }
     ],
     config: {
       scaleMode: 'largest', showCounts: true, showPercentages: false,
       targetStyle: 'texture', positiveDirection: 'above',
-      showSummary: true, showContext: true, showActions: true,
-      tableVisibility: 'visible'
+      showSummary: true, showContext: true, showActions: true
     },
-    context: 'Referral counts are fictional. Small target groups are withheld when they could identify individual patients.',
-    dataNote: 'The West clinic value was not reported; the Central clinic target was suppressed.'
+    suppressed: true,
+    context: 'Referral counts are fictional. Small counts are withheld when they could identify individual patients.',
+    dataNote: 'The West clinic value was not reported; the Central clinic value was suppressed.'
   },
   {
     id: 'bar-long-labels-inline',
@@ -260,7 +259,7 @@ export const chartGalleryExamples: ChartGalleryExample[] = [
       scaleMode: 'largest', showCounts: true, showPercentages: false,
       showDetails: true, targetStyle: 'color', positiveDirection: 'above',
       showSummary: false, showActions: true, showExplanation: true,
-      dataView: 'inline', tableVisibility: 'visible'
+      dataView: 'inline'
     },
     theme: { color: '#3c6e71', track: '#e3eceb', border: '#304b4d', focus: '#005fcc' },
     context: 'Fictional commitments from a municipal service-accessibility plan.',

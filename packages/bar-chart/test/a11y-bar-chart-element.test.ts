@@ -171,7 +171,7 @@ describe('a11y-bar-chart custom element', () => {
     await flush();
     expect(onReady).toHaveBeenCalledOnce();
     expect(onChange).not.toHaveBeenCalled();
-    expect(chart.querySelector('details summary')?.textContent).toBe('Complete chart data');
+    expect(chart.querySelector('details summary')?.textContent).toBe('View complete data');
     expect(chart.querySelector('.a11y-bar-chart__indicator')?.textContent).toBe('Filtered');
     expect(chart.querySelector('.a11y-bar-chart__indicators')?.getAttribute('role')).toBe('group');
     expect(chart.querySelector('.a11y-bar-chart__indicators')?.getAttribute('aria-label')).toBe('Category');
@@ -183,6 +183,17 @@ describe('a11y-bar-chart custom element', () => {
     detail.model.rows[0].label = 'Mutated model copy';
     expect(chart.data[0]?.label).toBe('Gamma');
     expect(chart.querySelector('.a11y-bar-chart__visually-hidden[aria-live="polite"]')?.textContent).toContain('updated');
+  });
+
+  it('dispatches no events when title, config, or messages change after first render', async () => {
+    const chart = makeChart();
+    await flush();
+    const dispatched = vi.spyOn(chart, 'dispatchEvent');
+    chart.chartTitle = 'Updated title';
+    chart.config = { dataView: 'inline', scaleMode: 'population-share' };
+    chart.messages = { title: 'Localized title' };
+    await flush();
+    expect(dispatched.mock.calls.map(([event]) => event.type)).toEqual([]);
   });
 
   it('keeps instance IDs and authored children isolated and handles disconnect/reconnect', async () => {
@@ -307,7 +318,7 @@ describe('a11y-bar-chart custom element', () => {
     const chart = makeChart();
     const onView = vi.fn();
     chart.addEventListener('a11y-bar-chart-data-view-change', onView);
-    chart.config = { showCounts: false, showPercentages: false, showTotal: false, showSummary: false, tableVisibility: 'screen-reader' };
+    chart.config = { showCounts: false, showPercentages: false, showTotal: false, showSummary: false };
     await flush();
     expect(chart.querySelector('.a11y-bar-chart__summary')).toBeNull();
     expect(chart.querySelector('.a11y-bar-chart__total')).toBeNull();
@@ -329,10 +340,10 @@ describe('a11y-bar-chart custom element', () => {
     expect(chart.querySelector('dialog .a11y-bar-chart__screen-reader-table')).toBeNull();
     expect(chart.querySelector('[data-focus-key="export"]')).toBeTruthy();
 
-    chart.config = { showTable: false, tableVisibility: 'visible' };
+    chart.config = { dataView: 'dialog' };
     await flush();
     expect(chart.querySelector('[data-focus-key="data"]')).toBeTruthy();
-    chart.config = { showTable: true, tableVisibility: 'hidden' };
+    chart.config = { dataView: 'none' };
     await flush();
     expect(chart.querySelector('[data-focus-key="data"]')).toBeNull();
     expect(chart.querySelector('.a11y-bar-chart__inline-data')).toBeNull();
@@ -351,7 +362,7 @@ describe('a11y-bar-chart custom element', () => {
     chart.suppressed = true;
     chart.context = '<p>See <a href="https://example.test">reporting notes</a>.</p>';
     chart.dataNote = '<p>Open <a href="https://example.test/data">data notes</a>.</p>';
-    chart.config = { showCounts: false, showPercentages: false, tableVisibility: 'screen-reader' };
+    chart.config = { showCounts: false, showPercentages: false };
     await flush();
 
     const rows = [...chart.querySelectorAll<HTMLElement>('.a11y-bar-chart__row')];
@@ -368,19 +379,19 @@ describe('a11y-bar-chart custom element', () => {
 
   it('keeps inline data and its CSV usable when the chart action strip is hidden', async () => {
     const chart = makeChart();
-    chart.config = { dataView: 'inline', showActions: false, tableVisibility: 'visible' };
+    chart.config = { dataView: 'inline', showActions: false };
     await flush();
     expect(chart.querySelector('.a11y-bar-chart__actions')).toBeNull();
     expect(chart.querySelector('.a11y-bar-chart__inline-data summary')).toBeTruthy();
     expect(chart.querySelector('.a11y-bar-chart__inline-data tbody tr')).toBeTruthy();
     expect(chart.querySelector('.a11y-bar-chart__inline-data [data-focus-key="export"]')).toBeTruthy();
-    chart.config = { dataView: 'inline', showActions: false, showExport: false, tableVisibility: 'visible' };
+    chart.config = { dataView: 'inline', showActions: false, showExport: false };
     await flush();
     expect(chart.querySelector('.a11y-bar-chart__inline-data summary')).toBeTruthy();
     expect(chart.querySelector('[data-focus-key="export"]')).toBeNull();
   });
 
-  it('reports an open inline view closed when table visibility hides it and clears its open preference', async () => {
+  it('reports an open inline view closed when dataView none hides it and clears its open preference', async () => {
     const chart = makeChart();
     chart.config = { dataView: 'inline' };
     await flush();
@@ -394,7 +405,7 @@ describe('a11y-bar-chart custom element', () => {
       { open: true, dataView: 'inline' }
     ]);
 
-    chart.config = { tableVisibility: 'hidden' };
+    chart.config = { dataView: 'none' };
     await flush();
     expect(chart.querySelector('.a11y-bar-chart__inline-data')).toBeNull();
     expect(onView.mock.calls.map(([event]) => (event as CustomEvent).detail)).toEqual([
@@ -402,7 +413,7 @@ describe('a11y-bar-chart custom element', () => {
       { open: false, dataView: 'inline' }
     ]);
 
-    chart.config = { dataView: 'inline', tableVisibility: 'visible' };
+    chart.config = { dataView: 'inline' };
     await flush();
     expect(chart.querySelector<HTMLDetailsElement>('.a11y-bar-chart__inline-data')?.open).toBe(false);
     expect(onView).toHaveBeenCalledTimes(2);
@@ -603,9 +614,9 @@ describe('a11y-bar-chart custom element', () => {
     expect(formatter.mock.calls.flatMap(([context]) => context.series === 'count' ? [context.id] : [])).not.toContain('masked');
   });
 
-  it('keeps screen-reader background data while showing a visible table in Data and avoids dangling controls', async () => {
+  it('keeps screen-reader background data while showing a dialog table and avoids dangling controls', async () => {
     const chart = makeChart();
-    chart.config = { tableVisibility: 'screen-reader' };
+    chart.config = { dataView: 'dialog' };
     await flush();
     const background = chart.querySelector<HTMLTableElement>('.a11y-bar-chart__background-data table')!;
     expect(background.id).toBe(`${chart.instanceId}-data-background`);
@@ -624,5 +635,100 @@ describe('a11y-bar-chart custom element', () => {
     expect(chart.querySelector('[aria-controls$="-explanation"]')).toBeNull();
     expect(chart.querySelector('dialog')?.open).toBe(true);
     expect(chart.querySelector('dialog [role="alert"]')).toBeTruthy();
+  });
+});
+
+describe('a11y-bar-chart data view, percent scale, and CSV download', () => {
+  beforeEach(() => { document.body.replaceChildren(); });
+
+  it('removes every data surface when dataView is none and closes an open dialog', async () => {
+    const chart = makeChart();
+    await flush();
+    const dialog = chart.querySelector<HTMLDialogElement>('dialog')!;
+    vi.spyOn(dialog, 'showModal').mockImplementation(() => dialog.setAttribute('open', ''));
+    vi.spyOn(dialog, 'close').mockImplementation(() => { dialog.removeAttribute('open'); dialog.dispatchEvent(new Event('close')); });
+    chart.querySelector<HTMLButtonElement>('[data-focus-key="data"]')!.click();
+    await flush();
+    expect(dialog.open).toBe(true);
+
+    chart.config = { dataView: 'none' };
+    await flush();
+    expect(dialog.open).toBe(false);
+    expect(chart.querySelector('[data-focus-key="data"]')).toBeNull();
+    expect(chart.querySelector('[data-focus-key="export"]')).toBeNull();
+    expect(chart.querySelector('.a11y-bar-chart__inline-data')).toBeNull();
+    expect(chart.querySelector('.a11y-bar-chart__background-data')).toBeNull();
+    expect(chart.querySelector('table')).toBeNull();
+    expect(chart.querySelector('.a11y-bar-chart__rows')).toBeTruthy();
+  });
+
+  it('lets a valid data-view attribute override config.dataView and ignores invalid values', async () => {
+    const chart = makeChart();
+    chart.config = { dataView: 'inline' };
+    chart.setAttribute('data-view', 'none');
+    await flush();
+    expect(chart.querySelector('.a11y-bar-chart__inline-data')).toBeNull();
+    expect(chart.querySelector('[data-focus-key="data"]')).toBeNull();
+    expect(chart.querySelector('table')).toBeNull();
+
+    chart.setAttribute('data-view', 'dialog');
+    await flush();
+    expect(chart.querySelector('[data-focus-key="data"]')).toBeTruthy();
+    expect(chart.querySelector('.a11y-bar-chart__inline-data')).toBeNull();
+
+    chart.setAttribute('data-view', 'sideways');
+    await flush();
+    expect(chart.querySelector('.a11y-bar-chart__inline-data')).toBeTruthy();
+    expect(chart.querySelector('[data-focus-key="data"]')).toBeNull();
+  });
+
+  it('passes whole percents to formatValue by default and fractions when percentScale is fraction', async () => {
+    const chart = makeChart([{ id: 'a', label: 'Alpha', value: 1 }, { id: 'b', label: 'Beta', value: 3 }]);
+    const formatter = vi.fn(({ value }: A11yBarChartValueFormatContext) => String(value));
+    const percentages = () => formatter.mock.calls.filter(([context]) => context.series === 'percentage').map(([context]) => context.value);
+    chart.formatValue = formatter;
+    await flush();
+    expect(percentages()).toEqual([25, 75]);
+
+    formatter.mockClear();
+    chart.config = { percentScale: 'fraction' };
+    await flush();
+    expect(percentages()).toEqual([0.25, 0.75]);
+
+    formatter.mockClear();
+    chart.setAttribute('percent-scale', 'whole');
+    await flush();
+    expect(percentages()).toEqual([25, 75]);
+
+    formatter.mockClear();
+    chart.setAttribute('percent-scale', 'bogus');
+    await flush();
+    expect(percentages()).toEqual([0.25, 0.75]);
+  });
+
+  it('offers only the CSV download and prefixes the CSV file with a UTF-8 byte-order mark', async () => {
+    const chart = makeChart();
+    chart.config = { dataView: 'inline' };
+    await flush();
+    expect(chart.querySelectorAll('[data-focus-key^="export"]')).toHaveLength(1);
+    expect(chart.querySelector('.a11y-bar-chart__inline-data [data-focus-key="export"]')?.textContent).toBe('Download CSV');
+
+    const createObjectURL = vi.fn((_blob: Blob) => 'blob:bar-chart-bom-test');
+    const originalDescriptor = Object.getOwnPropertyDescriptor(URL, 'createObjectURL');
+    Object.defineProperty(URL, 'createObjectURL', { configurable: true, value: createObjectURL });
+    const anchorClick = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+    try {
+      chart.querySelector<HTMLButtonElement>('.a11y-bar-chart__inline-data [data-focus-key="export"]')!.click();
+      await flush();
+      const blob = createObjectURL.mock.calls[0]?.[0] as Blob;
+      const text = await blob.text();
+      expect(text.charCodeAt(0)).toBe(0xfeff);
+      expect(text.slice(1)).toContain('Alpha,3,');
+      expect(anchorClick).toHaveBeenCalledOnce();
+    } finally {
+      anchorClick.mockRestore();
+      if (originalDescriptor) Object.defineProperty(URL, 'createObjectURL', originalDescriptor);
+      else delete (URL as unknown as { createObjectURL?: typeof URL.createObjectURL }).createObjectURL;
+    }
   });
 });

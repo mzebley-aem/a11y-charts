@@ -147,7 +147,6 @@ function renderMeasure() {
       showExplanation: true,
       showGlossary: false,
       dataView: 'dialog',
-      tableVisibility: 'screen-reader',
       initialZoomY: zoom,
       showActualValues: labels,
       showTargetValues: labels,
@@ -180,7 +179,7 @@ function renderMeasure() {
       axisLabelFontSize: 14,
       legendFontSize: 14,
     };
-    chart.addEventListener('a11y-line-chart-config-change', () => {
+    chart.addEventListener('a11y-line-chart-settings-change', () => {
       zoom = chart.config.initialZoomY ?? zoom;
       actual = chart.config.showActualLine ?? actual;
       target = chart.config.showTargetLine ?? target;
@@ -213,7 +212,6 @@ function renderMeasure() {
       showDetails: false,
       showExport: false,
       dataView: 'dialog',
-      tableVisibility: 'screen-reader',
     };
     chart.data = [
       { id: 'previous', label: 'FFY 2022 actual', value: measure.previous },
@@ -336,7 +334,6 @@ function render() {
     showExplanation: true,
     showGlossary: true,
     showDetails: true,
-    tableVisibility: 'screen-reader',
     dataView: 'dialog',
   };
   population.data = indicator.categories.map(([label, value], i) => ({

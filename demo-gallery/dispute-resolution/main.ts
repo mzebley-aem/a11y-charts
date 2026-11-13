@@ -99,7 +99,7 @@ function addSingleValueBreakdown(panel: Panel) {
   chart.totalLabel = copy.baseCaption ?? panel.baseLabel;
   chart.context = `Reporting period: 2022–23. Base: ${count(panel.base)} ${panel.baseLabel}.`;
   chart.explanation = `<p>${sentenceText}</p>${isComparison ? '' : `<p>${remainderText}</p>`}`;
-  chart.config = { mode: isComparison ? 'comparison' : 'breakdown', presentation: 'full', headingLevel: 3, percentageDecimals: 1, announceChanges: false, highlightedId: `${panel.id}-0`, showDetails: true, showSummary: false, showTotal: true, showContext: false, tableVisibility: 'visible', dataView: 'dialog' };
+  chart.config = { mode: isComparison ? 'comparison' : 'breakdown', presentation: 'full', headingLevel: 3, percentageDecimals: 1, announceChanges: false, highlightedId: `${panel.id}-0`, showDetails: true, showSummary: false, showTotal: true, showContext: false, dataView: 'dialog' };
   chart.messages = { total: panel.baseLabel, showData: 'Data', explain: 'Explain', glossary: 'Glossary', hideGlossary: 'Hide glossary' };
   chart.data = [
     { id: `${panel.id}-0`, label: copy.label ?? panel.rows[0][0], value, definition: copy.definition },
@@ -134,7 +134,7 @@ function addChart(panel: Panel, index: number) {
   chart.context = `Reporting period: 2022–23. Base: ${count(panel.base)} ${panel.baseLabel}.`;
   chart.explanation = `<p>${panel.note}</p><p>Each percentage divides the row count by ${count(panel.base)} ${panel.baseLabel}, then multiplies by 100. Percentages are rounded to two decimal places.</p>`;
   chart.messages = { total: `Percentage base: ${panel.baseLabel}`, showData: 'Data', explain: 'Explain', exportCsv: 'Download CSV', detailsHelp: 'Hover or focus a bar for details. Activate to keep details open; press Escape to close.' };
-  chart.config = { headingLevel: 3, scaleMode: 'population-share', inferTotal: false, showSummary: false, showTotal: false, showContext: false, showDetails: false, tableVisibility: 'screen-reader', dataView: 'dialog', showGlossary: false, announceChanges: false };
+  chart.config = { headingLevel: 3, scaleMode: 'population-share', inferTotal: false, showSummary: false, showTotal: false, showContext: false, showDetails: false, dataView: 'dialog', showGlossary: false, announceChanges: false };
   chart.data = panel.rows.map(([label, value], i) => ({ id: `${panel.id}-${i}`, label, value }));
   article.append(question, base, chart, note);
   $('#view-body').append(article);

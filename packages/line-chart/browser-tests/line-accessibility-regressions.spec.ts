@@ -127,7 +127,7 @@ test('line focus remains visible in forced colors and reduced motion removes pre
   expect(focus.outlineColor).not.toBe('rgba(0, 0, 0, 0)');
   expect(focus.outlineWidth).toBe('3px');
 
-  const dataButton = chart.getByRole('button', { name: 'Data' });
+  const dataButton = chart.getByRole('button', { name: 'View complete data' });
   await dataButton.hover();
   await page.mouse.down();
   const activeTransform = await dataButton.evaluate(element => getComputedStyle(element).transform);
@@ -161,7 +161,7 @@ test('line updates period semantics and recovers when actions or data disappear'
 
   await chart.evaluate((element: any) => { element.config = { ...element.config, showActions: false }; });
   await expect(slider).toBeAttached();
-  await expect(chart.getByRole('button', { name: 'Data' })).toHaveCount(0);
+  await expect(chart.getByRole('button', { name: 'View complete data' })).toHaveCount(0);
 
   await chart.evaluate((element: any) => { element.data = []; });
   const emptyMessage = chart.locator('.a11y-line-chart__message--empty[tabindex="-1"]');

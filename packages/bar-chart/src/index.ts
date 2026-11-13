@@ -2,7 +2,6 @@ export { A11Y_BAR_CHART_TAG_NAME, defineA11yBarChart } from './registration.js';
 export { A11yBarChartElement } from './a11y-bar-chart-element.js';
 export type {
   A11yBarChartDataChangeDetail,
-  A11yBarChartDisplayChangeDetail,
   A11yBarChartDataViewChangeDetail,
   A11yBarChartDisclosureChangeDetail,
   A11yBarChartErrorDetail
@@ -29,7 +28,7 @@ export type {
   ValidationSuccess
 } from './model.js';
 export { resolveConfig } from './config.js';
-export { ENGLISH_MESSAGES, formatMessage, message, resolveMessages } from './messages.js';
+export { ENGLISH_MESSAGES, ENGLISH_BAR_CHART_MESSAGES, formatMessage, message, resolveMessages } from './messages.js';
 export type { MessageDictionary, MessageKey } from './messages.js';
 export { validateBarData, validateBarTotal } from './validation.js';
 export { buildBarModel } from './semantic-model.js';
@@ -43,5 +42,3 @@ export { A11yBarChartGroupElement } from './a11y-bar-chart-group-element.js';
 export type { A11yBarChartPreparedView, A11yBarChartViewSection, A11yBarChartGroupMessages, A11yBarChartGroupSelectionChangeDetail, PreparedBarView, BarViewSection } from './grouped-model.js';
 export { prepareBarViewSection } from './prepare-views.js';
 export type { BarPopulationRecord, BarPopulationOption, BarPreparedViewContext, PrepareBarViewsOptions } from './prepare-views.js';
-export { buildBarXlsx } from './xlsx.js';
-export type { BarXlsxOptions } from './xlsx.js';

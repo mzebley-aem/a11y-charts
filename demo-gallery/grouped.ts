@@ -12,12 +12,12 @@ function example(id: string, title: string, description: string, sections: BarVi
   header.append(text('p', 'Grouped bar chart', 'example-number'), text('h3', title), text('p', description));
   const stage = text('div', '', 'chart-stage');
   const group = document.createElement('a11y-bar-chart-group') as A11yBarChartGroupElement;
-  group.config = { headingLevel: 4, scaleMode: 'largest', scaleMaximum: maximum, showSummary: false, showDetails: true, tableVisibility: 'visible', ...overrides };
+  group.config = { headingLevel: 4, scaleMode: 'largest', scaleMaximum: maximum, showSummary: false, showDetails: true, ...overrides };
   group.theme = { color: '#244694' };
   group.groupMessages = { selectorLabel: `${title}: population selection` };
   group.sections = sections;
   stage.append(group);
-  const hint = text('p', 'Try this: change a population with the arrow keys, open Explain and Data, and download Excel. The shared scale stays fixed while each percentage uses the selected total.', 'review-hint');
+  const hint = text('p', 'Try this: change a population with the arrow keys, open Explain and Data, and download the CSV. The shared scale stays fixed while each percentage uses the selected total.', 'review-hint');
   const details = text('details', '', 'example-settings'); details.append(text('summary', 'Customize this example'));
   const controls = text('div', '', 'settings-body');
   const grid = text('div', '', 'settings-grid');
@@ -37,7 +37,7 @@ function example(id: string, title: string, description: string, sections: BarVi
   const reset = text('button', 'Reset example', 'reset-button'); reset.type = 'button';
   reset.addEventListener('click', () => {
     group.sections = sections; group.selectedSectionId = sections[0]!.id; group.selectedViewId = sections[0]!.allViewId;
-    group.config = { headingLevel: 4, scaleMode: 'largest', scaleMaximum: maximum, showSummary: false, showDetails: true, tableVisibility: 'visible', dataView: 'dialog', explanationExpanded: false, glossaryExpanded: false, ...overrides };
+    group.config = { headingLevel: 4, scaleMode: 'largest', scaleMaximum: maximum, showSummary: false, showDetails: true, dataView: 'dialog', explanationExpanded: false, glossaryExpanded: false, ...overrides };
     scale.value = 'shared'; dataView.value = 'dialog'; filter.value = 'off'; updateCode();
   });
   controls.append(reset); details.append(controls);
@@ -60,7 +60,7 @@ export function mountGroupedExamples(root: HTMLElement): void {
   section.append(headingRow, text('p', 'Select a population without leaving the chart. Review the screenshot-based age and race/ethnicity states, then explore regional targets, multiple sections, and data availability.', 'section-intro'));
   section.append(example('grouped-age', 'Children by age range', 'The All Ages view preserves the supplied screenshot values. Individual age selections are illustrative and are identified in Data.', [ageSection()], 365));
   section.append(example('grouped-race', 'Children by race/ethnicity', 'All Race/Ethnicities and Black or African American reproduce the supplied visible values. Other selections are illustrative.', [raceSection()], 322));
-  section.append(example('grouped-sections', 'Multiple sections and availability states', 'Switch sections, collapse their options, and compare true zero, suppressed, missing, and empty results. The chart keeps its reading preferences.', [ageSection(), raceSection(), availabilitySection()], 365));
+  section.append(example('grouped-sections', 'Multiple sections and availability states', 'Switch sections, collapse their options, and compare suppressed, missing, and empty results. The chart keeps its reading preferences.', [ageSection(), raceSection(), availabilitySection()], 365));
   section.append(example('grouped-targets', 'Regional services and targets', 'Compare minimum goals and inclusive target ranges. North includes an above-range result; South meets every goal, including exact boundaries. Color, texture, and text communicate outcomes.', [targetSection()], 180, { targetStyle: 'color-and-texture', positiveDirection: 'above' }));
   root.append(section);
 }

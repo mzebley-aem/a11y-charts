@@ -22,6 +22,8 @@ export interface BarCsvOptions {
   dataNoteText?: string;
   /** Plain text converted from authored safe rich HTML by the browser caller. */
   explanationText?: string;
+  /** When true, the suppression note is added to the metadata area. */
+  suppressed?: boolean;
 }
 
 export function buildBarCsv(model: A11yBarChartSemanticModel, options: BarCsvOptions = {}): string {
@@ -41,7 +43,8 @@ export function buildBarCsv(model: A11yBarChartSemanticModel, options: BarCsvOpt
     const value = richContentToText(options.dataNote);
     if (value) metadata.push([message('csvDataNoteLabel', options.messages, {}, locale), value]);
   }
-  const hasTargets = model.rows.some((row) => row.target !== null || row.targetSuppressed);
+  if (options.suppressed === true) metadata.push([message('csvDataNoteLabel', options.messages, {}, locale), message('suppressionNote', options.messages, {}, locale)]);
+  const hasTargets = model.rows.some((row) => row.target !== null);
   const rows = [
     ...metadata,
     [options.categoryHeader ?? message('csvCategoryHeader', options.messages, {}, locale),

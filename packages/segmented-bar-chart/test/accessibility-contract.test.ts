@@ -20,13 +20,13 @@ describe('segmented chart accessibility contract', () => {
     chart.setAttribute('locale', 'de-DE');
     chart.config = { dataView: 'inline' };
     await settled();
-    expect(chart.querySelector('.legend')!.textContent).toContain('1.234');
+    expect(chart.querySelector('.a11y-segmented-bar-chart__legend')!.textContent).toContain('1.234');
     expect(chart.querySelector('table')!.textContent).toContain('1.234');
   });
 
   it('names the data dialog and returns focus to its opener', async () => {
     const chart = chartWithData();
-    chart.config = { dataView: 'dialog', tableVisibility: 'visible' };
+    chart.config = { dataView: 'dialog' };
     await settled();
     const root = chart;
     const dialog = root.querySelector('dialog')!;
@@ -46,7 +46,7 @@ describe('segmented chart accessibility contract', () => {
     chart.config = { showDetails: true, showActions: false };
     await settled();
     const root = chart;
-    const button = root.querySelector<HTMLButtonElement>('.legend button')!;
+    const button = root.querySelector<HTMLButtonElement>('.a11y-segmented-bar-chart__legend button')!;
     const card = root.querySelector<HTMLElement>(`#${button.getAttribute('aria-controls')}`)!;
     button.focus();
     expect(button.getAttribute('aria-expanded')).toBe('true');
@@ -58,7 +58,7 @@ describe('segmented chart accessibility contract', () => {
 
   it('keeps the data dialog open and focus inside it when chart data changes', async () => {
     const chart = chartWithData();
-    chart.config = { dataView: 'dialog', tableVisibility: 'visible' };
+    chart.config = { dataView: 'dialog' };
     await settled();
     chart.querySelector<HTMLButtonElement>('[data-focus-key="data"]')!.click();
     chart.data = [{ id: 'a', label: 'First', value: 1234 }, { id: 'b', label: 'Second', value: 766 }];
@@ -67,27 +67,27 @@ describe('segmented chart accessibility contract', () => {
     expect(dialog.open).toBe(true);
     expect(dialog.contains(document.activeElement)).toBe(true);
   });
-  it('offers a Data dialog with a screen-reader table and hides exports when table is hidden', async () => {
+  it('offers a data dialog with a screen-reader table and removes data access and exports when dataView is none', async () => {
     const chart = chartWithData();
-    chart.config = { tableVisibility: 'screen-reader', dataView: 'dialog' };
+    chart.config = { dataView: 'dialog' };
     await settled();
     expect(chart.querySelector('[data-focus-key="data"]')).not.toBeNull();
     expect(chart.querySelector('dialog table')).not.toBeNull();
-    chart.config = { tableVisibility: 'hidden', dataView: 'dialog' };
+    chart.config = { dataView: 'none' };
     await settled();
     expect(chart.querySelector('[data-focus-key="data"]')).toBeNull();
-    expect([...chart.querySelectorAll('.data-tools button')].some(button => /download/i.test(button.textContent ?? ''))).toBe(false);
+    expect([...chart.querySelectorAll('.a11y-segmented-bar-chart__data-tools button')].some(button => /download/i.test(button.textContent ?? ''))).toBe(false);
   });
 
   it('hides chart actions while keeping inline data exports available', async () => {
     const chart = chartWithData();
     chart.explanation = 'Explanation';
-    chart.config = { showActions: false, dataView: 'inline', tableVisibility: 'visible' };
+    chart.config = { showActions: false, dataView: 'inline' };
     await settled();
     expect(chart.querySelector('table')).not.toBeNull();
     expect(chart.querySelector('[data-focus-key="explanation"]')).toBeNull();
     expect(chart.querySelector('[data-focus-key="glossary"]')).toBeNull();
-    expect([...chart.querySelectorAll('.data-tools button')].some(button => /download/i.test(button.textContent ?? ''))).toBe(true);
+    expect([...chart.querySelectorAll('.a11y-segmented-bar-chart__data-tools button')].some(button => /download/i.test(button.textContent ?? ''))).toBe(true);
   });
 
   it('keeps user disclosure state on unrelated updates and honors explicit expanded config changes', async () => {
@@ -114,7 +114,7 @@ describe('segmented chart accessibility contract', () => {
 
   it('preserves the same open dialog and focused close control across updates', async () => {
     const chart = chartWithData();
-    chart.config = { dataView: 'dialog', tableVisibility: 'visible' };
+    chart.config = { dataView: 'dialog' };
     await settled();
     chart.querySelector<HTMLButtonElement>('[data-focus-key="data"]')!.click();
     const dialog = chart.querySelector('dialog')!;
@@ -136,7 +136,7 @@ describe('data and segment interactions', () => {
     await settled();
     const changes: unknown[] = [];
     chart.addEventListener('a11y-segmented-bar-chart-data-view-change', event => changes.push((event as CustomEvent).detail));
-    let details = chart.querySelector<HTMLDetailsElement>('details.inline-data')!;
+    let details = chart.querySelector<HTMLDetailsElement>('details.a11y-segmented-bar-chart__inline-data')!;
     const summary = details.querySelector<HTMLElement>('summary')!;
     summary.focus();
     details.open = true;
@@ -144,20 +144,20 @@ describe('data and segment interactions', () => {
     expect(changes).toContainEqual({open:true, dataView:'inline'});
     chart.totalLabel = 'Items';
     await settled();
-    details = chart.querySelector<HTMLDetailsElement>('details.inline-data')!;
+    details = chart.querySelector<HTMLDetailsElement>('details.a11y-segmented-bar-chart__inline-data')!;
     expect(details.open).toBe(true);
     expect(document.activeElement).toBe(details.querySelector('summary'));
-    chart.config = { dataView:'inline', tableVisibility:'hidden' };
+    chart.config = { dataView:'none' };
     await settled();
     chart.config = { dataView:'inline' };
     await settled();
-    expect(chart.querySelector<HTMLDetailsElement>('details.inline-data')!.open).toBe(false);
+    expect(chart.querySelector<HTMLDetailsElement>('details.a11y-segmented-bar-chart__inline-data')!.open).toBe(false);
   });
 
   it('previews details on segment hover without adding an interactive segment', async () => {
     const chart = chartWithData(); chart.config = {showDetails:true}; await settled();
-    const segment = chart.querySelector<HTMLElement>('.segment')!;
-    const button = chart.querySelector<HTMLButtonElement>('.legend button')!;
+    const segment = chart.querySelector<HTMLElement>('.a11y-segmented-bar-chart__segment')!;
+    const button = chart.querySelector<HTMLButtonElement>('.a11y-segmented-bar-chart__legend button')!;
     segment.dispatchEvent(new PointerEvent('pointerenter', {pointerType:'mouse'}));
     expect(button.getAttribute('aria-expanded')).toBe('true');
     expect(segment.hasAttribute('tabindex')).toBe(false);
@@ -169,8 +169,8 @@ describe('data and segment interactions', () => {
 
   it('keeps a segment preview open when the pointer enters its card', async () => {
     const chart = chartWithData(); chart.config = { showDetails: true }; await settled();
-    const segment = chart.querySelector<HTMLElement>('.segment')!;
-    const item = chart.querySelector<HTMLElement>('.legend-item')!;
+    const segment = chart.querySelector<HTMLElement>('.a11y-segmented-bar-chart__segment')!;
+    const item = chart.querySelector<HTMLElement>('.a11y-segmented-bar-chart__legend-item')!;
     const button = item.querySelector<HTMLButtonElement>('button')!;
     vi.useFakeTimers();
     try {
@@ -194,7 +194,7 @@ describe('data and segment interactions', () => {
     expect(dialog.open).toBe(true);
     expect(document.activeElement).toBe(dialog.querySelector('[data-focus-key="export:csv"]'));
     expect(dialog.getAttribute('aria-label')).toContain('Updated');
-    expect(dialog.querySelector('.close-dialog')?.textContent).toBe('Dismiss');
+    expect(dialog.querySelector('.a11y-segmented-bar-chart__close-dialog')?.textContent).toBe('Dismiss');
   });
 
   it('reports invalid messages and clears the alert after correction', async () => {
@@ -202,7 +202,7 @@ describe('data and segment interactions', () => {
     const errors: unknown[] = [];
     chart.addEventListener('a11y-segmented-bar-chart-error', event => errors.push((event as CustomEvent).detail));
     chart.setAttribute('messages', '{bad'); await settled();
-    expect(errors).toContainEqual(expect.objectContaining({code:'invalidMessages'}));
+    expect(errors).toContainEqual(expect.objectContaining({code:'invalid-messages'}));
     expect(chart.querySelector('[role="alert"]')?.textContent).toContain('messages');
     chart.setAttribute('messages', '{}'); await settled();
     expect(chart.querySelector('[role="alert"]')).toBeNull();

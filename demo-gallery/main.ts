@@ -21,6 +21,7 @@ function applyExample(chart: A11yLineChartElement | A11yBarChartElement, example
   chart.chartTitle = example.title;
   chart.context = example.context ?? '';
   chart.dataNote = example.dataNote ?? '';
+  chart.suppressed = example.suppressed === true;
   if (chart instanceof A11yLineChartElement && example.kind === 'line') {
     chart.config = { showControls: false, ...example.config, headingLevel: 4 };
     chart.data = structuredClone(example.data);
@@ -86,7 +87,7 @@ function createExample(example: ChartGalleryExample, index: number): HTMLElement
       theme: chart.theme }, null, 2);
   };
   controls.addEventListener('demo-settings-change', () => { updateCode(); status.textContent = 'Custom settings applied.'; });
-  chart.addEventListener(`a11y-${example.kind}-chart-config-change`, () => { settings.refresh(); updateCode(); });
+  chart.addEventListener(`a11y-${example.kind}-chart-settings-change`, () => { settings.refresh(); updateCode(); });
   reset.addEventListener('click', () => { applyExample(chart, example); settings.refresh(); updateCode(); status.textContent = 'Original example restored.'; });
   updateCode();
   article.append(header, stage, hint, details, configuration);

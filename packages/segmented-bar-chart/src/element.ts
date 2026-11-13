@@ -1,8 +1,8 @@
-import { positionSegmentDetails } from './position-details.js';
+import { positionSegmentDetails, SEGMENTED_IN_FLOW_CLASS } from './position-details.js';
+import { CSV_BYTE_ORDER_MARK } from '../../chart-core/src/csv.js';
 import {
   buildSegmentedBarModel,
   buildSegmentedBarCsv,
-  buildSegmentedBarXlsx,
   formatMessage,
   validateSegmentedBarData,
   type MessageKey,
@@ -25,6 +25,8 @@ import {
   safeHtmlToText,
 } from '../../chart-core/src/content.js';
 let serial = 0;
+const DATA_VIEW_VALUES = ['dialog', 'inline', 'none'];
+const PERCENT_SCALE_VALUES = ['whole', 'fraction'];
 export class A11ySegmentedBarChartElement extends HTMLElement {
   static readonly observedAttributes = [
     'chart-title',
@@ -33,6 +35,8 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     'filtered',
     'suppressed',
     'heading-level',
+    'data-view',
+    'percent-scale',
     'messages',
     'href',
   ];
@@ -61,9 +65,6 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
   #reopenDialog = false;
   #hasRendered = false;
   #dirtyData = false;
-  #dirtyDisplay = false;
-  #lastDisplaySignature = "";
-  #lastDisplayFormatter: A11ySegmentedBarChartValueFormatter | undefined;
   #id = ++serial;
   readonly instanceId = `a11y-segmented-bar-chart-${this.#id}`;
   #live = document.createElement('div');
@@ -71,9 +72,9 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
   #root = document.createElement('div');
   constructor() {
     super();
-    this.#root.className = 'a11y-segmented-bar-chart-root';
-    this.#dialogLayer.className = 'a11y-segmented-bar-chart-dialog-layer';
-    this.#live.className = 'sr-only';
+    this.#root.className = 'a11y-segmented-bar-chart__root';
+    this.#dialogLayer.className = 'a11y-segmented-bar-chart__dialog-layer';
+    this.#live.className = 'a11y-segmented-bar-chart__visually-hidden';
     this.#live.setAttribute('role', 'status');
     this.#live.setAttribute('aria-live', 'polite');
   }
@@ -111,11 +112,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
   get data() {
     return this.#data.map((d) => ({
       ...d,
-      value:
-        d.valueSuppressed === true ||
-        (this.suppressed && d.valueSuppressed !== false && d.value === 0)
-          ? null
-          : d.value,
+      value: this.suppressed && d.value === 0 ? null : d.value,
     }));
   }
   set data(v: A11ySegmentedBarChartDatum[]) {
@@ -158,7 +155,6 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     return { ...this.#config, ...(Array.isArray(this.#config.separateCategoryIds) ? { separateCategoryIds: [...this.#config.separateCategoryIds] } : {}) };
   }
   set config(v: A11ySegmentedBarChartConfig) {
-    this.#dirtyDisplay = true;
     this.#resetExplanation =
       v?.explanationExpanded !== this.#config.explanationExpanded;
     this.#resetGlossary = v?.glossaryExpanded !== this.#config.glossaryExpanded;
@@ -171,7 +167,6 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
   set messages(v: MessageDictionary) {
     this.#messagesInvalid = false;
     this.#messages = v && typeof v === 'object' ? { ...v } : {};
-    this.#dirtyDisplay = true;
     this.#queue();
   }
   get theme() {
@@ -179,14 +174,12 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
   }
   set theme(v: A11ySegmentedBarChartTheme) {
     this.#theme = v && typeof v === 'object' ? structuredClone(v) : {};
-    this.#dirtyDisplay = true;
     this.#queue();
   }
   get formatValue() {
     return this.#formatValue;
   }
   set formatValue(v: A11ySegmentedBarChartValueFormatter | undefined) {
-    this.#dirtyDisplay = true;
     this.#formatValue = v;
     this.#queue();
   }
@@ -194,7 +187,6 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     return this.#context;
   }
   set context(v: string) {
-    this.#dirtyDisplay = true;
     this.#context = v ?? '';
     this.#queue();
   }
@@ -202,7 +194,6 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     return this.#explanation;
   }
   set explanation(v: string) {
-    this.#dirtyDisplay = true;
     this.#explanation = v ?? '';
     this.#queue();
   }
@@ -210,7 +201,6 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     return this.#dataNote;
   }
   set dataNote(v: string) {
-    this.#dirtyDisplay = true;
     this.#dataNote = v ?? '';
     this.#queue();
   }
@@ -218,7 +208,6 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     return this.#valueLabel;
   }
   set valueLabel(v: string) {
-    this.#dirtyDisplay = true;
     this.#valueLabel = v ?? '';
     this.#queue();
   }
@@ -226,7 +215,6 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     return this.#totalLabel;
   }
   set totalLabel(v: string) {
-    this.#dirtyDisplay = true;
     this.#totalLabel = v ?? '';
     this.#queue();
   }
@@ -254,7 +242,6 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
   ) {
     if (_old === value) return;
     if (name === 'suppressed') this.#dirtyData = true;
-    else this.#dirtyDisplay = true;
     if (name === 'messages') {
       try {
         const parsed: unknown = value ? JSON.parse(value) : {};
@@ -271,7 +258,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
         this.#messages = {};
         this.#messagesInvalid = true;
         this.#dispatchError(
-          'invalidMessages',
+          'invalid-messages',
           formatMessage('invalidMessages', this.#messages),
         );
       }
@@ -307,7 +294,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     const focusedRowId = active?.closest<HTMLElement>('[data-row-id]')?.dataset.rowId;
     const focusKey =
       active?.dataset.focusKey ??
-      active?.closest<HTMLElement>('.legend-item')?.querySelector<HTMLElement>('[data-focus-key]')?.dataset.focusKey ??
+      active?.closest<HTMLElement>('.a11y-segmented-bar-chart__legend-item')?.querySelector<HTMLElement>('[data-focus-key]')?.dataset.focusKey ??
       (active?.closest('dialog') ? 'data' : undefined);
     this.#card?.destroy();
     if (!wasOpen) {
@@ -327,6 +314,13 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
             headingLevel: Number(this.getAttribute('heading-level')) as
               1 | 2 | 3 | 4 | 5 | 6,
           }
+        : {}),
+      // A valid attribute takes precedence over config; invalid values fall through to config.
+      ...(DATA_VIEW_VALUES.includes(this.getAttribute('data-view') ?? '')
+        ? { dataView: this.getAttribute('data-view') as 'dialog' | 'inline' | 'none' }
+        : {}),
+      ...(PERCENT_SCALE_VALUES.includes(this.getAttribute('percent-scale') ?? '')
+        ? { percentScale: this.getAttribute('percent-scale') as 'whole' | 'fraction' }
         : {}),
     });
     const t = (key: MessageKey) => formatMessage(key, this.#messages);
@@ -350,7 +344,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     for (const name of this.#themeProperties) this.style.removeProperty(name);
     this.#themeProperties.clear();
     const wrap = el('section');
-    wrap.className = `chart ${c.presentation}`;
+    wrap.className = `a11y-segmented-bar-chart__chart a11y-segmented-bar-chart__${c.presentation}`;
     for (const [key, value] of Object.entries(this.#theme)) {
       if (key !== 'segments' && typeof value === 'string') {
         const cssName = key.replace(
@@ -365,7 +359,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     root.append(wrap);
     const heading = el(`h${c.headingLevel}` as 'h2');
     heading.tabIndex = -1;
-    heading.className = 'title';
+    heading.className = 'a11y-segmented-bar-chart__title';
     let safeHref = '';
     try {
       const url = new URL(this.href, document.baseURI);
@@ -381,7 +375,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
         !c.showDetails &&
         c.dataView !== 'inline'
       )
-        a.className = 'card-link';
+        a.className = 'a11y-segmented-bar-chart__card-link';
       a.append(' →');
       heading.append(a);
     } else heading.textContent = this.chartTitle || t('title');
@@ -393,11 +387,11 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     }
     if (this.subtitle) {
       const subtitle = el('p', this.subtitle);
-      subtitle.className = 'subtitle';
+      subtitle.className = 'a11y-segmented-bar-chart__subtitle';
       wrap.append(subtitle);
     }
     const toolbar = el('div');
-    toolbar.className = 'toolbar';
+    toolbar.className = 'a11y-segmented-bar-chart__toolbar';
     wrap.append(toolbar);
     if (this.filtered) wrap.append(el('p', t('filtered')));
     if (this.suppressed) wrap.append(el('p', t('suppressed')));
@@ -431,23 +425,22 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
         bubbles: true, detail: { data: this.data, model: null }
       }));
       this.#dirtyData = false;
-      this.#dirtyDisplay = false;
       return;
     }
     if (!model.rows.length && !c.showSummary) wrap.append(el('p', t('empty')));
     if (c.showSummary && model.summary) {
       const summary = el('p', model.summary);
-      summary.className = 'summary';
+      summary.className = 'a11y-segmented-bar-chart__summary';
       wrap.append(summary);
     }
     const visual = el('div');
-    visual.className = 'visual';
+    visual.className = 'a11y-segmented-bar-chart__visual';
     wrap.append(visual);
     const breakdown = el('div');
-    breakdown.className = 'breakdown';
+    breakdown.className = 'a11y-segmented-bar-chart__breakdown';
     if (c.showTotal) {
       const total = el('p');
-      total.className = 'total';
+      total.className = 'a11y-segmented-bar-chart__total';
       const highlighted =
         model.rows.find((row) => row.id === c.highlightedId) ??
         (c.mode === 'comparison' ? model.rows[0] : undefined);
@@ -473,14 +466,14 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     const indexFor = (id: string) =>
       model.rows.findIndex((row) => row.id === id) % 6;
     const bar = el('div');
-    bar.className = 'bar';
+    bar.className = 'a11y-segmented-bar-chart__bar';
     bar.setAttribute('aria-hidden', 'true');
     const segments = new Map<object, HTMLElement>();
     for (const display of model.displaySegments) {
       const row = display.kind === 'category' ? display.row : display;
       if (row.ratio <= 0) continue;
       const segment = el('span');
-      segment.className = 'segment';
+      segment.className = 'a11y-segmented-bar-chart__segment';
       segment.style.width = `${row.ratio * 100}%`;
       if (display.kind === 'other') segment.dataset.other = '';
       else segment.dataset.index = String(indexFor(display.row.id));
@@ -491,27 +484,28 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
         segment.dataset.pattern = theme.pattern;
       if (theme?.patternColor && CSS.supports('color', theme.patternColor))
         segment.style.setProperty('--pattern-color', theme.patternColor);
-      if (display.kind === 'category' && display.row.id === c.highlightedId) segment.classList.add('highlighted');
+      if (display.kind === 'category' && display.row.id === c.highlightedId) segment.classList.add('a11y-segmented-bar-chart__highlighted');
       bar.append(segment);
       segments.set(display, segment);
     }
     breakdown.append(bar);
     if (model.warning) breakdown.append(el('p', model.warning));
     const legend = el('ul');
-    legend.className = 'legend';
+    legend.className = 'a11y-segmented-bar-chart__legend';
+    const detailTriggers: HTMLButtonElement[] = [];
     this.#card = new FloatingCardController({
       previewText: t('detailsPreview'),
       pinnedText: t('detailsPinned'),
-      classNames: { above: 'above', inFlow: 'in-flow' },
+      classNames: { above: 'a11y-segmented-bar-chart__above', inFlow: SEGMENTED_IN_FLOW_CLASS },
     });
     for (const [index, display] of model.displaySegments.entries()) {
       const row = display.kind === 'category' ? display.row : display;
       const li = el('li');
-      li.className = 'legend-item';
+      li.className = 'a11y-segmented-bar-chart__legend-item';
       if (display.kind === 'other') li.dataset.groupMembers = JSON.stringify(display.members.map(member => member.id));
       else li.dataset.rowId = display.row.id;
       const swatch = el('span');
-      swatch.className = 'swatch';
+      swatch.className = 'a11y-segmented-bar-chart__swatch';
       swatch.setAttribute('aria-hidden', 'true');
       if (display.kind === 'other') swatch.dataset.other = '';
       else swatch.dataset.index = String(indexFor(display.row.id));
@@ -531,7 +525,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
         button.setAttribute('aria-expanded', 'false');
         button.setAttribute('aria-pressed', 'false');
         const card = el('div');
-        card.className = 'card';
+        card.className = 'a11y-segmented-bar-chart__card';
         card.id = `segmented-detail-${this.#id}-${index}`;
         button.setAttribute('aria-controls', card.id);
         card.append(el('strong', row.label));
@@ -541,7 +535,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
           card.append(el('p', `${t('percentageHeader')}: ${row.percentageText}`));
         if (display.kind === 'other') {
           const members = el('ul');
-          members.className = 'group-members';
+          members.className = 'a11y-segmented-bar-chart__group-members';
           for (const member of display.members) {
             const text = `${member.label}${c.showCounts || (member.status !== 'reported' && (!c.showPercentages || member.valueText !== member.percentageText)) ? `: ${member.valueText}` : ''}${c.showPercentages ? ` (${member.percentageText})` : ''}`;
             const item = el('li', text);
@@ -560,9 +554,22 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
           card.append(definition);
         }
         const status = el('p');
-        status.className = 'status';
+        status.className = 'a11y-segmented-bar-chart__status';
         card.append(status);
         li.append(button, card);
+        detailTriggers.push(button);
+        button.addEventListener('keydown', (event) => {
+          if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+          const currentIndex = detailTriggers.indexOf(button);
+          const destination = event.key === 'ArrowDown' || event.key === 'ArrowRight' ? currentIndex + 1
+            : event.key === 'ArrowUp' || event.key === 'ArrowLeft' ? currentIndex - 1
+              : event.key === 'Home' ? 0
+                : event.key === 'End' ? detailTriggers.length - 1
+                  : currentIndex;
+          if (destination === currentIndex || destination < 0 || destination >= detailTriggers.length) return;
+          event.preventDefault();
+          detailTriggers[destination]?.focus();
+        });
         let anchor: HTMLElement = button;
         const entry = { root: li, card, trigger: button, status,
           anchor: () => anchor.getBoundingClientRect(),
@@ -702,7 +709,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     body.append(tr);
     table.append(body);
     const dataContent = el('div');
-    dataContent.className = 'data-content';
+    dataContent.className = 'a11y-segmented-bar-chart__data-content';
     for (const [label, authored] of [
       [t('contextLabel'), this.#context],
       [t('explanationLabel'), this.#explanation],
@@ -715,66 +722,61 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
         dataContent.append(section);
       }
     }
-    dataContent.append(table);
-    if (c.showExport && c.tableVisibility !== 'hidden') {
-      const tools = el('div');
-      tools.className = 'data-tools';
-      dataContent.append(tools);
-      for (const kind of ['csv', 'xlsx'] as const) {
-        const b = el('button', t(kind === 'csv' ? 'exportCsv' : 'exportXlsx'));
-        b.type = 'button';
-        b.dataset.focusKey = `export:${kind}`;
-        b.addEventListener('click', () => {
-          const headers = {
-            chartTitle: this.chartTitle,
-            messages: this.#messages,
-            locale: c.locale,
-            contextText: safeHtmlToText(this.#context),
-            explanationText: safeHtmlToText(this.#explanation),
-            dataNoteText: safeHtmlToText(this.#dataNote),
-            countHeader: this.#valueLabel || t('countHeader'),
-            totalHeader: this.#totalLabel || t('total'),
-            categoryHeader: t('categoryHeader'),
-            percentageHeader: t('percentageHeader'),
-          };
-          const contents =
-            kind === 'csv'
-              ? buildSegmentedBarCsv(model, headers)
-              : buildSegmentedBarXlsx(model, headers);
-          const url = URL.createObjectURL(
-            new Blob([contents], {
-              type:
-                kind === 'csv'
-                  ? 'text/csv;charset=utf-8'
-                  : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            }),
-          );
-          const a = el('a');
-          a.href = url;
-          a.download = `chart.${kind}`;
-          a.click();
-          setTimeout(() => URL.revokeObjectURL(url), 0);
-        });
-        tools.append(b);
-      }
+    if (this.suppressed) {
+      const suppressionNote = el('p', t('suppressionNote'));
+      suppressionNote.className = 'a11y-segmented-bar-chart__suppression-note';
+      dataContent.append(suppressionNote);
     }
-    if (c.tableVisibility !== 'hidden') {
+    dataContent.append(table);
+    if (c.showExport && c.dataView !== 'none') {
+      const tools = el('div');
+      tools.className = 'a11y-segmented-bar-chart__data-tools';
+      dataContent.append(tools);
+      const b = el('button', t('exportCsv'));
+      b.type = 'button';
+      b.dataset.focusKey = 'export:csv';
+      b.addEventListener('click', () => {
+        const contents = buildSegmentedBarCsv(model, {
+          chartTitle: this.chartTitle,
+          messages: this.#messages,
+          locale: c.locale,
+          contextText: safeHtmlToText(this.#context),
+          explanationText: safeHtmlToText(this.#explanation),
+          dataNoteText: safeHtmlToText(this.#dataNote),
+          countHeader: this.#valueLabel || t('countHeader'),
+          totalHeader: this.#totalLabel || t('total'),
+          categoryHeader: t('categoryHeader'),
+          percentageHeader: t('percentageHeader'),
+        });
+        // The byte-order mark lets spreadsheet apps detect UTF-8 when the file is opened.
+        const url = URL.createObjectURL(
+          new Blob([CSV_BYTE_ORDER_MARK + contents], { type: 'text/csv;charset=utf-8' }),
+        );
+        const a = el('a');
+        a.href = url;
+        a.download = 'chart.csv';
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 0);
+      });
+      tools.append(b);
+    }
+    if (c.dataView !== 'none') {
       const hiddenTable = table.cloneNode(true) as HTMLTableElement;
       const hiddenTableContainer = el('div');
-      hiddenTableContainer.className = 'sr-only';
+      hiddenTableContainer.className = 'a11y-segmented-bar-chart__visually-hidden';
       hiddenTableContainer.append(hiddenTable);
       wrap.append(hiddenTableContainer);
     }
-    if (c.tableVisibility === 'hidden' || c.dataView !== 'inline') {
+    if (c.dataView !== 'inline') {
       if (this.#inlineDataOpen) this.dispatchEvent(new CustomEvent('a11y-segmented-bar-chart-data-view-change', {
         bubbles: true, detail: { open: false, dataView: 'inline' }
       }));
       this.#inlineDataOpen = false;
     }
-    if (c.tableVisibility !== 'hidden') {
+    if (c.dataView !== 'none') {
       if (c.dataView === 'inline') {
         const details = el('details');
-        details.className = 'inline-data';
+        details.className = 'a11y-segmented-bar-chart__inline-data';
         details.open = this.#inlineDataOpen;
         const summary = el('summary', t('dataInlineSummary'));
         summary.dataset.focusKey = 'inline-summary';
@@ -804,9 +806,9 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
             }),
           );
           const close =
-            this.#dialog.querySelector<HTMLElement>('.close-dialog');
+            this.#dialog.querySelector<HTMLElement>('.a11y-segmented-bar-chart__close-dialog');
           if (close) close.textContent = t('close');
-          this.#dialog.querySelector('.data-content')?.replaceWith(dataContent);
+          this.#dialog.querySelector('.a11y-segmented-bar-chart__data-content')?.replaceWith(dataContent);
         } else {
           this.#dialogLayer.replaceChildren();
           const dialog = el('dialog');
@@ -818,7 +820,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
           );
           const close = el('button', t('close'));
           close.type = 'button';
-          close.className = 'close-dialog';
+          close.className = 'a11y-segmented-bar-chart__close-dialog';
           dialog.append(close, dataContent);
           this.#dialogLayer.append(dialog);
           this.#dialog = dialog;
@@ -830,7 +832,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
               this.dispatchEvent(
                 new CustomEvent('a11y-segmented-bar-chart-data-view-change', {
                   bubbles: true,
-                  detail: { open, dataView: c.dataView },
+                  detail: { open, dataView: 'dialog' },
                 }),
               ),
           });
@@ -839,27 +841,22 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
         }
         opener.addEventListener('click', () => {
           const result = this.#modal?.open(
-            this.#dialog?.querySelector<HTMLButtonElement>('.close-dialog') ??
+            this.#dialog?.querySelector<HTMLButtonElement>('.a11y-segmented-bar-chart__close-dialog') ??
               undefined,
           );
           if (result === 'unsupported' || result === 'failed') {
             const code = result === 'unsupported' ? 'dialogUnsupported' : 'dialogUnavailable';
             this.#dispatchError(code, t(code));
-            wrap.querySelector('.modal-error')?.remove();
+            wrap.querySelector('.a11y-segmented-bar-chart__modal-error')?.remove();
             const alert = el('p', t(code));
-            alert.className = 'modal-error';
+            alert.className = 'a11y-segmented-bar-chart__modal-error';
             alert.setAttribute('role', 'alert');
             toolbar.after(alert);
           }
         });
       }
     }
-    if (
-      this.#modal?.isOpen &&
-      (c.tableVisibility === 'hidden' ||
-        c.dataView !== 'dialog' ||
-        !c.showActions)
-    ) {
+    if (this.#modal?.isOpen && (c.dataView !== 'dialog' || !c.showActions)) {
       this.#modal.close(false);
       this.#modal.destroy();
       this.#modal = undefined;
@@ -868,23 +865,14 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
     }
     this.#resetExplanation = false;
     this.#resetGlossary = false;
-    const cardLink = wrap.querySelector<HTMLAnchorElement>('.card-link');
+    const cardLink = wrap.querySelector<HTMLAnchorElement>('.a11y-segmented-bar-chart__card-link');
     if (
       cardLink &&
       Array.from(wrap.querySelectorAll('a[href]')).some(
         (link) => link !== cardLink,
       )
     )
-      cardLink.classList.remove('card-link');
-    const displayDetail = {
-      filtered: this.filtered, suppressed: this.suppressed,
-      chartTitle: this.chartTitle, subtitle: this.subtitle,
-      context: this.context, explanation: this.explanation, dataNote: this.dataNote,
-      valueLabel: this.valueLabel, totalLabel: this.totalLabel, href: this.href,
-      theme: this.theme, config: { ...c }, messages: this.messages,
-      ...(this.#formatValue ? { formatValue: this.#formatValue } : {})
-    };
-    const displaySignature = JSON.stringify(displayDetail);
+      cardLink.classList.remove('a11y-segmented-bar-chart__card-link');
     const wasRendered = this.#hasRendered;
     if (!this.#hasRendered) {
       this.#hasRendered = true;
@@ -902,16 +890,7 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
             detail: { data: this.data, model: structuredClone(model) },
           }),
         );
-      if (displaySignature !== this.#lastDisplaySignature || this.#formatValue !== this.#lastDisplayFormatter)
-        this.dispatchEvent(
-          new CustomEvent('a11y-segmented-bar-chart-display-change', {
-            bubbles: true,
-            detail: displayDetail,
-          }),
-        );
     }
-    this.#lastDisplaySignature = displaySignature;
-    this.#lastDisplayFormatter = this.#formatValue;
     if (this.#dirtyData && c.announceChanges && wasRendered) {
       this.#live.textContent = '';
       queueMicrotask(() => {
@@ -920,7 +899,6 @@ export class A11ySegmentedBarChartElement extends HTMLElement {
       });
     }
     this.#dirtyData = false;
-    this.#dirtyDisplay = false;
     if (focusKey && !(wasOpen && this.#modal?.isOpen && active?.isConnected)) {
       const found = Array.from(
         this.querySelectorAll<HTMLElement>('[data-focus-key]'),

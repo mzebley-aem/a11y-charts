@@ -131,7 +131,7 @@ function applyReportChartControls(): void {
 }
 
 if (chart) {
-  chart.addEventListener('a11y-line-chart-display-change', () => {
+  chart.addEventListener('a11y-line-chart-settings-change', () => {
     queueMicrotask(applyReportChartControls);
   });
 
@@ -145,7 +145,6 @@ if (chart) {
     headingLevel: 3,
     initialZoomY: true,
     stepperVisibility: 'auto',
-    tableVisibility: 'screen-reader',
     wrapAround: true
   };
 

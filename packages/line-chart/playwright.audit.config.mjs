@@ -3,7 +3,8 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './browser-tests',
   outputDir: `test-results/${process.env.PLAYWRIGHT_BROWSER || 'chromium'}`,
-  testIgnore: ['artifacts.spec.ts', 'grouped-parity.spec.ts', 'theme-tokens.spec.ts'],
+  // These specs need other servers and run through their own configs.
+  testIgnore: ['artifacts.spec.ts', 'grouped-parity.spec.ts', 'theme-tokens.spec.ts', 'segmented.spec.ts', 'dispute-resolution.spec.ts', 'spp-apr.spec.ts'],
   fullyParallel: false,
   workers: 1,
   reporter: 'list',

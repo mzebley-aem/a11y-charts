@@ -105,7 +105,7 @@ export function mountSettings(
     barChart.config = { ...barChart.config, [key]: value };
     emitChange();
   };
-  const onSharedSelect = (key: 'dataView' | 'tableVisibility') => (value: string) => {
+  const onSharedSelect = (key: 'dataView') => (value: string) => {
     if (lineChart) applyLine(key, value as A11yLineChartConfig[typeof key]);
     else applyBar(key, value as A11yBarChartConfig[typeof key]);
   };
@@ -122,12 +122,9 @@ export function mountSettings(
     controls.set(key, control);
   };
 
-  select(common, 'dataView', 'Data view', 'Choose whether complete data opens in a modal dialog or an inline disclosure.', [
-    ['dialog', 'Dialog'], ['inline', 'Inline']
+  select(common, 'dataView', 'Data view', 'Choose whether complete data opens in a modal dialog, an inline disclosure, or is omitted.', [
+    ['dialog', 'Dialog'], ['inline', 'Inline'], ['none', 'None']
   ], String(resolvedConfig().dataView), onSharedSelect('dataView'));
-  select(common, 'tableVisibility', 'Data table', 'Choose whether the accessible data table is visible, screen-reader only, or omitted.', [
-    ['visible', 'Visible'], ['screen-reader', 'Screen-reader only'], ['hidden', 'Hidden']
-  ], String(resolvedConfig().tableVisibility), onSharedSelect('tableVisibility'));
   checkbox(common, 'showSummary', 'Show summary', 'Show the chart’s concise text summary.', resolvedConfig().showSummary === true, onSharedCheck('showSummary'));
   checkbox(common, 'showExplanation', 'Show explanation', 'Show the expandable explanation control and content.', resolvedConfig().showExplanation === true, onSharedCheck('showExplanation'));
   checkbox(common, 'showGlossary', 'Show glossary', 'Show category definitions when the example includes them.', resolvedConfig().showGlossary === true, onSharedCheck('showGlossary'));

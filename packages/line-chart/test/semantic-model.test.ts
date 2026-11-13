@@ -35,51 +35,42 @@ function model(
   });
 }
 
+const englishModel = (data: A11yLineChartDatum[], suppressed = false) => buildSemanticModel({
+  config: resolveConfig({ valuePreset: 'number' }), data, suppressed,
+  formatDifference: ({ value }) => String(value),
+  formatValue: (value) => value === null ? 'Missing' : String(value),
+  formatXValue: String
+});
+
 describe('buildSemanticModel', () => {
   it('uses English suppression defaults and identifies protected periods without mislabeling later missing values', () => {
-    const unreported = model([
-      { x: 2024, actual: null, target: 80 },
-      { x: 2025, actual: 79, actualSuppressed: true, target: 80 },
-      { x: 2026, actual: null, target: 80 }
-    ], { baseline: { x: 2024, value: 70 } });
-    expect(unreported.points[1]?.actualFormatted).toBe('Suppressed');
-    expect(unreported.points[1]?.narrative).toContain('actual value suppressed');
-    expect(unreported.summary.primary).toContain('protected for 2025');
-    expect(unreported.summary.primary).not.toContain('2026');
-    expect(unreported.summary.text).toContain('Baseline is 2024');
-    const reported = model([
+    const unreported = englishModel([
       { x: 2024, actual: 70, target: 80 },
-      { x: 2025, actual: 77, actualSuppressed: true, target: 80 },
-      { x: 2026, actual: 79, actualSuppressed: true, target: 80 }
-    ]);
-    expect(reported.summary.text).toContain('latest Actual value for 2026 is suppressed');
-    expect(reported.summary.text).not.toContain('latest Actual value for 2025');
+      { x: 2025, actual: 0, target: 80 },
+      { x: 2026, actual: null, target: 80 }
+    ], true);
+    expect(unreported.points[1]).toMatchObject({ actualValue: null, actualSuppressed: true, actualFormatted: 'Suppressed', outcome: 'unavailable' });
+    expect(unreported.points[1]?.narrative).toContain('actual value suppressed');
+    expect(unreported.points[2]).toMatchObject({ actualValue: null, actualSuppressed: false, actualFormatted: 'Missing' });
+    expect(unreported.points[2]?.narrative).not.toContain('suppressed');
+    expect(unreported.summary.text).toContain('latest Actual value for 2025 is suppressed');
+
+    const allProtected = englishModel([{ x: 2025, actual: 0, target: 80 }], true);
+    expect(allProtected.summary.primary).toBe('Reported values are protected for 2025; the target outcome cannot be determined.');
   });
 
-  it('keeps suppressed values distinct from missing and preserves reported zero', () => {
-    const formatter = vi.fn((value: number | null) => value === null ? 'Missing' : `${value}`);
-    const config = resolveConfig({ valuePreset: 'number' });
-    const result = buildSemanticModel({
-      config,
-      data: [
-        { x: 'protected', actual: 71, actualSuppressed: true, target: 80 },
-        { x: 'missing', actual: null, target: null },
-        { x: 'zero', actual: 0, target: 0 },
-        { x: 'target protected', actual: 2, target: 90, targetSuppressed: true }
-      ],
-      formatDifference: ({ value }) => `${value}`,
-      formatValue: formatter,
-      formatXValue: String,
-      message: (key) => key === 'suppressed' ? 'Protected' : key === 'outcomeUnavailable' ? 'Unavailable' : key
-    });
-    expect(result.points[0]).toMatchObject({ actualValue: null, actualSuppressed: true, actualFormatted: 'Protected', outcome: 'unavailable', targetDifference: null });
-    expect(result.points[0]?.narrative).toContain('actualSuppressed');
-    expect(result.points[1]).toMatchObject({ actualValue: null, actualSuppressed: false, actualFormatted: 'Missing' });
-    expect(result.points[2]).toMatchObject({ actualValue: 0, actualSuppressed: false, outcome: 'met-equal' });
-    expect(result.points[3]).toMatchObject({ targetValue: null, targetSuppressed: true, targetFormatted: 'Protected', outcome: 'unavailable' });
-    expect(formatter).not.toHaveBeenCalledWith(71, 'actual', 'protected');
-    expect(formatter).not.toHaveBeenCalledWith(90, 'target', 'target protected');
-    expect(result.summary.text).not.toContain('No actual data has been reported after protected');
+  it('keeps suppressed zeros distinct from missing, keeps target zero as a value, and reports zero when the flag is off', () => {
+    const protectedModel = englishModel([
+      { x: 'protected', actual: 0, target: 80 },
+      { x: 'missing', actual: null, target: 80 },
+      { x: 'target zero', actual: 2, target: 0 }
+    ], true);
+    expect(protectedModel.points[0]).toMatchObject({ actualValue: null, actualSuppressed: true, actualFormatted: 'Suppressed', outcome: 'unavailable', targetDifference: null });
+    expect(protectedModel.points[1]).toMatchObject({ actualValue: null, actualSuppressed: false, actualFormatted: 'Missing' });
+    expect(protectedModel.points[2]).toMatchObject({ actualValue: 2, actualSuppressed: false, targetValue: 0, targetFormatted: '0' });
+
+    const plain = englishModel([{ x: 'reported zero', actual: 0, target: 0 }]);
+    expect(plain.points[0]).toMatchObject({ actualValue: 0, actualSuppressed: false, actualFormatted: '0', outcome: 'met-equal' });
   });
   it('evaluates inclusive ranges independently of the scalar positive direction', () => {
     for (const positiveDirection of ['above', 'below'] as const) {

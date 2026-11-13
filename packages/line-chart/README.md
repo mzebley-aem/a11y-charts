@@ -33,10 +33,10 @@ Current foundation coverage:
 - an independently configured baseline reference with one starting marker, a
   subdued horizontal reference line, a direct label, chart-level accessible
   description, summary, table metadata, and data-fit Y-axis inclusion;
-- the full theme-token surface, direct legacy sizing/axis properties, `a11y`/`showTable` compatibility, and legacy `{ year }` data acceptance;
+- the full theme-token surface, direct legacy sizing/axis properties, the `a11y` input alias, and legacy `{ year }` data acceptance;
 - safe default tooltip rendering, a DOM renderer hook, deprecated string-tooltip compatibility, and a high-contrast target-series default.
 - optional rich context/data notes, Explain and glossary disclosures, CSV
-  downloads, and explicit per-value suppression with a filtered indicator.
+  downloads, a filtered indicator, and a chart-wide suppression flag.
 
 Open `demo/index.html` directly for the single-file fixture. Its CSS and
 JavaScript are embedded so browsers do not make cross-origin `file://`
@@ -44,6 +44,10 @@ subresource requests. Regenerate it with `npm run demo:build` after component
 or fixture changes. For source-module development, run `npm run dev` and open
 `/dev.html`. Both paths consume the custom element without Angular or another
 framework. The fixture mirrors the two Angular reference charts.
+
+The `locale` property reflects the `locale` attribute. Reading it returns the
+resolved BCP 47 locale used for formatting (`en-US` when none is set); assigning
+a non-empty string sets the attribute, and an empty value removes it.
 
 Complex inputs are assigned as properties:
 
@@ -73,36 +77,44 @@ period. Invalid baselines emit `a11y-line-chart-error` with code
 Consumers may configure `actualSeriesLabel`, `targetSeriesLabel`,
 `baselineSeriesLabel`, `contextNote`, `positiveDirection`, and the existing
 number/locale settings. `formatValue`, `formatDifference`, and `formatXValue`
-provide structured formatting hooks with canonical fallbacks. The component
+provide structured formatting hooks with canonical fallbacks. `formatValue` is
+never called for a missing value; the chart shows `describeMissingAs` for those.
+Its `context.value` is always a number, in the author's value scale (see
+[Value scale and attributes](#value-scale-and-attributes)). The component
 retains the core outcome, comparison, missing-data, and historical language so
 the summary, tooltip, keyboard narrative, data view, and semantic event agree.
 
 ### Data views and localization
 
-`dataView` accepts `dialog` (the default) or `inline`. The default view adds a
-visible **Data** action that opens a native modal dialog with a close button,
-Escape handling, focus restoration, and a semantic table. `inline` presents the
-table in a native disclosure. `tableVisibility: 'visible'` uses the configured
-presentation; `screen-reader` retains the visually hidden semantic table and
-offers a visible Data action in dialog mode or a native inline disclosure in
-inline mode; `hidden` (including legacy
-`showTable: false` when no explicit visibility is supplied) suppresses the
-table and its action. An explicit `tableVisibility` takes precedence over
-`showTable`.
+`dataView` accepts `dialog` (the default), `inline`, or `none`. A `data-view`
+attribute with one of those values takes precedence over `config.dataView`; an
+invalid attribute value is ignored.
+
+- `dialog` adds a visible **Data** action that opens a native modal dialog with
+  a close button, Escape handling, focus restoration, and a semantic table.
+- `inline` presents the same table in a native disclosure under the chart.
+- `none` removes the data table, the Data action, the inline disclosure, and the
+  CSV export. Switching to `none` while a view is open emits
+  `a11y-line-chart-data-view-change` with `open: false` for the view that was open.
+
+In `dialog` and `inline` a visually hidden semantic table is always present for
+screen readers. `dataView: 'none'` is the only way to remove it.
 
 `showActions: false` hides the chart action strip, including the dialog opener;
 it does not hide the existing display settings (`showControls`) or the inline
 data disclosure. CSV remains available inside an inline view unless
 `showExport: false` is supplied. Hidden background table copies contain no
-interactive links or export buttons; explicit data views present a readable
-table even with `tableVisibility: 'screen-reader'`.
+interactive links or export buttons; explicit data views always present a
+readable table.
 
 The exported `ENGLISH_LINE_CHART_MESSAGES` object and `A11yLineChartMessageKey`
 type are the canonical English dictionary and complete key list. Set a partial
 override with the `messages` property or JSON `messages` attribute. Missing or
 invalid property entries use English defaults. The attribute accepts only
 known keys and string values; malformed JSON renders a localized alert using
-the last valid dictionary (or English defaults if none was supplied). Runtime changes update the chart's visible and
+the last valid dictionary (or English defaults if none was supplied) and emits
+`a11y-line-chart-error` with code `invalid-messages` and the localized
+`invalidMessages` text. Runtime changes update the chart's visible and
 assistive text. Explicit series labels and value/date/difference formatters
 remain higher-priority consumer choices.
 
@@ -157,11 +169,11 @@ differencePercent.other, tooltipHeader, tooltipActual, tooltipTarget,
 tooltipDifferenceEqual, tooltipDifference, tooltipDifferenceText, rangeSeparator,
 tooltipRange, tooltipAria, relationAbove, relationBelow, relationEqual,
 relationWithin, relationIncomplete, baselineDifference, lower, upper,
-exportCsv, exportUnavailable, explain, glossary, filteredIndicator,
+exportCsv, exportUnavailable, explain, hideExplanation, glossary, hideGlossary,
+filteredIndicator,
 suppressionIndicator, explanationHeading, glossaryHeading, periodExplanations,
-suppressed, contextLabel, dataNoteLabel, actualSuppressed, targetSuppressed,
-summaryAllSuppressed, summaryLatestSuppressed, summaryTargetSuppressed,
-validationSuppressionFlag, narrativeOutcome
+suppressed, contextLabel, dataNoteLabel, actualSuppressed, suppressionNote,
+summaryAllSuppressed, summaryLatestSuppressed, narrativeOutcome
 ```
 
 For live data replacement, the chart, summary, table, and event source update
@@ -176,6 +188,31 @@ omits them. Endpoint buttons are disabled unless `wrapAround` is enabled.
 
 The compatibility setter also accepts Angular-shaped rows such as
 `{ year: 2024, actual: 72.5, target: 80 }`. New consumers should use `x`.
+
+### Value scale and attributes
+
+Value settings can be supplied in `config` or as attributes. A valid attribute
+takes precedence over the matching config value; an invalid attribute is
+ignored.
+
+| Attribute | Config | Values | Default |
+| --- | --- | --- | --- |
+| `value-preset` | `valuePreset` | `percent`, `number` | `percent` |
+| `percent-scale` | `percentScale` | `whole`, `fraction` | `whole` |
+| `data-view` | `dataView` | `dialog`, `inline`, `none` | `dialog` |
+
+`percentScale` has an effect only when `valuePreset` is `percent`. With `whole`
+(the default) the author supplies `45` for 45%. With `fraction` the author
+supplies `0.45` for 45%. The scale applies to `actual`, to `target` (a number or
+a `{ min, max }` range), and to `baseline.value`.
+
+The chart converts fractions to whole percentage points internally. The
+`data` and `baseline` getters, `formatValue` context values, and the
+`actual` and `target` fields of `a11y-line-chart-point-change` stay in the
+author's scale. The data-change `data` is also in the author's scale. The
+semantic model, the difference values, and `yAxisBaseMin`/`yAxisBaseMax` are in
+whole percentage points in both scales. Changing `percent-scale` re-renders the
+same stored values under the new scale.
 
 ### Target ranges
 
@@ -212,12 +249,12 @@ point-change events preserve the range object. The exported
 
 Component-level events bubble: `a11y-line-chart-ready`,
 `a11y-line-chart-error`, `a11y-line-chart-point-change`, and
-`a11y-line-chart-display-change`. `a11y-line-chart-config-change` remains an
-alias for display-control changes during the pre-release period.
+`a11y-line-chart-settings-change`.
 
 `a11y-line-chart-point-change` includes the canonical announcement, outcome,
 outcome label, and structured target/baseline differences in addition to the
-selected period and source values.
+selected period and source values. Its `actual` and `target` are in the
+author's value scale; differences are in whole percentage points.
 
 ### Shared content and visibility options
 
@@ -270,6 +307,9 @@ used.
 ### CSV and source-state events
 
 `showExport` controls the localized CSV action inside an explicit data view.
+Chart downloads start with a UTF-8 byte-order mark so spreadsheet applications
+detect the encoding. `buildLineCsv` returns plain text without it; server-side
+callers that want the same behaviour should prepend a U+FEFF themselves.
 Downloads contain the currently formatted period, actual, target/range,
 outcome and optional baseline-difference columns. Authored context and data
 notes precede the column header as plain-text metadata rows when supplied.
@@ -280,41 +320,63 @@ applications supplying their own download action. XLSX remains deferred.
 The following additional events bubble:
 
 - `a11y-line-chart-data-change`: coalesced source replacements after the
-  initial render, with defensive `data` and canonical `model` copies. The model
-  is null for unavailable data.
+  initial render, with a defensive `data` copy in the author's scale and a
+  canonical `model` copy in whole percentage points. The model is null for
+  unavailable data.
 - `a11y-line-chart-data-view-change`: `{ open, dataView }` for dialog/inline
-  open and close changes, including Escape and visibility/mode transitions.
+  open and close changes, including Escape and mode transitions to `none`.
 - `a11y-line-chart-disclosure-change`: `{ disclosure, expanded }` for user
-  changes to `explanation` or `glossary`.
+  changes to `explanation` or `glossary`. The Explain and Glossary buttons
+  label their action as `explain`/`glossary` when collapsed and as
+  `hideExplanation`/`hideGlossary` when expanded.
 
-The existing point-change event remains the period-navigation signal; existing
-config/display-change events continue to describe display-control and legend
-actions.
+The existing point-change event remains the period-navigation signal. The
+settings-change event describes reader-driven setting changes (see below).
 
-### Filtered and explicitly suppressed values
+### Filtered and suppressed values
 
 `chart.filtered = true` (or the presence of the `filtered` attribute) adds a
 localized indicator. The host still owns filtering and supplies the current
 dataset.
 
-Unlike count-based bar suppression, line measures never infer suppression from
-zero. Protect individual series values explicitly:
+Suppression is one chart-level flag: `chart.suppressed = true` or the
+`suppressed` attribute. The host does the protecting. It replaces each protected
+actual value with `0` upstream and sets the flag; the chart never decides what is
+suppressed and has no per-point suppression inputs.
+
+```html
+<a11y-line-chart suppressed></a11y-line-chart>
+```
 
 ```ts
+chart.suppressed = true;
 chart.data = [
-  { x: 2024, actual: 0, target: 0 }, // reported zero, still comparable
-  { x: 2025, actual: null, actualSuppressed: true, target: 80 },
-  { x: 2026, actual: 72, target: null, targetSuppressed: true }
+  { x: 2024, actual: 70, target: 80 },
+  { x: 2025, actual: 0, target: 80 },   // protected value, sent by the host as 0
+  { x: 2026, actual: null, target: 80 } // not reported
 ];
 ```
 
-A suppressed series shows the translated suppression label and has no numeric
-chart point or inferred target outcome. Missing values retain their distinct
-missing label. Periods stay present. Values supplied alongside a true
-suppression flag are normalized to null before models, options, events,
-tooltips, callbacks and CSV are built. The getter returns normalized copies;
-to restore a protected value, the host supplies its current unsuppressed data
-again. Baselines remain optional unsuppressed reference values.
+| Input | Flag off | Flag on |
+| --- | --- | --- |
+| `actual: 0` | Real value: plotted and reported as 0 | Suppressed: no marker or line segment, reads the suppressed label, no target comparison |
+| `actual: null` | Not reported | Not reported (the flag does not affect it) |
+| `target: 0` | Real target value 0 | Real target value 0 (targets are never suppressed) |
+
+With the flag on, a suppressed zero never reaches `formatValue`, tooltip callbacks,
+the data table, CSV, the point-change event (which reports `actual: null` and
+`actualSuppressed: true`), or the axis range. The suppression indicator appears
+near the title, and a suppression note appears above the data table, whenever the
+flag is on, even when no value is zero.
+
+The `data` getter returns the author's data unchanged, including zeros. To restore
+a protected value, the host supplies its current unsuppressed data again.
+Baselines remain optional unsuppressed reference values.
+
+Per-point suppression inputs for actual and target values were removed, and so were
+the target-suppression and suppression-validation messages. The derived
+`actualSuppressed` boolean remains only on semantic points and the point-change
+event.
 
 ## Server helpers and CSV metadata
 
@@ -335,14 +397,21 @@ normalized source rows or baseline. Equivalent assignments emit nothing;
 multiple assignments in the same turn coalesce to the final state. Payloads
 contain copied source data and the current semantic model.
 
-`a11y-line-chart-display-change` also reports programmatic presentation changes
-(title, context, configuration, theme, messages, definitions, and formatters)
-with `source: 'properties'` and a copied presentation payload. Initial rendering
-and equivalent assignments do not emit this event. Existing user controls and
-legend interactions retain their immediate `source: 'controls' | 'legend'`
-configuration payloads. Use `A11yLineChartDisplayChangeDetail` and narrow on
-`source` when consuming the event. The separate `config-change` event remains
-specific to those user controls and legend interactions.
+`a11y-line-chart-settings-change` fires once per setting that a reader changes
+through the chart's own UI: the controls panel (including the Y-axis zoom
+action) and the ECharts legend toggles. Its detail is
+`A11yLineChartSettingsChangeDetail`: `{ setting, value, source }`, where
+`setting` is a key of `A11yLineChartConfig`, `value` is the new value, and
+`source` is `'controls'` or `'legend'`. A legend interaction that changes both
+series emits two events. The event fires after `chart.config` reflects the change.
+
+Host assignments to properties, attributes, `config`, `messages`, or formatters
+never emit this event. Hosts that persist settings should listen for it and
+write the values they need:
+
+```ts
+chart.addEventListener('a11y-line-chart-settings-change', e => save(e.detail.setting, e.detail.value));
+```
 
 Point-change events and formatter/tooltip callback inputs copy mutable Dates
 and interpretation objects. Updating an event payload does not update the

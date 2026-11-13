@@ -1,16 +1,13 @@
-import { encodeCsvCell } from '../../chart-core/src/csv.js';
+import { encodeCsvCell, fractionToWholePercent, resolvePercentScale } from '../../chart-core/src/csv.js';
 import { createFixedDecimalFormatter } from '../../chart-core/src/format.js';
 import { formatTemplate } from '../../chart-core/src/messages.js';
 import { safeHtmlToText } from '../../chart-core/src/content.js';
 import { canonicalLocaleOrDefault } from '../../chart-core/src/validation.js';
-import { buildBarXlsx } from '../../bar-chart/src/xlsx.js';
-import type { A11yBarChartSemanticModel } from '../../bar-chart/src/model.js';
 
 export interface A11ySegmentedBarChartDatum {
   id: string;
   label: string;
   value: number | null;
-  valueSuppressed?: boolean;
   definition?: string;
 }
 
@@ -21,10 +18,8 @@ export interface A11ySegmentedBarChartConfig {
   segmentOrder?: 'value' | 'source' | 'label';
   separateCategoryIds?: string[];
   inferTotal?: boolean;
-  dataView?: 'dialog' | 'inline';
-  tableVisibility?: 'hidden' | 'screen-reader' | 'visible';
-  /** Compatibility alias; tableVisibility takes precedence. */
-  showTable?: boolean;
+  /** 'dialog' opens the complete data in a modal, 'inline' expands it under the chart, 'none' removes data access and exports. */
+  dataView?: 'dialog' | 'inline' | 'none';
   showSummary?: boolean;
   showContext?: boolean;
   showActions?: boolean;
@@ -40,6 +35,8 @@ export interface A11ySegmentedBarChartConfig {
   locale?: string;
   countDecimals?: number;
   percentageDecimals?: number;
+  /** Scale of the percentage passed to formatValue: 'whole' (45.5) or 'fraction' (0.455). */
+  percentScale?: 'whole' | 'fraction';
   headingLevel?: 1 | 2 | 3 | 4 | 5 | 6;
   announceChanges?: boolean;
 }
@@ -119,7 +116,8 @@ export interface SegmentedOptions {
 export const ENGLISH_MESSAGES = {
   title: 'Chart', subtitle: '', filtered: 'Filtered', suppressed: 'Suppressed',
   empty: 'No categories are available.', unavailable: 'Unavailable',
-  missingValue: 'Missing', suppressedValue: 'Suppressed', incompleteValue: 'Incomplete',
+  missingValue: 'Not reported', suppressedValue: 'Suppressed', incompleteValue: 'Incomplete',
+  suppressionNote: 'Some values are suppressed to protect privacy.',
   totalUnavailable: 'Unavailable', total: 'Total', metricOf: 'of {total} {label}',
   invalidData: 'Chart data is invalid. Check the supplied categories and values.',
   invalidMessages: 'The messages setting is not valid JSON. Correct it and try again.',
@@ -147,8 +145,8 @@ export const ENGLISH_MESSAGES = {
   showData: 'View complete data', close: 'Close', explain: 'Explain', hideExplanation: 'Hide explanation',
   glossary: 'Glossary', hideGlossary: 'Hide glossary',
   dataDialogTitle: '{title}: complete data', dataTableCaption: '{title}: complete data', dataInlineSummary: 'View complete data',
-  exportCsv: 'Download CSV', exportXlsx: 'Download Excel',
-  detailsAction: 'Details for {label}', detailsHelp: 'Hover or focus a category for details. Activate to keep details open; press Escape to close.',
+  exportCsv: 'Download CSV',
+  detailsAction: 'Details for {label}', detailsHelp: 'Hover or focus a category for details. Activate to keep details open; press Escape to close. Use the arrow keys, Home and End to move between categories.',
   detailsPreview: 'Preview. Select to keep details open.', detailsPinned: 'Kept open. Select again to close.',
   summaryCategoryValue: '{label}: {value}.', summaryCategoryShare: '{label}: {value} ({percentage}).',
   summaryComparison: '{label}: {value}, equivalent to {percentage} of the reference total.',
@@ -157,6 +155,8 @@ export const ENGLISH_MESSAGES = {
   dialogUnavailable: 'The data dialog could not open. Try again or use the inline data view.',
 
 };
+/** Explicit catalog name for the English segmented-chart message dictionary. */
+export const ENGLISH_SEGMENTED_BAR_CHART_MESSAGES = ENGLISH_MESSAGES;
 export type MessageKey = keyof typeof ENGLISH_MESSAGES;
 export function formatMessage(key: MessageKey, messages?: MessageDictionary, values: Record<string, unknown> = {}): string {
   const override = messages?.[key];
@@ -186,12 +186,11 @@ export function resolveConfig(input?: A11ySegmentedBarChartConfig | null) {
     segmentOrder: c.segmentOrder === 'source' || c.segmentOrder === 'label' ? c.segmentOrder : 'value' as const,
     presentation: c.presentation === 'compact' ? 'compact' as const : 'full' as const,
     ...(typeof c.highlightedId === 'string' && c.highlightedId.trim() ? { highlightedId: c.highlightedId } : {}),
-    dataView: c.dataView === 'inline' ? 'inline' as const : 'dialog' as const,
-    tableVisibility: c.tableVisibility === 'hidden' || c.tableVisibility === 'screen-reader' || c.tableVisibility === 'visible'
-      ? c.tableVisibility : c.showTable === false ? 'hidden' as const : 'visible' as const,
+    dataView: c.dataView === 'inline' || c.dataView === 'none' ? c.dataView : 'dialog' as const,
     locale: canonicalLocaleOrDefault(c.locale, 'en-US'),
     countDecimals: decimals(c.countDecimals, 0),
     percentageDecimals: decimals(c.percentageDecimals, 2),
+    percentScale: resolvePercentScale(c.percentScale, 'whole'),
     headingLevel: (Number.isInteger(c.headingLevel) && c.headingLevel! >= 1 && c.headingLevel! <= 6 ? c.headingLevel! : 2) as 1 | 2 | 3 | 4 | 5 | 6
   };
 }
@@ -211,14 +210,11 @@ export function validateSegmentedBarData(input: unknown): SegmentedValidationRes
     if (typeof item.id !== 'string' || !item.id.trim()) return fail('validationEmptyId');
     if (ids.has(item.id)) return fail('validationDuplicateId', { id: item.id });
     if (typeof item.label !== 'string' || !item.label.trim()) return fail('validationInvalidLabel', { id: item.id });
-    if ((item.valueSuppressed !== undefined && typeof item.valueSuppressed !== 'boolean') ||
-        (item.definition !== undefined && typeof item.definition !== 'string')) return fail('validationInvalidRecord', { position: index + 1 });
-    // Never access an explicitly protected source value, even via an accessor.
-    const value: unknown = item.valueSuppressed === true ? null : item.value;
+    if (item.definition !== undefined && typeof item.definition !== 'string') return fail('validationInvalidRecord', { position: index + 1 });
+    const value: unknown = item.value;
     if (value !== null && (typeof value !== 'number' || !Number.isFinite(value) || value < 0)) return fail('validationInvalidValue', { id: item.id });
     ids.add(item.id);
     data.push({ id: item.id, label: item.label, value: value as number | null,
-      ...(typeof item.valueSuppressed === 'boolean' ? { valueSuppressed: item.valueSuppressed } : {}),
       ...(typeof item.definition === 'string' ? { definition: item.definition } : {}) });
   }
   return { valid: true, data };
@@ -240,11 +236,13 @@ export function buildSegmentedBarModel(input: A11ySegmentedBarChartDatum[], opti
   const checkedTotal = validateSegmentedBarTotal(options.total);
   if (!checkedTotal.valid) return failure(checkedTotal.code);
   const data = validation.data;
-  const protectedRow = (d: A11ySegmentedBarChartDatum) => d.valueSuppressed === true ||
-    (options.suppressed === true && d.valueSuppressed !== false && d.value === 0);
-  const complete = data.length > 0 && data.every(d => !protectedRow(d) && d.value !== null);
+  // The host suppresses upstream and sends 0 for protected values; the chart only reinterprets zeros when the flag is on.
+  const suppressedRow = (d: A11ySegmentedBarChartDatum) => options.suppressed === true && d.value === 0;
+  const complete = data.length > 0 && data.every(d => !suppressedRow(d) && d.value !== null);
   const sum = complete ? data.reduce((result, d) => result + d.value!, 0) : null;
-  const total = checkedTotal.total ?? (c.mode === 'breakdown' && c.inferTotal && complete && Number.isFinite(sum) && !options.suppressed ? sum : null);
+  const total = checkedTotal.total ?? (c.mode === 'breakdown' && c.inferTotal && complete && Number.isFinite(sum) ? sum : null);
+  // A host-provided total of zero under suppression is itself protected: it reads as suppressed and is never exposed.
+  const suppressedTotal = options.suppressed === true && checkedTotal.total === 0;
   let errorCode: MessageKey | null = null;
   if (data.length && c.mode === 'comparison' && (data.length !== 1 || checkedTotal.total === null)) errorCode = 'comparisonRequiresTotal';
   if (c.highlightedId && !data.some(d => d.id === c.highlightedId)) errorCode = 'validationInvalidHighlight';
@@ -259,16 +257,20 @@ export function buildSegmentedBarModel(input: A11ySegmentedBarChartDatum[], opti
   const percentageFormat = createFixedDecimalFormatter(c.locale, 'percent');
   const fmt = (value: number, series: 'count' | 'percentage' | 'total', d?: A11ySegmentedBarChartDatum): string => {
     if (typeof options.formatValue === 'function') {
-      try {
-        const formatted = options.formatValue({ value, series, locale: c.locale, ...(d ? { id: d.id, label: d.label } : {}) });
-        if (typeof formatted === 'string' && formatted.trim()) return formatted;
-      } catch { /* Use the canonical localized formatter. */ }
+      // Internal percentages are fractions; the author's callback receives the configured scale.
+      const scaled = series === 'percentage' && c.percentScale === 'whole' ? fractionToWholePercent(value) : value;
+      if (Number.isFinite(scaled)) {
+        try {
+          const formatted = options.formatValue({ value: scaled, series, locale: c.locale, ...(d ? { id: d.id, label: d.label } : {}) });
+          if (typeof formatted === 'string' && formatted.trim()) return formatted;
+        } catch { /* Use the canonical localized formatter. */ }
+      }
     }
     return series === 'percentage' ? percentageFormat(value, c.percentageDecimals) : countFormat(value, c.countDecimals);
   };
   let overflow = sum !== null && !Number.isFinite(sum);
   const rows: SegmentedRow[] = data.map(d => {
-    const status = protectedRow(d) ? 'suppressed' : d.value === null ? 'missing' : 'reported';
+    const status = suppressedRow(d) ? 'suppressed' : d.value === null ? 'missing' : 'reported';
     const value = status === 'reported' ? d.value : null;
     const rawRatio = value !== null && total !== null && total > 0 ? value / total : null;
     if (rawRatio !== null && !Number.isFinite(rawRatio)) overflow = true;
@@ -320,12 +322,14 @@ export function buildSegmentedBarModel(input: A11ySegmentedBarChartDatum[], opti
       ratio: percentage === null || errorCode || !complete ? 0 : Math.min(1, percentage) });
   }
   const warning = overflow ? msg('overflow') : c.mode === 'breakdown' && data.length && !complete ? msg('incomplete') :
-    total === 0 ? msg('zeroTotal') : c.mode === 'comparison' && rows[0]?.percentage != null && rows[0].percentage > 1 ? msg('exceedsTotal') : null;
+    total === 0 && !suppressedTotal ? msg('zeroTotal') : c.mode === 'comparison' && rows[0]?.percentage != null && rows[0].percentage > 1 ? msg('exceedsTotal') : null;
   const error = errorCode ? msg(errorCode, groupedHighlight ? { id: groupedHighlight.id, label: groupedHighlight.label } : {}) : null;
   const summaryRows = displaySegments.map(segment => segment.kind === 'category' ? segment.row : segment);
   const summary = error ?? (summaryRows.length ? summaryRows.map(row => msg(row.percentage === null ? 'summaryCategoryValue' :
     c.mode === 'comparison' ? 'summaryComparison' : 'summaryCategoryShare', { label: row.label, value: row.valueText, percentage: row.percentageText })).join(' ') : msg('empty'));
-  return { rows, displaySegments, total, totalText: total === null ? msg('totalUnavailable') : fmt(total, 'total'), error, errorCode, warning, summary };
+  const modelTotal = suppressedTotal ? null : total;
+  const totalText = modelTotal !== null ? fmt(modelTotal, 'total') : msg(suppressedTotal ? 'suppressedValue' : 'totalUnavailable');
+  return { rows, displaySegments, total: modelTotal, totalText, error, errorCode, warning, summary };
 }
 
 export interface SegmentedExportOptions {
@@ -357,16 +361,4 @@ export function buildSegmentedBarCsv(model: SegmentedModel, options: SegmentedEx
     ...model.rows.map(row => [row.label, row.valueText, row.percentageText]),
     [options.totalHeader ?? msg('csvTotalHeader'), model.totalText, '']);
   return rows.map(row => row.map(value => encodeCsvCell(value)).join(',')).join('\r\n');
-}
-export function buildSegmentedBarXlsx(model: SegmentedModel, options: SegmentedExportOptions = {}): Uint8Array<ArrayBuffer> {
-  // Reuse the existing OOXML writer; the adapter contains only safe canonical
-  // values. The standalone build inlines this source, not a runtime dependency.
-  const adapted: A11yBarChartSemanticModel = {
-    rows: model.rows.map(row => ({ ...row, barRatio: row.ratio, target: null, targetSuppressed: false, targetText: '',
-      targetRelation: 'incomplete', targetOutcome: 'unavailable', targetOutcomeLabel: '', targetNarrative: '',
-      targetStartRatio: null, targetEndRatio: null, narrative: '' })),
-    total: model.total, totalText: model.totalText, summary: model.summary, explanation: [], indicators: [],
-    warnings: model.warning ? [model.warning] : [], hasMissingValues: model.rows.some(row => row.status === 'missing')
-  };
-  return buildBarXlsx(adapted, { ...options, contextText: metadataText(options, 'context'), dataNoteText: metadataText(options, 'dataNote') });
 }

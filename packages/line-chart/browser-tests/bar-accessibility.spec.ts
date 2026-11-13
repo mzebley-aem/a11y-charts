@@ -59,10 +59,10 @@ test('bar names distinguish a reported zero, missing value, and privacy suppress
   await expect(triggers.nth(1)).toHaveAccessibleName(/Missing value.*Not reported/);
   await chart.evaluate((element: any) => {
     element.suppressed = true;
-    element.data = [{ id: 'protected', label: 'Protected value', value: 0, target: 2, targetSuppressed: true }];
+    element.data = [{ id: 'protected', label: 'Protected value', value: 0, target: 2 }];
   });
   await expect(chart.locator('.a11y-bar-chart__details-trigger'))
-    .toHaveAccessibleName(/Protected value.*target suppressed.*comparison unavailable/);
+    .toHaveAccessibleName(/Protected value.*Suppressed/);
   await expect(chart.locator('.a11y-bar-chart__details-trigger'))
     .not.toHaveAccessibleName(/0\.00%/);
 });
@@ -137,7 +137,7 @@ test('bar closes a dialog when its table is hidden and restores focus to a remai
   await dataAction.click();
   const dialog = chart.locator('dialog');
   await expect(dialog).toBeVisible();
-  await chart.evaluate((element: any) => { element.config = { ...element.config, tableVisibility: 'hidden' }; });
+  await chart.evaluate((element: any) => { element.config = { ...element.config, dataView: 'none' }; });
   await expect(dialog).toHaveJSProperty('open', false);
   await expect(chart.getByRole('button', { name: 'Explain' })).toBeFocused();
 });

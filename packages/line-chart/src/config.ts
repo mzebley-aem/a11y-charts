@@ -4,6 +4,7 @@ import type {
   A11yLineChartTheme
 } from './model.js';
 import { canonicalLocaleOrDefault } from '../../chart-core/src/validation.js';
+import { resolvePercentScale } from '../../chart-core/src/csv.js';
 
 export type ResolvedA11yLineChartConfig = Omit<Required<A11yLineChartConfig>, 'maxWidth'> & {
   maxWidth?: number;
@@ -23,7 +24,7 @@ const DEFAULT_CONFIG: ResolvedA11yLineChartConfig = {
   baselineSeriesLabel: 'Baseline',
   contextNote: '',
   decimalPlaces: 0,
-  describeMissingAs: 'Missing',
+  describeMissingAs: 'Not reported',
   dynamicMaxWidth: false,
   dynamicMinWidth: false,
   fillActual: true,
@@ -34,6 +35,7 @@ const DEFAULT_CONFIG: ResolvedA11yLineChartConfig = {
   minWidth: 720,
   perPointMaxWidth: 110,
   perPointMinWidth: 70,
+  percentScale: 'whole',
   positiveDirection: 'above',
   reducedMotion: 'auto',
   showActualLine: true,
@@ -47,14 +49,12 @@ const DEFAULT_CONFIG: ResolvedA11yLineChartConfig = {
   showSummary: true,
   explanationExpanded: false,
   glossaryExpanded: false,
-  showTable: true,
   showTargetLine: true,
   showTargetValues: false,
   showTooltipVisual: true,
   showXAxisTitle: false,
   showYAxisTitle: false,
   stepperVisibility: 'auto',
-  tableVisibility: 'screen-reader',
   targetSeriesLabel: 'Target',
   targetPattern: 'none',
   trendMode: 'labels',
@@ -180,7 +180,6 @@ export function resolveConfig(config: A11yLineChartConfig | null | undefined = u
     showSummary: booleanOrDefault(config.showSummary, DEFAULT_CONFIG.showSummary),
     explanationExpanded: booleanOrDefault(config.explanationExpanded, DEFAULT_CONFIG.explanationExpanded),
     glossaryExpanded: booleanOrDefault(config.glossaryExpanded, DEFAULT_CONFIG.glossaryExpanded),
-    showTable: booleanOrDefault(config.showTable, DEFAULT_CONFIG.showTable),
     showTargetLine: booleanOrDefault(config.showTargetLine, DEFAULT_CONFIG.showTargetLine),
     showTargetValues: booleanOrDefault(config.showTargetValues, DEFAULT_CONFIG.showTargetValues),
     showTooltipVisual: booleanOrDefault(config.showTooltipVisual, DEFAULT_CONFIG.showTooltipVisual),
@@ -194,18 +193,17 @@ export function resolveConfig(config: A11yLineChartConfig | null | undefined = u
     decimalPlaces: integerOrDefault(config.decimalPlaces, DEFAULT_CONFIG.decimalPlaces),
     describeMissingAs: textOrDefault(config.describeMissingAs, DEFAULT_CONFIG.describeMissingAs),
     locale: localeOrDefault(config.locale, DEFAULT_CONFIG.locale),
-    dataView: config.dataView === 'inline' || config.dataView === 'dialog' ? config.dataView : DEFAULT_CONFIG.dataView,
+    dataView: config.dataView === 'inline' || config.dataView === 'dialog' || config.dataView === 'none' ? config.dataView : DEFAULT_CONFIG.dataView,
     headingLevel: Number.isInteger(config.headingLevel) && config.headingLevel! >= 1 && config.headingLevel! <= 6 ? config.headingLevel! : DEFAULT_CONFIG.headingLevel,
     minWidth: positiveOrDefault(config.minWidth, DEFAULT_CONFIG.minWidth),
     ...(typeof config.maxWidth === 'number' && Number.isFinite(config.maxWidth) && config.maxWidth > 0 ? { maxWidth: config.maxWidth } : {}),
     perPointMaxWidth: positiveOrDefault(config.perPointMaxWidth, DEFAULT_CONFIG.perPointMaxWidth),
     perPointMinWidth: positiveOrDefault(config.perPointMinWidth, DEFAULT_CONFIG.perPointMinWidth),
+    percentScale: resolvePercentScale(config.percentScale, DEFAULT_CONFIG.percentScale),
     positiveDirection: config.positiveDirection === 'below' ? 'below' : 'above',
     stepperVisibility: config.stepperVisibility === 'always' || config.stepperVisibility === 'never'
       ? config.stepperVisibility
       : 'auto',
-    tableVisibility: config.tableVisibility === 'hidden' || config.tableVisibility === 'screen-reader' || config.tableVisibility === 'visible'
-      ? config.tableVisibility : config.showTable === false ? 'hidden' : DEFAULT_CONFIG.tableVisibility,
     targetSeriesLabel: textOrDefault(config.targetSeriesLabel, DEFAULT_CONFIG.targetSeriesLabel),
     valuePreset: config.valuePreset === 'number' || config.valuePreset === 'percent' ? config.valuePreset : DEFAULT_CONFIG.valuePreset,
     actualPattern: pattern(config.actualPattern, DEFAULT_CONFIG.actualPattern),
