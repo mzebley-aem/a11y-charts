@@ -10,7 +10,7 @@ import type {
   A11yTargetLineChartXValue
 } from './model.js';
 import { copyTarget, isTargetRange } from './target.js';
-import { ENGLISH_LINE_CHART_MESSAGES, formatLineMessage } from './messages.js';
+import { ENGLISH_TARGET_LINE_CHART_MESSAGES, formatLineMessage } from './messages.js';
 import { normalizeLineData } from './semantic-model.js';
 import { renderCardHtml } from '../../chart-core/src/ui/card-content.js';
 
@@ -262,8 +262,8 @@ function defaultTooltip(ctx: A11yTargetLineChartTooltipContext, context: ChartOp
   const defaultAria = ctx.interpretation.narrative;
   let aria = defaultAria;
   try { aria = context.buildTooltipAriaLabel?.(ctx) || defaultAria; } catch { /* use default */ }
-  const message = (key: keyof typeof ENGLISH_LINE_CHART_MESSAGES, values: Record<string, unknown>): string =>
-    context.message?.(key, values) ?? formatLineMessage(ENGLISH_LINE_CHART_MESSAGES[key], values);
+  const message = (key: keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES, values: Record<string, unknown>): string =>
+    context.message?.(key, values) ?? formatLineMessage(ENGLISH_TARGET_LINE_CHART_MESSAGES[key], values);
   const status = !hasBoth ? undefined : config.trendMode === 'arrows'
     ? { text: trendSymbol, className: `perf-tooltip__trend perf-tooltip__trend--${direction}`, ariaHidden: true }
     : { text: ctx.relationLabel, className: 'perf-tooltip__status', ariaHidden: true };

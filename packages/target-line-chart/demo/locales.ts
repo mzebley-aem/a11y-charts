@@ -1,12 +1,12 @@
-import { ENGLISH_LINE_CHART_MESSAGES } from '../src/messages.js';
+import { ENGLISH_TARGET_LINE_CHART_MESSAGES } from '../src/messages.js';
 
 export type DemoLocale = 'en-US' | 'fr-FR' | 'es-ES';
-type EnglishMessageKey = keyof typeof ENGLISH_LINE_CHART_MESSAGES;
+type EnglishMessageKey = keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES;
 type CompleteDemoMessages = Record<EnglishMessageKey, string>;
 
 /** Complete demo dictionaries. The component still falls back to English for partial consumer overrides. */
 export const LINE_DEMO_MESSAGES: Record<DemoLocale, CompleteDemoMessages> = {
-  'en-US': ENGLISH_LINE_CHART_MESSAGES,
+  'en-US': ENGLISH_TARGET_LINE_CHART_MESSAGES,
   'fr-FR': {
     title: 'Résultats réels et objectifs', summaryLabel: 'Résumé du graphique', controlsLabel: 'Options d’affichage', valuesLegend: 'Valeurs',
     actualLine: 'Courbe « {series} »', targetLine: 'Courbe « {series} »', actualValue: 'Libellé de {series}', targetValueLabel: 'Libellé de {series}', actualFill: 'Zone « {series} »', targetFill: 'Zone « {series} »',

@@ -27,7 +27,7 @@ import type {
   A11yTargetLineChartXFormatter,
   A11yTargetLineChartXValue
 } from './model.js';
-import { ENGLISH_LINE_CHART_MESSAGES, formatLineMessage, isLineChartMessageKey, pluralLineMessage } from './messages.js';
+import { ENGLISH_TARGET_LINE_CHART_MESSAGES, formatLineMessage, isTargetLineChartMessageKey, pluralLineMessage } from './messages.js';
 import { buildChartOptions, shouldSuggestYAxisZoom } from './chart-options.js';
 import { resolveConfig, resolveTheme, type ResolvedA11yTargetLineChartConfig } from './config.js';
 import { EchartsAdapter } from './echarts-adapter.js';
@@ -118,7 +118,7 @@ export class A11yTargetLineChartElement extends HTMLElement {
   /** Data in whole percent (or the author's scale for number presets); every internal consumer reads this. */
   #data: A11yTargetLineChartDatum[] = [];
   #errorMessage = '';
-  #dataValidationError: { key: keyof typeof ENGLISH_LINE_CHART_MESSAGES; values: Record<string, unknown> } | undefined;
+  #dataValidationError: { key: keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES; values: Record<string, unknown> } | undefined;
   #focusedIndex = 0;
   #selectionRevealGeneration = 0;
   #formatDifference: A11yTargetLineChartDifferenceFormatter | undefined;
@@ -250,7 +250,7 @@ export class A11yTargetLineChartElement extends HTMLElement {
   }
 
   set data(value: Array<A11yTargetLineChartDatum | A11yTargetLineChartLegacyDatum>) {
-    let validationError: { key: keyof typeof ENGLISH_LINE_CHART_MESSAGES; values: Record<string, unknown> } | undefined;
+    let validationError: { key: keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES; values: Record<string, unknown> } | undefined;
     const result = validateData(value, (key, values = {}) => {
       validationError = { key, values: { ...values } };
       return this.#t(key, values);
@@ -350,7 +350,7 @@ export class A11yTargetLineChartElement extends HTMLElement {
           const parsed: unknown = JSON.parse(newValue);
           if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error(this.#t('invalidMessages'));
           const entries = Object.entries(parsed);
-          if (entries.some(([key, value]) => !isLineChartMessageKey(key) || typeof value !== 'string')) throw new Error(this.#t('invalidMessages'));
+          if (entries.some(([key, value]) => !isTargetLineChartMessageKey(key) || typeof value !== 'string')) throw new Error(this.#t('invalidMessages'));
           this.#messages = Object.fromEntries(entries) as A11yTargetLineChartMessages;
           this.#messagesError = false;
         } catch {
@@ -371,9 +371,9 @@ export class A11yTargetLineChartElement extends HTMLElement {
     this.#updateBaselineValidation(false);
   }
 
-  #t(key: keyof typeof ENGLISH_LINE_CHART_MESSAGES, values: Record<string, unknown> = {}): string {
+  #t(key: keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES, values: Record<string, unknown> = {}): string {
     const override = this.#messages[key];
-    return formatLineMessage(typeof override === 'string' && override ? override : ENGLISH_LINE_CHART_MESSAGES[key], values);
+    return formatLineMessage(typeof override === 'string' && override ? override : ENGLISH_TARGET_LINE_CHART_MESSAGES[key], values);
   }
 
   #createOwnedRoot(): HTMLElement {
@@ -501,7 +501,7 @@ export class A11yTargetLineChartElement extends HTMLElement {
       formatXValue: (value) => this.#formatXValue(value),
       message: (key, values = {}) => key === 'summaryPeriods'
         ? pluralLineMessage(this.#messages, 'summaryPeriods', Number(values.total) || 0, config.locale, values)
-        : this.#t(key as keyof typeof ENGLISH_LINE_CHART_MESSAGES, values)
+        : this.#t(key as keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES, values)
     });
   }
 
@@ -1265,7 +1265,7 @@ export class A11yTargetLineChartElement extends HTMLElement {
     const select = document.createElement('select');
     select.dataset['control'] = key;
     select.dataset['focusKey'] = `control-${key}`;
-    const options: ReadonlyArray<readonly [A11yTargetLineChartPattern, keyof typeof ENGLISH_LINE_CHART_MESSAGES]> = [['none', 'patternNone'], ['diagonal', 'patternDiagonal'], ['dots', 'patternDots'], ['horizontal', 'patternHorizontal']];
+    const options: ReadonlyArray<readonly [A11yTargetLineChartPattern, keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES]> = [['none', 'patternNone'], ['diagonal', 'patternDiagonal'], ['dots', 'patternDots'], ['horizontal', 'patternHorizontal']];
     for (const [value, name] of options) {
       const option = document.createElement('option');
       option.value = value;
@@ -1293,7 +1293,7 @@ export class A11yTargetLineChartElement extends HTMLElement {
       this.#legendSelection = { ...this.#legendSelection, [seriesLabel]: Boolean(value) };
     }
     const message = key === 'actualPattern' || key === 'targetPattern'
-      ? this.#t('patternSet', { series: key === 'actualPattern' ? this.#resolvedConfig().actualSeriesLabel : this.#resolvedConfig().targetSeriesLabel, value: this.#t(`pattern${String(value).charAt(0).toUpperCase()}${String(value).slice(1)}` as keyof typeof ENGLISH_LINE_CHART_MESSAGES) })
+      ? this.#t('patternSet', { series: key === 'actualPattern' ? this.#resolvedConfig().actualSeriesLabel : this.#resolvedConfig().targetSeriesLabel, value: this.#t(`pattern${String(value).charAt(0).toUpperCase()}${String(value).slice(1)}` as keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES) })
       : this.#t(value ? 'enabled' : 'disabled', { label });
     if (resolved[key] !== previous) this.#dispatchSettingsChange(key, value, 'controls');
     const controlName = source.dataset['control'];
@@ -1583,7 +1583,7 @@ export class A11yTargetLineChartElement extends HTMLElement {
         getVisibleViewport: () => ({ left: viewport.scrollLeft, width: viewport.clientWidth }),
         ...(this.#legendSelection ? { legendSelection: this.#legendSelection } : {}),
         model: this.#semanticModel ?? model,
-        message: (key, values = {}) => this.#t(key as keyof typeof ENGLISH_LINE_CHART_MESSAGES, values),
+        message: (key, values = {}) => this.#t(key as keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES, values),
         reducedMotion: this.#reducedMotion(currentConfig),
         ...(this.#renderTooltip ? { renderTooltip: this.#renderTooltip } : {}),
         ...(this.subtitle ? { subtitle: this.subtitle } : {}),

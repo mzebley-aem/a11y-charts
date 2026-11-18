@@ -1,6 +1,6 @@
 /** English defaults for every target-line-chart-owned message. Override these with the messages property. */
 import { createPluralSelector, formatTemplate } from '../../chart-core/src/messages.js';
-export const ENGLISH_LINE_CHART_MESSAGES = {
+export const ENGLISH_TARGET_LINE_CHART_MESSAGES = {
   title: 'Actual vs Target Performance',
   summaryLabel: 'Chart summary', controlsLabel: 'Display options', valuesLegend: 'Values',
   actualLine: '{series} line', targetLine: '{series} line', actualValue: '{series} label', targetValueLabel: '{series} label', actualFill: '{series} fill', targetFill: '{series} fill',
@@ -60,11 +60,11 @@ export const ENGLISH_LINE_CHART_MESSAGES = {
   baselineDifference: 'the {period} {series}', lower: 'lower', upper: 'upper'
 } as const;
 
-export type A11yTargetLineChartMessageKey = keyof typeof ENGLISH_LINE_CHART_MESSAGES | 'summaryPeriods.zero' | 'summaryPeriods.two' | 'summaryPeriods.few' | 'summaryPeriods.many' | 'dataUpdated.zero' | 'dataUpdated.two' | 'dataUpdated.few' | 'dataUpdated.many' | 'differencePercent.zero' | 'differencePercent.two' | 'differencePercent.few' | 'differencePercent.many';
+export type A11yTargetLineChartMessageKey = keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES | 'summaryPeriods.zero' | 'summaryPeriods.two' | 'summaryPeriods.few' | 'summaryPeriods.many' | 'dataUpdated.zero' | 'dataUpdated.two' | 'dataUpdated.few' | 'dataUpdated.many' | 'differencePercent.zero' | 'differencePercent.two' | 'differencePercent.few' | 'differencePercent.many';
 export type A11yTargetLineChartMessages = Partial<Record<A11yTargetLineChartMessageKey, string>>;
 
-export function isLineChartMessageKey(key: string): key is A11yTargetLineChartMessageKey {
-  if (Object.prototype.hasOwnProperty.call(ENGLISH_LINE_CHART_MESSAGES, key)) return true;
+export function isTargetLineChartMessageKey(key: string): key is A11yTargetLineChartMessageKey {
+  if (Object.prototype.hasOwnProperty.call(ENGLISH_TARGET_LINE_CHART_MESSAGES, key)) return true;
   return /^(summaryPeriods|dataUpdated|differencePercent)\.(zero|one|two|few|many|other)$/.test(key);
 }
 
@@ -83,8 +83,8 @@ export function pluralLineMessage(
   const fullKey = `${key}.${category}` as A11yTargetLineChartMessageKey;
   const selected = messages[fullKey];
   const fallback = messages[`${key}.other` as A11yTargetLineChartMessageKey];
-  const englishSpecific = ENGLISH_LINE_CHART_MESSAGES[fullKey as keyof typeof ENGLISH_LINE_CHART_MESSAGES];
-  const english = ENGLISH_LINE_CHART_MESSAGES[`${key}.other` as keyof typeof ENGLISH_LINE_CHART_MESSAGES];
+  const englishSpecific = ENGLISH_TARGET_LINE_CHART_MESSAGES[fullKey as keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES];
+  const english = ENGLISH_TARGET_LINE_CHART_MESSAGES[`${key}.other` as keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES];
   const template = typeof selected === 'string' && selected ? selected
     : typeof fallback === 'string' && fallback ? fallback
       : englishSpecific ?? english;

@@ -4,8 +4,9 @@ Framework-free `a11y-target-line-chart` autonomous custom element.
 
 Formerly `@mzebley-aem/line-chart` (`<a11y-line-chart>`, v0.1.0). The chart only
 compares actual results with targets, so the name now says so. Replace
-`line-chart` with `target-line-chart` and `LineChart` with `TargetLineChart` in
-imports, tags, classes, CSS properties, and event names.
+`line-chart` with `target-line-chart`, `LineChart` with `TargetLineChart`, and
+`LINE_CHART` with `TARGET_LINE_CHART` in imports, tags, classes, CSS properties,
+and event names.
 
 This package is intentionally private and pre-release. The Angular application at the repository root remains the frozen reference while the Web Component is validated for the first internal use case.
 
@@ -112,7 +113,7 @@ data disclosure. CSV remains available inside an inline view unless
 interactive links or export buttons; explicit data views always present a
 readable table.
 
-The exported `ENGLISH_LINE_CHART_MESSAGES` object and `A11yTargetLineChartMessageKey`
+The exported `ENGLISH_TARGET_LINE_CHART_MESSAGES` object and `A11yTargetLineChartMessageKey`
 type are the canonical English dictionary and complete key list. Set a partial
 override with the `messages` property or JSON `messages` attribute. Missing or
 invalid property entries use English defaults. The attribute accepts only

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { resolveConfig } from '../src/config.js';
 import { buildSemanticModel } from '../src/semantic-model.js';
-import { ENGLISH_LINE_CHART_MESSAGES, formatLineMessage, pluralLineMessage } from '../src/messages.js';
+import { ENGLISH_TARGET_LINE_CHART_MESSAGES, formatLineMessage, pluralLineMessage } from '../src/messages.js';
 import { LINE_DEMO_CONTENT, LINE_DEMO_MESSAGES, type DemoLocale } from '../demo/locales.js';
 import type { A11yTargetLineChartDatum } from '../src/model.js';
 
@@ -26,7 +26,7 @@ function semanticExample(
     if (key === 'summaryPeriods') {
       return pluralLineMessage(messages, 'summaryPeriods', Number(values['total'] ?? 0), locale, values);
     }
-    return formatLineMessage(messages[key as keyof typeof messages] ?? ENGLISH_LINE_CHART_MESSAGES[key as keyof typeof ENGLISH_LINE_CHART_MESSAGES] ?? key, values);
+    return formatLineMessage(messages[key as keyof typeof messages] ?? ENGLISH_TARGET_LINE_CHART_MESSAGES[key as keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES] ?? key, values);
   };
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 });
   return buildSemanticModel({
@@ -42,7 +42,7 @@ function semanticExample(
 
 describe('target line chart demo localization', () => {
   it('provides every component message key for each supported locale', () => {
-    const required = Object.keys(ENGLISH_LINE_CHART_MESSAGES).sort();
+    const required = Object.keys(ENGLISH_TARGET_LINE_CHART_MESSAGES).sort();
     for (const locale of locales) {
       expect(Object.keys(LINE_DEMO_MESSAGES[locale]).sort(), locale).toEqual(required);
       expect(Object.values(LINE_DEMO_MESSAGES[locale]).every((value) => typeof value === 'string')).toBe(true);

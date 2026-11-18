@@ -32,8 +32,8 @@ internal rendering detail; the public boundary is the standards-based
 It was published as `@mzebley-aem/line-chart` (`<a11y-line-chart>`) through
 v0.1.0. It was renamed because it only answers the actual-versus-target
 question; it isn't a general-purpose line chart. Every tag, class, CSS
-property, event, and exported name moved from `line-chart`/`LineChart` to
-`target-line-chart`/`TargetLineChart`.
+property, event, and exported name moved from `line-chart`/`LineChart`/`LINE_CHART` to
+`target-line-chart`/`TargetLineChart`/`TARGET_LINE_CHART`.
 
 The first release is for a specific internal use case. Public open-source
 packaging will follow after the documented accessibility evidence gates are

@@ -1,6 +1,6 @@
 /** DOM-free helpers for server rendering, data preparation, and export. */
 export { resolveConfig } from './config.js';
-export { ENGLISH_LINE_CHART_MESSAGES, formatLineMessage, isLineChartMessageKey, pluralLineMessage } from './messages.js';
+export { ENGLISH_TARGET_LINE_CHART_MESSAGES, formatLineMessage, isTargetLineChartMessageKey, pluralLineMessage } from './messages.js';
 export type { A11yTargetLineChartMessageKey, A11yTargetLineChartMessages } from './messages.js';
 export { validateBaseline, validateData } from './validation.js';
 export type { BaselineValidationResult, DataValidationResult } from './validation.js';

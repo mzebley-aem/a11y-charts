@@ -4,7 +4,7 @@ export { buildSemanticModel } from './semantic-model.js';
 export { normalizeLineData } from './semantic-model.js';
 export { buildLineCsv } from './csv.js';
 export type { BuildLineCsvOptions } from './csv.js';
-export { ENGLISH_LINE_CHART_MESSAGES } from './messages.js';
+export { ENGLISH_TARGET_LINE_CHART_MESSAGES } from './messages.js';
 export type { A11yTargetLineChartMessageKey, A11yTargetLineChartMessages } from './messages.js';
 export {
   A11Y_TARGET_LINE_CHART_TAG_NAME,

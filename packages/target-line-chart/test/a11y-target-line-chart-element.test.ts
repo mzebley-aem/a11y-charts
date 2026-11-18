@@ -4,7 +4,7 @@ import {
   A11yTargetLineChartElement,
   defineA11yTargetLineChart
 } from '../src/index.js';
-import { ENGLISH_LINE_CHART_MESSAGES } from '../src/messages.js';
+import { ENGLISH_TARGET_LINE_CHART_MESSAGES } from '../src/messages.js';
 
 async function settle(): Promise<void> {
   await Promise.resolve();
@@ -329,7 +329,7 @@ describe('A11yTargetLineChartElement foundation', () => {
     expect(listener).toHaveBeenCalledTimes(1);
     expect(listener.mock.calls[0]?.[0].detail).toEqual({
       code: 'invalid-messages',
-      message: ENGLISH_LINE_CHART_MESSAGES.invalidMessages
+      message: ENGLISH_TARGET_LINE_CHART_MESSAGES.invalidMessages
     });
     expect(listener.mock.calls[0]?.[0].bubbles).toBe(true);
   });
@@ -746,8 +746,8 @@ describe('A11yTargetLineChartElement foundation', () => {
   });
 
   it('exports complete messages and localizes generated, control, and tooltip semantics at runtime', async () => {
-    expect(Object.keys(ENGLISH_LINE_CHART_MESSAGES)).toContain('baselineDescription');
-    expect(Object.keys(ENGLISH_LINE_CHART_MESSAGES)).toContain('dataUpdated.other');
+    expect(Object.keys(ENGLISH_TARGET_LINE_CHART_MESSAGES)).toContain('baselineDescription');
+    expect(Object.keys(ENGLISH_TARGET_LINE_CHART_MESSAGES)).toContain('dataUpdated.other');
     const element = document.createElement(A11Y_TARGET_LINE_CHART_TAG_NAME) as A11yTargetLineChartElement;
     element.messages = {
       title: 'Resultados', actualLabel: 'Real', targetLabel: 'Meta', baselineLabel: 'Inicio',

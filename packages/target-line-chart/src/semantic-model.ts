@@ -15,7 +15,7 @@ import type {
 } from './model.js';
 import { copyTarget, formatTarget, isTargetRange } from './target.js';
 import { compareToNumericOrRange } from '../../chart-core/src/target.js';
-import { ENGLISH_LINE_CHART_MESSAGES, formatLineMessage, pluralLineMessage } from './messages.js';
+import { ENGLISH_TARGET_LINE_CHART_MESSAGES, formatLineMessage, pluralLineMessage } from './messages.js';
 
 export interface A11yTargetLineChartSemanticContext {
   baseline?: A11yTargetLineChartBaseline;
@@ -50,7 +50,7 @@ export function isSuppressedActual(actual: number | null | undefined, suppressed
 function message(context: A11yTargetLineChartSemanticContext, key: string, values: Record<string, unknown> = {}): string {
   if (context.message) return context.message(key, values);
   if (key === 'summaryPeriods') return pluralLineMessage({}, 'summaryPeriods', Number(values.total) || 0, context.config.locale, values);
-  const template = ENGLISH_LINE_CHART_MESSAGES[key as keyof typeof ENGLISH_LINE_CHART_MESSAGES];
+  const template = ENGLISH_TARGET_LINE_CHART_MESSAGES[key as keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES];
   return formatLineMessage(typeof template === 'string' ? template : key, values);
 }
 

@@ -4,11 +4,11 @@ import type {
   A11yTargetLineChartXValue
 } from './model.js';
 import { copyTarget } from './target.js';
-import { ENGLISH_LINE_CHART_MESSAGES, formatLineMessage } from './messages.js';
+import { ENGLISH_TARGET_LINE_CHART_MESSAGES, formatLineMessage } from './messages.js';
 import { isFiniteNumber, isFiniteRange, sameScalarOrDate } from '../../chart-core/src/validation.js';
 
-type Translate = (key: keyof typeof ENGLISH_LINE_CHART_MESSAGES, values?: Record<string, unknown>) => string;
-const english: Translate = (key, values = {}) => formatLineMessage(ENGLISH_LINE_CHART_MESSAGES[key], values);
+type Translate = (key: keyof typeof ENGLISH_TARGET_LINE_CHART_MESSAGES, values?: Record<string, unknown>) => string;
+const english: Translate = (key, values = {}) => formatLineMessage(ENGLISH_TARGET_LINE_CHART_MESSAGES[key], values);
 
 export type DataValidationResult =
   | { data: A11yTargetLineChartDatum[]; valid: true }
