@@ -27,7 +27,7 @@ jobs:
         run: npm run release:check -- "$GITHUB_REF_NAME"
       - name: Install
         run: |
-          for chart in line-chart bar-chart segmented-bar-chart; do
+          for chart in target-line-chart bar-chart segmented-bar-chart; do
             npm ci --prefix "packages/$chart"
           done
       # verify runs every package's tests, typecheck, build, and packed-tarball smoke check.

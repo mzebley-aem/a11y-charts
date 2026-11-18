@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { isReleaseVersion } from './semver.mjs';
 
-const PACKAGES = ['line-chart', 'bar-chart', 'segmented-bar-chart'];
+const PACKAGES = ['target-line-chart', 'bar-chart', 'segmented-bar-chart'];
 const version = process.argv[2];
 if (!isReleaseVersion(version)) {
   console.error(`Not a valid SemVer release version: ${version ?? '(none)'}`);

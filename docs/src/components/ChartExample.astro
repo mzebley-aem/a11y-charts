@@ -69,14 +69,14 @@ const hasSettings = settings && type !== 'segmented';
 {showCode && <Code code={snippet} lang="ts" title="Example" />}
 
 <script>
-	import '@mzebley-aem/line-chart/define';
+	import '@mzebley-aem/target-line-chart/define';
 	import '@mzebley-aem/bar-chart/define';
 	import '@mzebley-aem/segmented-bar-chart/define';
-	import '@mzebley-aem/line-chart/styles.css';
+	import '@mzebley-aem/target-line-chart/styles.css';
 	import '@mzebley-aem/bar-chart/styles.css';
 	import '@mzebley-aem/segmented-bar-chart/styles.css';
 	import type { A11yBarChartGroupElement } from '@mzebley-aem/bar-chart';
-	import type { A11yLineChartElement } from '@mzebley-aem/line-chart';
+	import type { A11yTargetLineChartElement } from '@mzebley-aem/target-line-chart';
 	import type { A11yBarChartElement } from '@mzebley-aem/bar-chart';
 	import { chartSnippet, type ChartType } from './chart-snippet';
 	import { mountSettings } from '../examples/settings';
@@ -118,10 +118,10 @@ const hasSettings = settings && type !== 'segmented';
 			reset = () => settings.reset();
 			group.addEventListener('a11y-bar-chart-group-selection-change', updateCode);
 		} else {
-			const settings = mountSettings(controls, element as unknown as A11yLineChartElement | A11yBarChartElement, type as 'line' | 'bar');
+			const settings = mountSettings(controls, element as unknown as A11yTargetLineChartElement | A11yBarChartElement, type as 'line' | 'bar');
 			controls.addEventListener('demo-settings-change', customized);
-			// Reader controls inside a line chart also change its config.
-			element.addEventListener(`a11y-${type}-chart-settings-change`, () => {
+			// Reader controls inside a target line chart also change its config.
+			element.addEventListener(`a11y-${type === 'line' ? 'target-line' : type}-chart-settings-change`, () => {
 				settings.refresh();
 				updateCode();
 			});

@@ -13,7 +13,7 @@ Build an independent Light DOM `<a11y-bar-chart>` Web Component for highly
 accessible IDEA reporting. Preserve the supplied Angular reference's vertical
 list of horizontal bars, category labels, adjacent percentages and counts,
 explanation, glossary, complete data, and total. Add configurable data dialogs
-and complete text customization to the existing line chart as well.
+and complete text customization to the existing target line chart as well.
 
 The consuming application owns all filtering and dataset selection. The
 component renders the supplied dataset and updates when it changes. A filtered
@@ -30,7 +30,7 @@ preparation and filtering policy. Its APIs extend the original scope below.
 
 - New package: `packages/bar-chart`, with `@mzebley-aem/bar-chart` exports for
   the element, registration, public types, semantic model, messages, and CSS.
-- Existing active line implementation: `packages/line-chart`. Preserve current
+- Existing active line implementation: `packages/target-line-chart`. Preserve current
   target-range, baseline, formatting, navigation, and ECharts behavior.
 - The root Angular application and the external `adapt` checkout are references;
   do not modify them.
@@ -164,7 +164,7 @@ variants with `.zero`, `.one`, `.two`, `.few`, `.many`, `.other` message keys
 selected by `Intl.PluralRules`; never require translators to assemble English
 sentence fragments. Unknown placeholders remain safe literal text. No eval,
 HTML interpretation, or arbitrary code in templates. Invalid locales fall back
-to en-US. English defaults should preserve established line-chart wording and
+to en-US. English defaults should preserve established target-line-chart wording and
 tests wherever possible; localization must not change its meaning.
 
 ## Complete data and live updates for both charts
@@ -226,7 +226,7 @@ Work is delegated to three GPT-6 Luna agents, using the current working tree:
 2. **Bar UI** owns `src/a11y-bar-chart-element.ts`, `styles.css`, `index.ts`,
    `registration.ts`, `define.ts`, element tests, and bar demo/build assets.
    It consumes the core contract below and coordinates changes with Bar core.
-3. **Line capabilities** owns `packages/line-chart` implementation, tests,
+3. **Line capabilities** owns `packages/target-line-chart` implementation, tests,
    README and demo fixtures for localization and inline/dialog data views.
    It preserves all pre-existing changes and regenerates derived demos.
 
@@ -280,7 +280,7 @@ changes between the two bar agents before writing dependent UI code.
 Three GPT-6 Luna agents implemented the bar core, bar UI, and line capabilities.
 Root integration review corrected Escape focus restoration after live updates,
 preserved the open state when switching from a dialog to inline data, and
-contained wide inline line-chart tables within their own scroll region.
+contained wide inline target-line-chart tables within their own scroll region.
 
 | Check | Result |
 |---|---|

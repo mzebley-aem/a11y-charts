@@ -2,7 +2,7 @@
 
 Framework-free Light DOM chart components for accessible reporting:
 
-- [`packages/line-chart`](./packages/line-chart): actual-versus-target performance.
+- [`packages/target-line-chart`](./packages/target-line-chart): actual-versus-target performance.
 - [`packages/bar-chart`](./packages/bar-chart): horizontal category counts and
   population shares, with explanation, definitions, suppression, and CSV.
 - [`packages/segmented-bar-chart`](./packages/segmented-bar-chart): breakdowns
@@ -17,7 +17,7 @@ The grouped selector, shared scales, explicit suppression, authored explanations
 and CSV export are implemented locally. The gallery includes four grouped
 compositions; production ADAPT integration remains separately unverified.
 
-## Line chart
+## Target line chart
 
 A framework-free, Light DOM Web Component for one focused data question:
 
@@ -27,7 +27,13 @@ The project is building an actual-versus-target line chart that is exceptionally
 usable with keyboards, screen readers, refreshable braille, magnification,
 forced colors, touch, and conventional visual interaction. ECharts 6 is an
 internal rendering detail; the public boundary is the standards-based
-`<a11y-line-chart>` custom element.
+`<a11y-target-line-chart>` custom element.
+
+It was published as `@mzebley-aem/line-chart` (`<a11y-line-chart>`) through
+v0.1.0. It was renamed because it only answers the actual-versus-target
+question; it isn't a general-purpose line chart. Every tag, class, CSS
+property, event, and exported name moved from `line-chart`/`LineChart`/`LINE_CHART` to
+`target-line-chart`/`TargetLineChart`/`TARGET_LINE_CHART`.
 
 The first release is for a specific internal use case. Public open-source
 packaging will follow after the documented accessibility evidence gates are
@@ -35,7 +41,7 @@ complete.
 
 ## Project status
 
-- The line implementation is [`packages/line-chart`](./packages/line-chart).
+- The line implementation is [`packages/target-line-chart`](./packages/target-line-chart).
 - The bar chart implementation and shared capability contract are specified in
   [`BAR-CHART-SPEC.md`](./BAR-CHART-SPEC.md).
 - The Angular application under [`src`](./src) is the frozen migration
@@ -55,7 +61,7 @@ existing keyboard selection model.
 Requires Node 24 or newer:
 
 ```bash
-cd packages/line-chart
+cd packages/target-line-chart
 npm install
 npm run dev
 ```
@@ -71,7 +77,7 @@ open demo/index.html
 ## Verify the package
 
 ```bash
-cd packages/line-chart
+cd packages/target-line-chart
 npm test
 npm run typecheck
 npm run build
@@ -99,7 +105,7 @@ Both expose a `messages` property and JSON `messages` attribute for partial
 overrides of a complete English message catalog, including generated and
 assistive text. Use the separate locale setting for number formatting. See the
 [bar package](./packages/bar-chart/README.md) and
-[line package](./packages/line-chart/README.md) for keys and examples.
+[line package](./packages/target-line-chart/README.md) for keys and examples.
 
 For a language switch, supply the complete translated dictionary and update
 host-authored titles, data labels, context, and the document/chart `lang` too.
@@ -115,11 +121,11 @@ The packages are published to GitHub Packages as `@mzebley-aem/*`; see
 token) and for cutting a release.
 
 ```ts
-import '@mzebley-aem/line-chart/define';
-import '@mzebley-aem/line-chart/styles.css';
-import type { A11yLineChartElement } from '@mzebley-aem/line-chart';
+import '@mzebley-aem/target-line-chart/define';
+import '@mzebley-aem/target-line-chart/styles.css';
+import type { A11yTargetLineChartElement } from '@mzebley-aem/target-line-chart';
 
-const chart = document.querySelector<A11yLineChartElement>('a11y-line-chart');
+const chart = document.querySelector<A11yTargetLineChartElement>('a11y-target-line-chart');
 
 chart.data = [
   { x: 2015, actual: 40, target: 50 },
@@ -142,11 +148,11 @@ chart.config = {
 ```
 
 ```html
-<a11y-line-chart
+<a11y-target-line-chart
   chart-title="Actual versus target performance"
   subtitle="Reported results and planned targets"
   value-preset="percent"
-></a11y-line-chart>
+></a11y-target-line-chart>
 ```
 
 Complex values and callbacks are assigned as properties. The component accepts
@@ -158,7 +164,7 @@ Targets may also be inclusive ranges, for example
 the target; values outside the range do not. Numeric targets retain the
 configured `positiveDirection` behavior. Range boundaries, target fill,
 summary, tooltips, keyboard announcements, and data tables share the same
-interpretation. See the [range contract](./packages/line-chart/README.md#target-ranges).
+interpretation. See the [range contract](./packages/target-line-chart/README.md#target-ranges).
 
 ## Semantic contract
 
@@ -177,7 +183,7 @@ One ECharts-independent semantic model produces:
 An optional baseline is configured independently of the actual series. Its
 period must match the earliest displayed datum, and its reference line extends
 through the complete target horizon. Invalid baseline configuration emits an
-`a11y-line-chart-error` event while leaving the chart usable without baseline
+`a11y-target-line-chart-error` event while leaving the chart usable without baseline
 context.
 
 Consumers control titles, series names, locale and structured formatting, a
@@ -189,10 +195,10 @@ contradict one another.
 
 The component dispatches bubbling framework-neutral events:
 
-- `a11y-line-chart-ready`
-- `a11y-line-chart-error`
-- `a11y-line-chart-point-change`
-- `a11y-line-chart-settings-change` (reader-driven changes only; detail is `{ setting, value, source }`)
+- `a11y-target-line-chart-ready`
+- `a11y-target-line-chart-error`
+- `a11y-target-line-chart-point-change`
+- `a11y-target-line-chart-settings-change` (reader-driven changes only; detail is `{ setting, value, source }`)
 
 The point-change detail contains selected source values, canonical
 announcement, outcome, outcome label, and structured target/baseline
@@ -212,11 +218,11 @@ package conforms on behalf of every integration.
 ## Styling
 
 All generated markup remains in Light DOM. Distributed selectors are scoped
-under `a11y-line-chart`, generated classes use the `a11y-line-chart__*`
-namespace, and documented `--a11y-line-chart-*` custom properties provide the
+under `a11y-target-line-chart`, generated classes use the `a11y-target-line-chart__*`
+namespace, and documented `--a11y-target-line-chart-*` custom properties provide the
 theme surface. Internal classes are not a stable consumer API.
 
-See [`packages/line-chart/README.md`](./packages/line-chart/README.md) for the
+See [`packages/target-line-chart/README.md`](./packages/target-line-chart/README.md) for the
 current package-level feature inventory and integration notes.
 
 ## Audit fixes and verification
@@ -225,7 +231,7 @@ The October 21 audit is in [AUDIT-2026-10-21.md](./AUDIT-2026-10-21.md).
 Use Node 24 and install the active packages separately:
 
 ```bash
-npm ci --prefix packages/line-chart
+npm ci --prefix packages/target-line-chart
 npm ci --prefix packages/bar-chart
 npm ci --prefix packages/segmented-bar-chart
 npm run verify
@@ -233,7 +239,7 @@ npm run browser:test
 ```
 
 The browser suite requires Playwright Chromium (`npx playwright install chromium`
-from `packages/line-chart`). To use an installed Chrome locally, set
+from `packages/target-line-chart`). To use an installed Chrome locally, set
 `PLAYWRIGHT_CHROMIUM_CHANNEL=chrome`. It checks real hidden-container layout,
 focus continuity, native dialog reconnection, and defensive event payloads.
 Package builds also smoke-test the built `./core` export in Node without DOM globals.
@@ -242,7 +248,7 @@ CI runs package verification, demo builds, and browser regressions.
 Vercel runs `npm run deploy:build` and publishes `dist/site`: the
 [docs site](./docs) at `/`, including the chart examples under `/examples/` and
 the report prototypes under `/reports/`, plus the standalone demos at
-`/demo/line-chart.html` and `/demo/bar-chart.html`. The former gallery URLs
+`/demo/target-line-chart.html` and `/demo/bar-chart.html`. The former gallery URLs
 (`/spp-apr/`, `/dispute-resolution/`, `/segmented/`, and
 `/demo/report-demo.html`) redirect to their new pages.
 
@@ -252,7 +258,7 @@ through explicitly named `reference:start`, `reference:build`, and `reference:te
 commands (or `ng`). Its old dependency tree still has audit findings; this work
 does not upgrade or claim to secure that reference application.
 
-Both packages expose `@mzebley-aem/{line-chart|bar-chart}/core` for DOM-free
+Both packages expose `@mzebley-aem/{target-line-chart|bar-chart}/core` for DOM-free
 semantic/validation/message helpers and CSV generation. Pass plain-text metadata
 as `contextText` and `dataNoteText` for server exports. These fields take
 precedence even when empty. HTML `context`/`dataNote` conversion requires a browser
@@ -313,7 +319,7 @@ Regenerate both standalone demos before running the all-demo checks after source
 changes. Set `PLAYWRIGHT_BROWSER=firefox` or `PLAYWRIGHT_BROWSER=webkit` to run
 another installed engine; use `PLAYWRIGHT_CHROMIUM_CHANNEL=chrome` for local Chrome.
 For the full raw evidence sweep, serve the repo with the line package's
-`vite.audit.config.mjs`, then run `npm run a11y:audit --prefix packages/line-chart`.
+`vite.audit.config.mjs`, then run `npm run a11y:audit --prefix packages/target-line-chart`.
 A clean automated scan does not certify spoken screen-reader behavior.
 
 ## SPP/APR interactive report mockup
@@ -397,4 +403,4 @@ does not represent an additional reported meeting outcome.
 
 ## License
 
-MIT, copyright (c) 2026 Weiss Center. See [LICENSE](./LICENSE). The line chart bundles ECharts, ZRender, and tslib; their licenses ship in its `dist/` folder.
+MIT, copyright (c) 2026 Weiss Center. See [LICENSE](./LICENSE). The target line chart bundles ECharts, ZRender, and tslib; their licenses ship in its `dist/` folder.

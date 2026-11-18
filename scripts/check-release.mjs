@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { isReleaseVersion } from './semver.mjs';
 
-const PACKAGES = ['line-chart', 'bar-chart', 'segmented-bar-chart'];
+const PACKAGES = ['target-line-chart', 'bar-chart', 'segmented-bar-chart'];
 const root = resolve(fileURLToPath(new URL('..', import.meta.url)));
 const manifests = await Promise.all(PACKAGES.map(async (name) => JSON.parse(await readFile(resolve(root, 'packages', name, 'package.json'), 'utf8'))));
 const problems = [];

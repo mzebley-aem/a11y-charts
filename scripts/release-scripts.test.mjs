@@ -47,10 +47,10 @@ function fakeNpm({ published = [], viewError, publishError } = {}) {
 }
 
 test('a rerun skips packages that already published and publishes the rest', async () => {
-  const { run, calls } = fakeNpm({ published: ['@mzebley-aem/line-chart'] });
+  const { run, calls } = fakeNpm({ published: ['@mzebley-aem/target-line-chart'] });
   await publishAll({ root, run, log: () => {} });
   assert.equal(calls.filter((call) => call.startsWith('publish')).length, PACKAGES.length - 1);
-  assert.ok(!calls.some((call) => call.includes('packages/line-chart') && call.startsWith('publish')));
+  assert.ok(!calls.some((call) => call.includes('packages/target-line-chart') && call.startsWith('publish')));
 });
 
 test('stops on registry errors other than not found', async () => {
@@ -61,7 +61,7 @@ test('stops on registry errors other than not found', async () => {
 
 test('stops when a publish fails', async () => {
   const { run, calls } = fakeNpm({ publishError: 'npm error code E403' });
-  await assert.rejects(publishAll({ root, run, log: () => {} }), /Publishing @mzebley-aem\/line-chart@.* failed/);
+  await assert.rejects(publishAll({ root, run, log: () => {} }), /Publishing @mzebley-aem\/target-line-chart@.* failed/);
   assert.equal(calls.filter((call) => call.startsWith('publish')).length, 1);
 });
 

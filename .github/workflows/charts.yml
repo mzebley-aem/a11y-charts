@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        chart: [line-chart, bar-chart, segmented-bar-chart]
+        chart: [target-line-chart, bar-chart, segmented-bar-chart]
     defaults:
       run:
         working-directory: packages/${{ matrix.chart }}
@@ -34,11 +34,11 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: |
-            packages/line-chart/package-lock.json
+            packages/target-line-chart/package-lock.json
             packages/bar-chart/package-lock.json
             packages/segmented-bar-chart/package-lock.json
             docs/package-lock.json
-      - run: npm ci --prefix packages/line-chart
+      - run: npm ci --prefix packages/target-line-chart
       - run: npm ci --prefix packages/bar-chart
       - run: npm ci --prefix packages/segmented-bar-chart
       - run: npm ci --prefix docs
@@ -60,13 +60,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: npm ci --prefix packages/line-chart
+      - run: npm ci --prefix packages/target-line-chart
       - run: npm ci --prefix packages/bar-chart
       - run: npm ci --prefix packages/segmented-bar-chart
       - run: npm ci --prefix docs
       - run: npx playwright install --with-deps ${{ matrix.browser }}
-        working-directory: packages/line-chart
-      - run: npm run demo:build --prefix packages/line-chart
+        working-directory: packages/target-line-chart
+      - run: npm run demo:build --prefix packages/target-line-chart
       - run: npm run demo:build --prefix packages/bar-chart
       - run: npm run browser:test
       # The examples and report prototypes live in the docs site; the suites

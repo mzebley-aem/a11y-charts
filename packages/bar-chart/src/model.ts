@@ -61,7 +61,7 @@ export interface A11yBarChartConfig {
   showDetails?: boolean;
   /** Optional outcome encoding for comparable bars with targets. Default none. */
   targetStyle?: A11yBarChartTargetStyle;
-  /** Numeric targets only; equality always passes. Default above, like line charts. */
+  /** Numeric targets only; equality always passes. Default above, like target line charts. */
   positiveDirection?: 'above' | 'below';
   locale?: string;
   countDecimals?: number;

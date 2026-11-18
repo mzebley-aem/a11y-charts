@@ -1,11 +1,11 @@
 import type {
-  A11yLineChartBaseline,
-  A11yLineChartConfig,
-  A11yLineChartDatum,
-  A11yLineChartDefinition,
-  A11yLineChartTheme,
-  A11yLineChartValuePreset
-} from '@mzebley-aem/line-chart';
+  A11yTargetLineChartBaseline,
+  A11yTargetLineChartConfig,
+  A11yTargetLineChartDatum,
+  A11yTargetLineChartDefinition,
+  A11yTargetLineChartTheme,
+  A11yTargetLineChartValuePreset
+} from '@mzebley-aem/target-line-chart';
 import type {
   A11yBarChartConfig,
   A11yBarChartDatum,
@@ -23,14 +23,14 @@ interface GalleryExampleBase {
   suppressed?: boolean;
 }
 
-export interface LineChartGalleryExample extends GalleryExampleBase {
+export interface TargetLineChartGalleryExample extends GalleryExampleBase {
   kind: 'line';
-  data: A11yLineChartDatum[];
-  config: A11yLineChartConfig;
-  baseline?: A11yLineChartBaseline;
-  valuePreset?: A11yLineChartValuePreset;
-  theme?: A11yLineChartTheme;
-  definitions?: A11yLineChartDefinition[];
+  data: A11yTargetLineChartDatum[];
+  config: A11yTargetLineChartConfig;
+  baseline?: A11yTargetLineChartBaseline;
+  valuePreset?: A11yTargetLineChartValuePreset;
+  theme?: A11yTargetLineChartTheme;
+  definitions?: A11yTargetLineChartDefinition[];
 }
 
 export interface BarChartGalleryExample extends GalleryExampleBase {
@@ -41,7 +41,7 @@ export interface BarChartGalleryExample extends GalleryExampleBase {
   theme?: A11yBarChartTheme;
 }
 
-export type ChartGalleryExample = LineChartGalleryExample | BarChartGalleryExample;
+export type ChartGalleryExample = TargetLineChartGalleryExample | BarChartGalleryExample;
 
 /** Fictional examples chosen to exercise public chart settings and reviewable visual states. */
 export const chartGalleryExamples: ChartGalleryExample[] = [
@@ -139,7 +139,7 @@ export const chartGalleryExamples: ChartGalleryExample[] = [
     id: 'line-compact-inline',
     kind: 'line',
     title: 'Library program attendance',
-    description: 'A compact line chart pairs its visualization with an inline data table.',
+    description: 'A compact target line chart pairs its visualization with an inline data table.',
     reviewHint: 'Review the narrow composition, inline table disclosure, and long period labels.',
     valuePreset: 'number',
     data: [

@@ -8,7 +8,7 @@ The package root and `/define` evaluate classes that extend `HTMLElement`. Impor
 From any code that also runs on the server, register through `/loader` instead:
 
 ```ts
-import { loadA11yLineChart } from '@mzebley-aem/line-chart/loader';
+import { loadA11yTargetLineChart } from '@mzebley-aem/target-line-chart/loader';
 import { loadA11yBarChart } from '@mzebley-aem/bar-chart/loader';
 import { loadA11ySegmentedBarChart } from '@mzebley-aem/segmented-bar-chart/loader';
 

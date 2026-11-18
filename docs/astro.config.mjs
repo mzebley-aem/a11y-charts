@@ -36,7 +36,7 @@ export default defineConfig({
 				{
 					label: 'Charts',
 					items: [
-						{ label: 'Line chart', slug: 'charts/line-chart' },
+						{ label: 'Target line chart', slug: 'charts/target-line-chart' },
 						{ label: 'Bar chart', slug: 'charts/bar-chart' },
 						{ label: 'Grouped bar chart', slug: 'charts/grouped-bar-chart' },
 						{ label: 'Segmented bar chart', slug: 'charts/segmented-bar-chart' },
@@ -60,7 +60,7 @@ export default defineConfig({
 					label: 'Examples',
 					items: [
 						{ label: 'Overview', slug: 'examples' },
-						{ label: 'Line charts', slug: 'examples/line-charts' },
+						{ label: 'Target line charts', slug: 'examples/target-line-charts' },
 						{ label: 'Bar charts', slug: 'examples/bar-charts' },
 						{ label: 'Grouped bar charts', slug: 'examples/grouped-bar-charts' },
 						{ label: 'Segmented bar charts', slug: 'examples/segmented-bar-charts' },

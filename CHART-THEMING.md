@@ -2,7 +2,7 @@
 
 Charts expose inherited `--a11y-charts-bar-*` and `--a11y-charts-line-*` custom properties. Set them on a project wrapper or an individual chart. Defaults remain inside the component stylesheet as fallbacks, so they do not mask values inherited from a wrapper. No USWDS+ dependency is required.
 
-Existing `--a11y-bar-chart-*` and `--a11y-line-chart-*` properties remain the internal bridge and continue to support existing consumers. Direct overrides of those older properties take precedence over the new entry points.
+Existing `--a11y-bar-chart-*` and `--a11y-target-line-chart-*` properties remain the internal bridge and continue to support existing consumers. Direct overrides of those older properties take precedence over the new entry points.
 
 ## Project adapter example
 
@@ -35,7 +35,7 @@ The adapter maps report typography and semantic roles, bar color and geometry, v
 1. Inventory the old Angular charts' rendered typography, spacing, surfaces, borders, bars, targets, controls, tables, dialogs, and interaction states.
 2. Introduce shared semantic tokens for text, muted text, surfaces, borders, focus, typography, spacing, and controls. Component-specific properties should fall back to these shared roles while retaining useful per-chart overrides.
 3. Replace remaining hard-coded visual styles with semantic properties, including grouped chart styles and details cards. Preserve forced-colors rules, readable labels, focus visibility, and usable control sizes.
-4. Map the consuming project's actual `--usa-*` values in a project adapter. Validate CSS lengths and font values when bridging into the line chart renderer, which also consumes numeric settings. Define and verify runtime theme refresh behavior.
+4. Map the consuming project's actual `--usa-*` values in a project adapter. Validate CSS lengths and font values when bridging into the target line chart renderer, which also consumes numeric settings. Define and verify runtime theme refresh behavior.
 5. Compare old and new charts with the same data and viewport. Verify default, USWDS+, and a substantially different theme, including two scoped themes together, mobile layout, keyboard focus, and forced colors.
 
 The properties exposed in the table below cover the pre-existing theme controls. The bar chart also exposes opt-in presentation properties for label/value/percentage typography and layout; the grouped selector exposes opt-in surface and border properties. A runnable gallery compares component defaults, a distinctly different theme, and this scoped Adapt adapter in standalone and grouped charts, plus a full-width report-shaped specimen. It demonstrates token inheritance and layout hooks; it does not claim pixel parity with the Angular component.
@@ -97,9 +97,9 @@ Values below retain their existing types. Unitless renderer settings must remain
 | `--a11y-charts-line-baseline-line-width` | `2` |
 | `--a11y-charts-line-baseline-symbol-size` | `12` |
 | `--a11y-charts-line-actual-pattern-type` | `none` |
-| `--a11y-charts-line-actual-pattern-color` | `var(--a11y-line-chart-actual-color)` |
+| `--a11y-charts-line-actual-pattern-color` | `var(--a11y-target-line-chart-actual-color)` |
 | `--a11y-charts-line-target-pattern-type` | `none` |
-| `--a11y-charts-line-target-pattern-color` | `var(--a11y-line-chart-target-color)` |
+| `--a11y-charts-line-target-pattern-color` | `var(--a11y-target-line-chart-target-color)` |
 | `--a11y-charts-line-focus-line-color` | `rgba(0, 0, 0, 0.45)` |
 | `--a11y-charts-line-focus-line-width` | `1` |
 | `--a11y-charts-line-focus-line-type` | `dashed` |

@@ -58,16 +58,16 @@ experiment and includes an **Explore hover and focus cards** switch.
   chart and complete data view.
 - Range cards show a green **Target met** badge when the reported value is
   inside the inclusive bounds, and a red **Target not met** badge when below
-  or above them, matching the line chart's range logic. The outcome is also
+  or above them, matching the target line chart's range logic. The outcome is also
   included in the bar button's accessible name. Missing/suppressed comparisons
   have no outcome badge. Numeric targets use `positiveDirection` (`above` by
-  default, matching line charts); equality always meets the target.
+  default, matching target line charts); equality always meets the target.
 - Click, tap, Enter, or Space keeps that card open. Activate the bar again,
   press Escape, or interact outside the category to dismiss it.
 - Moving into the card keeps it open, with a continuous pointer path and no
   reading timeout. Keyboard focus takes precedence over incidental hover.
 - Tab follows ordinary document order directly from bar to bar; cards have no
-  Close buttons or other keyboard stops, matching the line chart cards.
+  Close buttons or other keyboard stops, matching the target line chart cards.
   Leaving a pinned category with the keyboard closes its card. Escape on the
   bar retains focus and does not reopen the preview.
 - Cards float near their category on wide charts and join the reading flow
@@ -104,7 +104,7 @@ Component events bubble:
   `data` and a semantic `model` (null for unavailable data).
 
 The bar chart has no reader-changeable settings, so it does not fire a
-settings-change event; the line chart does.
+settings-change event; the target line chart does.
 
 `announceChanges: false` suppresses automatic live announcements without
 disabling the data-change event. The component does not filter or sort the
@@ -251,7 +251,7 @@ Theme keys are `color`, `targetColor`, `positiveColor`, `negativeColor`,
 `space`, `font`, `barHeight`, `borderRadius`, `buttonRadius`, `fontSize`,
 `titleFontSize`, `lineHeight`, `gap`, `rowGap`, `buttonPadding`, `patternType`,
 and `patternColor`. `patternType` accepts `none` (solid, the default), `diagonal`,
-`dots`, or `horizontal`, matching the line chart's named patterns. Other values are
+`dots`, or `horizontal`, matching the target line chart's named patterns. Other values are
 CSS strings; use units such as `rem` or `px` for lengths. Explicit object values
 override CSS tokens on the chart and persistent data dialog; removing an
 override restores CSS control.
@@ -349,7 +349,7 @@ numeric direction in all three languages.
 ## Numeric targets and target ranges
 
 Each category accepts an optional `target: number | { min: number; max: number } | null`,
-matching the line chart's target shape. Bounds are inclusive, finite and nonnegative,
+matching the target line chart's target shape. Bounds are inclusive, finite and nonnegative,
 with `min <= max`, and use the same units as `value`. Omitted/null targets mean
 not set. Equal bounds draw a single marker while retaining both bounds in text.
 
@@ -475,7 +475,7 @@ a localized alert (`dialogUnsupported` or `dialogUnavailable` messages); it does
 not substitute a nonmodal dialog. Applications can select `dataView: 'inline'`
 for environments without native dialog support.
 
-The ready event includes `{ instanceId }`, matching the line chart. Data-change
+The ready event includes `{ instanceId }`, matching the target line chart. Data-change
 events describe changed state after initial rendering;
 equivalent assignments do not produce an additional event, and same-turn
 updates coalesce. Chart-specific payload fields remain distinct.

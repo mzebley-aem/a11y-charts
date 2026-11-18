@@ -389,7 +389,7 @@ main {
 #chart-stage {
   min-width: 0;
 }
-a11y-line-chart,
+a11y-target-line-chart,
 a11y-bar-chart {
   display: block;
   max-width: 100%;
@@ -639,11 +639,11 @@ footer {
   .overview {
     grid-template-columns: repeat(3, 1fr);
   }
-  a11y-line-chart,
+  a11y-target-line-chart,
   a11y-bar-chart {
     break-inside: avoid;
   }
-  .a11y-line-chart__actions,
+  .a11y-target-line-chart__actions,
   .a11y-bar-chart__actions {
     display: none !important;
   }

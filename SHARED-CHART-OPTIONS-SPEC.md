@@ -53,7 +53,7 @@ Local implementation only; no commit, push, publication or deployment.
   `{open: boolean, dataView: 'dialog'|'inline'}`. Inline disclosure toggles use
   the same event. Do not emit duplicate or initial closed events. Handle Escape,
   mode changes, hidden tables and disconnect cleanly.
-- Line adds `a11y-line-chart-data-change` with defensive copies of `data` and
+- Line adds `a11y-target-line-chart-data-change` with defensive copies of `data` and
   canonical `model`, coalesced for replaced source state after initial render.
   Keep existing point/config/display events. Both add
   `a11y-{bar|line}-chart-disclosure-change` with

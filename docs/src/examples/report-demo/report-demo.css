@@ -496,66 +496,66 @@ summary:focus-visible,
   padding: 12px;
 }
 
-.report-chart a11y-line-chart {
-  --a11y-line-chart-focus-color: #202b9e;
-  --a11y-line-chart-per-point-min-width: 70;
+.report-chart a11y-target-line-chart {
+  --a11y-target-line-chart-focus-color: #202b9e;
+  --a11y-target-line-chart-per-point-min-width: 70;
   font-family: "Source Sans 3", "Source Sans Pro", system-ui, sans-serif;
   min-width: 0;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__root {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__root {
   display: flex;
   flex-direction: column;
   margin: 0;
   padding: 8px 8px 16px;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__header {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__header {
   order: 1;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__title {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__title {
   font-family: "Public Sans", system-ui, sans-serif;
   font-size: 24px;
   line-height: 1.15;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__summary {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__summary {
   max-width: none;
   order: 2;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__summary-narrative,
-.report-chart a11y-line-chart .a11y-line-chart__summary-context {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__summary-narrative,
+.report-chart a11y-target-line-chart .a11y-target-line-chart__summary-context {
   color: #21272a;
   font-size: 17px;
   line-height: 1.5;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__viewport {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__viewport {
   order: 3;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__chart-group {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__chart-group {
   height: 340px;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__stepper {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__stepper {
   order: 4;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__stepper-button,
-.report-chart a11y-line-chart .a11y-line-chart__stepper-status {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__stepper-button,
+.report-chart a11y-target-line-chart .a11y-target-line-chart__stepper-status {
   font-size: 16px;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__controls {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__controls {
   display: block;
   margin: 0;
   order: 5;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__controls fieldset {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__controls fieldset {
   border: 0;
   display: grid;
   gap: 10px;
@@ -595,7 +595,7 @@ summary:focus-visible,
   grid-column: span 2;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__controls label {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__controls label {
   align-items: center;
   color: #1b1b1b;
   cursor: pointer;
@@ -608,7 +608,7 @@ summary:focus-visible,
   min-width: 0;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__controls input[type="checkbox"] {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__controls input[type="checkbox"] {
   appearance: none;
   background: #fff;
   border: 2px solid #565c65;
@@ -620,7 +620,7 @@ summary:focus-visible,
   width: 20px;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__controls input[type="checkbox"]:checked {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__controls input[type="checkbox"]:checked {
   background-color: #202b9e;
   background-image: url("/reports/report-demo/report-assets/chart-checkbox-checked.svg");
   background-position: center;
@@ -629,24 +629,24 @@ summary:focus-visible,
   border-color: #202b9e;
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__controls label:hover input[type="checkbox"] {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__controls label:hover input[type="checkbox"] {
   box-shadow: 0 0 0 3px rgb(62 77 237 / 14%);
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__controls input[type="checkbox"]:active {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__controls input[type="checkbox"]:active {
   transform: translateY(1px);
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__controls input[type="checkbox"]:focus-visible {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__controls input[type="checkbox"]:focus-visible {
   outline: 3px solid #202b9e;
   outline-offset: 2px;
 }
 
-.report-chart a11y-line-chart .report-chart-switch {
+.report-chart a11y-target-line-chart .report-chart-switch {
   gap: 10px;
 }
 
-.report-chart a11y-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"] {
+.report-chart a11y-target-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"] {
   background: #757575;
   background-image: none;
   border: 0;
@@ -659,7 +659,7 @@ summary:focus-visible,
   width: 44px;
 }
 
-.report-chart a11y-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"]::before {
+.report-chart a11y-target-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"]::before {
   background: #fff;
   border-radius: 50%;
   box-shadow: 0 1px 2px rgb(0 0 0 / 35%);
@@ -671,12 +671,12 @@ summary:focus-visible,
   width: 20px;
 }
 
-.report-chart a11y-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"]:checked {
+.report-chart a11y-target-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"]:checked {
   background: #202b9e;
   background-image: none;
 }
 
-.report-chart a11y-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"]:checked::before {
+.report-chart a11y-target-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"]:checked::before {
   transform: translateX(20px);
 }
 
@@ -719,17 +719,17 @@ summary:focus-visible,
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .report-chart a11y-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"],
-  .report-chart a11y-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"]::before {
+  .report-chart a11y-target-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"],
+  .report-chart a11y-target-line-chart .report-chart-switch input.report-chart-switch__input[type="checkbox"]::before {
     transition: none;
   }
 }
 
-.report-chart a11y-line-chart .a11y-line-chart__table-region {
+.report-chart a11y-target-line-chart .a11y-target-line-chart__table-region {
   order: 6;
 }
 
-.report-chart a11y-line-chart .perf-tooltip {
+.report-chart a11y-target-line-chart .perf-tooltip {
   border: 1px solid #a2a9b0;
   border-radius: 12px;
   box-shadow: 0 1px 2px rgb(0 0 0 / 50%);
@@ -738,17 +738,17 @@ summary:focus-visible,
   padding: 8px 12px;
 }
 
-.report-chart a11y-line-chart .perf-tooltip__year {
+.report-chart a11y-target-line-chart .perf-tooltip__year {
   font-size: 26px;
   margin-bottom: 4px;
 }
 
-.report-chart a11y-line-chart .perf-tooltip__row {
+.report-chart a11y-target-line-chart .perf-tooltip__row {
   font-size: 16px;
   margin-top: 4px;
 }
 
-.report-chart a11y-line-chart .perf-tooltip__diff {
+.report-chart a11y-target-line-chart .perf-tooltip__diff {
   font-size: 14px;
   margin-top: 4px;
 }
@@ -1200,7 +1200,7 @@ summary:focus-visible,
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .report-chart a11y-line-chart .a11y-line-chart__controls fieldset {
+  .report-chart a11y-target-line-chart .a11y-target-line-chart__controls fieldset {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -1208,7 +1208,7 @@ summary:focus-visible,
     grid-column: auto;
   }
 
-  .report-chart a11y-line-chart .a11y-line-chart__controls label {
+  .report-chart a11y-target-line-chart .a11y-target-line-chart__controls label {
     min-height: 44px;
   }
 
@@ -1308,7 +1308,7 @@ summary:focus-visible,
     padding: 6px;
   }
 
-  .report-chart a11y-line-chart .a11y-line-chart__root {
+  .report-chart a11y-target-line-chart .a11y-target-line-chart__root {
     padding-inline: 6px;
   }
 

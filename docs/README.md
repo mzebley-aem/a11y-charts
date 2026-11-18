@@ -48,7 +48,7 @@ From the repository root:
 
 Vercel runs `npm run deploy:build` (see `vercel.json`). The deployed site is the
 docs, with the examples under `/examples/` and the report prototypes under
-`/reports/`, plus each package's standalone demo at `/demo/line-chart.html` and
+`/reports/`, plus each package's standalone demo at `/demo/target-line-chart.html` and
 `/demo/bar-chart.html`. The former gallery URLs (`/spp-apr/`,
 `/dispute-resolution/`, `/segmented/`, `/demo/report-demo.html`, and the
 `/gallery/` paths from this site's first preview) redirect to their new pages.
