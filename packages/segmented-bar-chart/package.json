@@ -1,6 +1,6 @@
 {
   "name": "@mzebley-aem/segmented-bar-chart",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Framework-free, accessible segmented bar chart custom element",
   "license": "MIT",
   "repository": {
