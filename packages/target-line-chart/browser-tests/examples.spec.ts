@@ -38,7 +38,7 @@ for (const kind of ['line', 'bar'] as const) {
     const examples = page.locator('.example-entry[data-example-id]');
     await expect(examples).toHaveCount(5);
     for (const example of await examples.all()) {
-      await expect(example.locator(`a11y-${kind}-chart .a11y-${kind}-chart__title`)).toBeVisible();
+      await expect(example.locator(`a11y-${kind === 'line' ? 'target-line' : kind}-chart .a11y-${kind === 'line' ? 'target-line' : kind}-chart__title`)).toBeVisible();
       if (kind === 'line') await expect(example.locator('a11y-target-line-chart canvas').first()).toBeVisible();
       else await expect(example.locator('a11y-bar-chart .a11y-bar-chart__bar').first()).toBeVisible();
     }
@@ -49,7 +49,7 @@ for (const kind of ['line', 'bar'] as const) {
     const examples = page.locator('.example-entry[data-example-id]');
     const example = examples.first();
     const peer = examples.nth(1);
-    const chartSelector = `a11y-${kind}-chart`;
+    const chartSelector = `a11y-${kind === 'line' ? 'target-line' : kind}-chart`;
     const startingView = await example.locator(chartSelector).evaluate((chart: any) => chart.config.dataView ?? 'dialog');
     const peerView = await peer.locator(chartSelector).evaluate((chart: any) => chart.config.dataView ?? 'dialog');
     const settings = example.locator('details.chart-example__settings');

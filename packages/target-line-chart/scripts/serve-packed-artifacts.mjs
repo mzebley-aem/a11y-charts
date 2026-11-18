@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 // resolver is deliberately absent so an accidental workspace dependency fails.
 const packages = fileURLToPath(new URL('../../', import.meta.url));
 const temporary = await mkdtemp(join(tmpdir(), 'a11y-chart-artifacts-'));
-const packageFolder = kind => (kind === 'segmented' ? 'segmented-bar-chart' : `${kind}-chart`);
+const packageFolder = kind => (kind === 'segmented' ? 'segmented-bar-chart' : kind === 'line' ? 'target-line-chart' : `${kind}-chart`);
 const tagName = kind => `a11y-${packageFolder(kind)}`;
 for (const kind of ['line', 'bar', 'segmented']) {
   const folder = join(temporary, kind);

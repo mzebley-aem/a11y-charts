@@ -121,7 +121,7 @@ const hasSettings = settings && type !== 'segmented';
 			const settings = mountSettings(controls, element as unknown as A11yTargetLineChartElement | A11yBarChartElement, type as 'line' | 'bar');
 			controls.addEventListener('demo-settings-change', customized);
 			// Reader controls inside a target line chart also change its config.
-			element.addEventListener(`a11y-${type}-chart-settings-change`, () => {
+			element.addEventListener(`a11y-${type === 'line' ? 'target-line' : type}-chart-settings-change`, () => {
 				settings.refresh();
 				updateCode();
 			});

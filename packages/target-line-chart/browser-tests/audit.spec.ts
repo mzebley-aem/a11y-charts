@@ -18,7 +18,7 @@ test.afterEach(async ({ page }) => {
 
 async function mount(page: Page, kind = 'line', config = {}) {
   await page.evaluate(({ kind, config }) => {
-    const chart = document.createElement(`a11y-${kind}-chart`);
+    const chart = document.createElement(`a11y-${kind === 'line' ? 'target-line' : kind}-chart`);
     Object.assign(chart, {
       config,
       data: kind === 'line'
@@ -111,10 +111,10 @@ test('invalid line precision falls back without aborting render', async ({ page 
 for (const kind of ['line', 'bar']) {
   test(`${kind} dialog retains native modality after reconnect`, async ({ page }) => {
     await mount(page, kind);
-    const chart = page.locator(`a11y-${kind}-chart`);
+    const chart = page.locator(`a11y-${kind === 'line' ? 'target-line' : kind}-chart`);
     await chart.evaluate((el, kind) => {
       const states: boolean[] = [];
-      el.addEventListener(`a11y-${kind}-chart-data-view-change`, (event: CustomEvent) => {
+      el.addEventListener(`a11y-${kind === 'line' ? 'target-line' : kind}-chart-data-view-change`, (event: CustomEvent) => {
         states.push(event.detail.open);
         el.setAttribute('data-audit-states', JSON.stringify(states));
       });
@@ -136,7 +136,7 @@ for (const kind of ['line', 'bar']) {
 
   test(`${kind} maintains a focused modal close button during data updates`, async ({ page }) => {
     await mount(page, kind);
-    const chart = page.locator(`a11y-${kind}-chart`);
+    const chart = page.locator(`a11y-${kind === 'line' ? 'target-line' : kind}-chart`);
     await chart.getByRole('button', { name: 'View complete data', exact: true }).click();
     const close = chart.locator('dialog').getByRole('button', { name: /Close/ });
     await close.focus();
@@ -151,13 +151,13 @@ for (const kind of ['line', 'bar']) {
 for (const kind of ['line', 'bar']) {
   test(`${kind} coalesces changed-source events and stays silent for host property changes`, async ({ page }) => {
     await mount(page, kind);
-    const result = await page.locator(`a11y-${kind}-chart`).evaluate(async (el: any, kind) => {
+    const result = await page.locator(`a11y-${kind === 'line' ? 'target-line' : kind}-chart`).evaluate(async (el: any, kind) => {
       const settle = () => new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
       await settle();
       const dataEvents: unknown[] = [];
       const settingsEvents: unknown[] = [];
-      el.addEventListener(`a11y-${kind}-chart-data-change`, (event: CustomEvent) => dataEvents.push(event.detail));
-      for (const name of ['settings-change', 'display-change', 'config-change']) el.addEventListener(`a11y-${kind}-chart-${name}`, (event: CustomEvent) => settingsEvents.push(event.detail));
+      el.addEventListener(`a11y-${kind === 'line' ? 'target-line' : kind}-chart-data-change`, (event: CustomEvent) => dataEvents.push(event.detail));
+      for (const name of ['settings-change', 'display-change', 'config-change']) el.addEventListener(`a11y-${kind === 'line' ? 'target-line' : kind}-chart-${name}`, (event: CustomEvent) => settingsEvents.push(event.detail));
       el.data = el.data;
       await settle();
       const equivalentDataEvents = dataEvents.length;

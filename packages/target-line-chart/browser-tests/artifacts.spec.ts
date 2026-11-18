@@ -15,10 +15,10 @@ test.beforeEach(async ({ page }) => {
 test.afterEach(async ({ page }) => { expect(errors.get(page)).toEqual([]); });
 
 async function populate(page: Page, kinds: string[]) {
-  await page.waitForFunction(kinds => kinds.every(kind => customElements.get(`a11y-${kind}-chart`)), kinds);
+  await page.waitForFunction(kinds => kinds.every(kind => customElements.get(`a11y-${kind === 'line' ? 'target-line' : kind}-chart`)), kinds);
   await page.evaluate(kinds => {
     for (const kind of kinds) {
-      Object.assign(document.querySelector(`a11y-${kind}-chart`)!, {
+      Object.assign(document.querySelector(`a11y-${kind === 'line' ? 'target-line' : kind}-chart`)!, {
         data: kind === 'line'
           ? [{ x: '2024', actual: 35, target: 40 }, { x: '2025', actual: 45, target: 40 }]
           : [{ id: 'a', label: 'Alpha', value: 35, target: 40 }, { id: 'b', label: 'Beta', value: 45, target: 40 }],
@@ -33,7 +33,7 @@ for (const kind of ['line', 'bar']) {
     test(`${kind} works alone from packed ${esm ? 'ESM' : 'standalone'} output`, async ({ page }) => {
       await page.goto(`/${kind}${esm ? '?esm=1' : ''}`);
       await populate(page, [kind]);
-      const chart = page.locator(`a11y-${kind}-chart`);
+      const chart = page.locator(`a11y-${kind === 'line' ? 'target-line' : kind}-chart`);
       await expect(chart.getByRole('heading', { name: `${kind} chart`, exact: true })).toBeVisible();
       if (kind === 'line') await expect(chart.locator('canvas').first()).toBeVisible();
       else await expect(chart.locator('.a11y-bar-chart__bar').first()).toBeVisible();
