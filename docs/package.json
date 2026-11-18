@@ -12,7 +12,7 @@
   "dependencies": {
     "@astrojs/starlight": "^0.43.1",
     "@mzebley-aem/bar-chart": "file:../packages/bar-chart",
-    "@mzebley-aem/line-chart": "file:../packages/line-chart",
+    "@mzebley-aem/target-line-chart": "file:../packages/target-line-chart",
     "@mzebley-aem/segmented-bar-chart": "file:../packages/segmented-bar-chart",
     "astro": "^7.3.6",
     "sharp": "^0.35.3"

@@ -7,7 +7,7 @@ Chart-specific semantic models and renderers remain in their own packages.
 ## Distribution contract
 
 A consumer should be able to load a chart-specific script and stylesheet and
-use `<a11y-line-chart>`, `<a11y-bar-chart>`, or `<a11y-segmented-bar-chart>`. No shared JavaScript file, private
+use `<a11y-target-line-chart>`, `<a11y-bar-chart>`, or `<a11y-segmented-bar-chart>`. No shared JavaScript file, private
 core package, framework runtime, or separately loaded ECharts should be required
 for the standalone browser distribution.
 
@@ -70,7 +70,7 @@ or forcing every bar to behave like a time-series slider.
 The pure utilities, sanitizer, card markup, dialog lifecycle, and disclosure
 helpers are shared source. The bar chart uses the floating-card controller for
 its explicit category triggers. ECharts continues to own line tooltip placement
-and hover state; the line chart supplies shared card markup through its formatter
+and hover state; the target line chart supplies shared card markup through its formatter
 and preserves the period navigator's `showTip`/`hideTip` behavior. This avoids two
 controllers competing for the same tooltip. Custom tooltip hooks remain intact.
 
@@ -89,10 +89,10 @@ Build both packages with `npm run build` (Node 24). Copy a chart package's
 ```html
 <link rel="stylesheet" href="/charts/line/styles.css">
 <script defer src="/charts/line/chart.js"></script>
-<a11y-line-chart chart-title="Progress"></a11y-line-chart>
+<a11y-target-line-chart chart-title="Progress"></a11y-target-line-chart>
 <script>
-  customElements.whenDefined('a11y-line-chart').then(() => {
-    document.querySelector('a11y-line-chart').data = [
+  customElements.whenDefined('a11y-target-line-chart').then(() => {
+    document.querySelector('a11y-target-line-chart').data = [
       { x: '2025', actual: 45, target: 40 }
     ];
   });

@@ -1,4 +1,4 @@
-# A11y Line Chart product and migration roadmap
+# A11y Target Line Chart product and migration roadmap
 
 The living product and interaction plan is maintained in
 [`CHART-EXPERIENCE-PLAN.md`](./CHART-EXPERIENCE-PLAN.md). This roadmap covers
@@ -13,7 +13,7 @@ plan defines the intended user understanding and interaction quality.
 
 ## Implementation checkpoint: August 19, 2026
 
-The framework-neutral package now exists in `packages/line-chart` alongside the
+The framework-neutral package now exists in `packages/target-line-chart` alongside the
 untouched Angular reference. Functional parity has been restored as the new
 starting baseline, including:
 
@@ -68,7 +68,7 @@ that parity baseline:
 Build one actual-versus-target line chart exceptionally well as an autonomous custom element:
 
 ```html
-<a11y-line-chart></a11y-line-chart>
+<a11y-target-line-chart></a11y-target-line-chart>
 ```
 
 The production component will:
@@ -116,10 +116,10 @@ Light DOM is a deliberate product requirement, not an implementation shortcut. I
 
 ### Required rules
 
-- All generated classes use the `a11y-line-chart__*` namespace.
-- All distributed CSS selectors begin with `a11y-line-chart` or a documented component-state selector.
+- All generated classes use the `a11y-target-line-chart__*` namespace.
+- All distributed CSS selectors begin with `a11y-target-line-chart` or a documented component-state selector.
 - No generic selectors such as `.controls`, `.sr-only`, `table`, `label`, or `:root` may ship unscoped.
-- Theme defaults live on `a11y-line-chart`; consumers override documented custom properties on an instance or ancestor.
+- Theme defaults live on `a11y-target-line-chart`; consumers override documented custom properties on an instance or ancestor.
 - The package ships a standalone CSS artifact. Every integration fixture must prove the documented import/link path.
 - Consumer CSS access is possible because this is Light DOM, but internal class names are not a versioned customization API unless explicitly documented.
 - The implementation owns only nodes marked with a private generated ownership attribute. It must not indiscriminately replace all authored children.
@@ -186,13 +186,13 @@ The first implementation should validate this contract in plain HTML and all fra
 Provide both entry points:
 
 ```ts
-import '@mzebley-aem/line-chart/define'; // idempotently registers a11y-line-chart
+import '@mzebley-aem/target-line-chart/define'; // idempotently registers a11y-target-line-chart
 ```
 
 ```ts
-import { A11yLineChartElement, defineA11yLineChart } from '@mzebley-aem/line-chart';
+import { A11yTargetLineChartElement, defineA11yTargetLineChart } from '@mzebley-aem/target-line-chart';
 
-defineA11yLineChart(); // safe to call more than once
+defineA11yTargetLineChart(); // safe to call more than once
 ```
 
 The final package name is intentionally provisional. `customElements.define()` must never run twice for the same class/name.
@@ -200,28 +200,28 @@ The final package name is intentionally provisional. `customElements.define()` m
 ### Complex properties
 
 ```ts
-type A11yLineChartDatum = {
+type A11yTargetLineChartDatum = {
   x: string | number | Date;
   actual: number | null;
   target: number | null;
 };
 
-type A11yLineChartFormatContext = {
+type A11yTargetLineChartFormatContext = {
   value: number | null;
   series: 'actual' | 'target';
   x: string | number | Date;
   locale: string;
 };
 
-interface A11yLineChartElement extends HTMLElement {
-  data: A11yLineChartDatum[];
-  config: A11yLineChartConfig;
-  theme: A11yLineChartTheme;
-  formatValue?: (context: A11yLineChartFormatContext) => string;
+interface A11yTargetLineChartElement extends HTMLElement {
+  data: A11yTargetLineChartDatum[];
+  config: A11yTargetLineChartConfig;
+  theme: A11yTargetLineChartTheme;
+  formatValue?: (context: A11yTargetLineChartFormatContext) => string;
   formatAxisValue?: (value: number, locale: string) => string;
-  formatXValue?: (value: A11yLineChartDatum['x'], locale: string) => string;
-  renderTooltip?: (container: HTMLElement, context: A11yLineChartTooltipContext) => void;
-  formatTooltipAnnouncement?: (context: A11yLineChartTooltipContext) => string;
+  formatXValue?: (value: A11yTargetLineChartDatum['x'], locale: string) => string;
+  renderTooltip?: (container: HTMLElement, context: A11yTargetLineChartTooltipContext) => void;
+  formatTooltipAnnouncement?: (context: A11yTargetLineChartTooltipContext) => string;
 }
 ```
 
@@ -249,10 +249,10 @@ Complex `data`, `config`, and `theme` JSON attributes are out of the first stabl
 
 Dispatch framework-neutral `CustomEvent`s with documented, versioned detail objects:
 
-- `a11y-line-chart-point-change`
-- `a11y-line-chart-settings-change`
-- `a11y-line-chart-ready`
-- `a11y-line-chart-error`
+- `a11y-target-line-chart-point-change`
+- `a11y-target-line-chart-settings-change`
+- `a11y-target-line-chart-ready`
+- `a11y-target-line-chart-error`
 
 Events bubble. They describe component-level meaning, not ECharts series indexes or action names. No internal rendering object is exposed.
 
@@ -357,9 +357,9 @@ The internal release may be labelled provisional for versions unavailable in the
 
 ```text
 packages/
-  line-chart/
+  target-line-chart/
     src/
-      a11y-line-chart-element.ts
+      a11y-target-line-chart-element.ts
       define.ts
       model.ts
       config.ts
@@ -398,7 +398,7 @@ The exact workspace tooling can change during scaffolding, but the package bound
 
 ### Rendering boundary
 
-`A11yLineChartElement` owns lifecycle and public API. Pure modules own validation, formatting, theme resolution, outcome evaluation, and state transitions. `EchartsAdapter` owns all ECharts-specific option/action/event translation.
+`A11yTargetLineChartElement` owns lifecycle and public API. Pure modules own validation, formatting, theme resolution, outcome evaluation, and state transitions. `EchartsAdapter` owns all ECharts-specific option/action/event translation.
 
 This boundary lets a future rendering engine replace ECharts without changing consumers, data contracts, events, accessible HTML, or tests.
 
@@ -423,7 +423,7 @@ This boundary lets a future rendering engine replace ECharts without changing co
 
 **Deliverables**
 
-- Add the parallel `packages/line-chart` package.
+- Add the parallel `packages/target-line-chart` package.
 - Pin Node/tooling for the new package without breaking the Angular reference.
 - Implement idempotent registration, Light DOM lifecycle, prefixed styles, unique instance IDs, validation, and empty/error states.
 - Add plain-HTML fixture and current-engine CI.
@@ -431,7 +431,7 @@ This boundary lets a future rendering engine replace ECharts without changing co
 
 **Exit gate**
 
-- `<a11y-line-chart>` registers, connects, disconnects, and reconnects cleanly.
+- `<a11y-target-line-chart>` registers, connects, disconnects, and reconnects cleanly.
 - Two instances coexist with zero duplicate IDs or shared state.
 - No generated selector escapes the component namespace.
 - A production build, unit tests, and current-engine smoke tests pass.
@@ -541,7 +541,7 @@ The first public API must reserve room for this work by avoiding destructive chi
 
 | Angular mechanism | Framework-free target |
 |---|---|
-| `@Component` | `class A11yLineChartElement extends HTMLElement` |
+| `@Component` | `class A11yTargetLineChartElement extends HTMLElement` |
 | `@Input() data` | `data` property with validated setter |
 | Other simple `@Input()` values | Reflected properties/attributes |
 | Signals/computed | Explicit internal state store + pure derivation |

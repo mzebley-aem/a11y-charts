@@ -1,9 +1,9 @@
-import '@mzebley-aem/line-chart/define';
-import '@mzebley-aem/line-chart/styles.css';
-import type { A11yLineChartElement } from '@mzebley-aem/line-chart';
+import '@mzebley-aem/target-line-chart/define';
+import '@mzebley-aem/target-line-chart/styles.css';
+import type { A11yTargetLineChartElement } from '@mzebley-aem/target-line-chart';
 import './report-demo.css';
 
-const chart = document.querySelector<A11yLineChartElement>('a11y-line-chart');
+const chart = document.querySelector<A11yTargetLineChartElement>('a11y-target-line-chart');
 
 function labelForControl(root: Element, control: string): HTMLLabelElement | undefined {
   return root.querySelector<HTMLInputElement>(`input[data-control="${control}"]`)?.closest('label') ?? undefined;
@@ -84,7 +84,7 @@ function syncReportChartControls(fieldset: HTMLFieldSetElement): void {
 
 function applyReportChartControls(): void {
   if (!chart) return;
-  const fieldset = chart.querySelector<HTMLFieldSetElement>('.a11y-line-chart__controls fieldset');
+  const fieldset = chart.querySelector<HTMLFieldSetElement>('.a11y-target-line-chart__controls fieldset');
   if (!fieldset) return;
   if (fieldset.querySelector('.report-chart-control-group')) {
     syncReportChartControls(fieldset);
@@ -131,7 +131,7 @@ function applyReportChartControls(): void {
 }
 
 if (chart) {
-  chart.addEventListener('a11y-line-chart-settings-change', () => {
+  chart.addEventListener('a11y-target-line-chart-settings-change', () => {
     queueMicrotask(applyReportChartControls);
   });
 

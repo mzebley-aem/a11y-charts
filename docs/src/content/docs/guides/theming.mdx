@@ -14,9 +14,9 @@ The defaults live inside each package's stylesheet as fallbacks, so they never m
 
 ## Shared roles
 
-Set these once on a report wrapper. The bar, grouped bar, and segmented charts read them; the line chart doesn't yet, so set its own properties alongside:
+Set these once on a report wrapper. The bar, grouped bar, and segmented charts read them; the target line chart doesn't yet, so set its own properties alongside:
 
-| Property | Role | Bar and grouped | Segmented | Line chart |
+| Property | Role | Bar and grouped | Segmented | Target line chart |
 | --- | --- | --- | --- | --- |
 | `--a11y-charts-text` | Body text | ✓ | ✓ | Use `--a11y-charts-line-color` |
 | `--a11y-charts-muted` | Secondary text | ✓ | ✓ | No equivalent |
@@ -48,7 +48,7 @@ Keep a small adapter stylesheet in the consuming project that maps its own desig
 }
 ```
 
-The complete adapter is [`docs/src/examples/adapt-report-theme.css`](https://github.com/mzebley-aem/a11y-charts/blob/main/docs/src/examples/adapt-report-theme.css), and the [theme comparison](/examples/theme-comparison/) shows it beside the defaults. Two wrappers with different themes can sit on the same page. If the report has line charts, add `--a11y-charts-line-*` properties to the adapter too, because the line chart doesn't read the shared roles.
+The complete adapter is [`docs/src/examples/adapt-report-theme.css`](https://github.com/mzebley-aem/a11y-charts/blob/main/docs/src/examples/adapt-report-theme.css), and the [theme comparison](/examples/theme-comparison/) shows it beside the defaults. Two wrappers with different themes can sit on the same page. If the report has target line charts, add `--a11y-charts-line-*` properties to the adapter too, because the target line chart doesn't read the shared roles.
 
 ## Per-chart overrides
 
@@ -72,7 +72,7 @@ Or use the `theme` property, which takes the same roles in camelCase:
 
 ```ts
 barChart.theme = { color: '#0b6e4f', track: '#dcefe7', barHeight: '2.5rem' };
-lineChart.theme = { actualColor: '#1e62d0', targetColor: '#765f00' };
+targetLineChart.theme = { actualColor: '#1e62d0', targetColor: '#765f00' };
 segmentedChart.theme = {
 	segments: { hearing: { color: '#1d467e', pattern: 'diagonal' } },
 	other: { color: '#6b7280' },
@@ -81,7 +81,7 @@ segmentedChart.theme = {
 
 ## Value types
 
-Most properties are ordinary CSS values. The line chart is the exception: ECharts draws it on a canvas, so its sizes and widths, such as `--a11y-charts-line-line-width` and `--a11y-charts-line-axis-label-font-size`, are pixel numbers. Write `4` or `4px`. Don't use other units: the chart reads only the number, so `1rem` becomes 1 pixel rather than an error. The default table in [`CHART-THEMING.md`](https://github.com/mzebley-aem/a11y-charts/blob/main/CHART-THEMING.md#token-defaults) lists every property with its default and type.
+Most properties are ordinary CSS values. The target line chart is the exception: ECharts draws it on a canvas, so its sizes and widths, such as `--a11y-charts-line-line-width` and `--a11y-charts-line-axis-label-font-size`, are pixel numbers. Write `4` or `4px`. Don't use other units: the chart reads only the number, so `1rem` becomes 1 pixel rather than an error. The default table in [`CHART-THEMING.md`](https://github.com/mzebley-aem/a11y-charts/blob/main/CHART-THEMING.md#token-defaults) lists every property with its default and type.
 
 ## Keep meaning beyond color
 

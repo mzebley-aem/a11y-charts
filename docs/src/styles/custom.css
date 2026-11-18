@@ -24,17 +24,17 @@
 }
 
 /*
- * The line chart's root carries page-level margins meant for a standalone
+ * The target line chart's root carries page-level margins meant for a standalone
  * report. Inside the frame they only add empty space. This is a docs-only
  * adjustment and doesn't change what consumers render.
  */
-.chart-example > a11y-line-chart > .a11y-line-chart__root {
+.chart-example > a11y-target-line-chart > .a11y-target-line-chart__root {
 	margin-block: 0;
 	padding-block-end: 0;
 }
 
-/* The line chart root already pads its sides by 1rem. */
-.chart-example:has(> a11y-line-chart) {
+/* The target line chart root already pads its sides by 1rem. */
+.chart-example:has(> a11y-target-line-chart) {
 	padding-inline: 0.25rem;
 }
 
@@ -43,7 +43,7 @@
 		padding: 0.75rem;
 	}
 
-	.chart-example:has(> a11y-line-chart) {
+	.chart-example:has(> a11y-target-line-chart) {
 		padding-inline: 0;
 	}
 }

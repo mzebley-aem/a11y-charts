@@ -2,13 +2,13 @@
 
 The three chart packages publish together to GitHub Packages at one shared version:
 
-- `@mzebley-aem/line-chart`
+- `@mzebley-aem/target-line-chart`
 - `@mzebley-aem/bar-chart`
 - `@mzebley-aem/segmented-bar-chart`
 
 GitHub Packages requires the npm scope to match the owning account, which is why
 the scope is `@mzebley-aem`. Published packages have no runtime dependencies
-(ECharts is bundled into the line chart).
+(ECharts is bundled into the target line chart).
 
 ## Release
 

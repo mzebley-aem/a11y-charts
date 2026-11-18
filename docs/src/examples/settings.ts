@@ -1,6 +1,6 @@
-import type { A11yLineChartConfig } from '@mzebley-aem/line-chart';
-import { A11yLineChartElement } from '@mzebley-aem/line-chart';
-import { resolveConfig as resolveLineConfig } from '@mzebley-aem/line-chart/core';
+import type { A11yTargetLineChartConfig } from '@mzebley-aem/target-line-chart';
+import { A11yTargetLineChartElement } from '@mzebley-aem/target-line-chart';
+import { resolveConfig as resolveLineConfig } from '@mzebley-aem/target-line-chart/core';
 import type { A11yBarChartConfig } from '@mzebley-aem/bar-chart';
 import { A11yBarChartElement } from '@mzebley-aem/bar-chart';
 import { resolveConfig as resolveBarConfig } from '@mzebley-aem/bar-chart';
@@ -82,12 +82,12 @@ function numericOptions(values: readonly number[]): Option[] {
 /** Mounts accessible live settings for a chart demo. Call refresh after resetting the example chart. */
 export function mountSettings(
   container: HTMLElement,
-  chart: A11yLineChartElement | A11yBarChartElement,
+  chart: A11yTargetLineChartElement | A11yBarChartElement,
   kind: ChartKind
 ): { refresh(): void; destroy(): void } {
-  const lineChart = kind === 'line' && chart instanceof A11yLineChartElement ? chart : undefined;
+  const targetLineChart = kind === 'line' && chart instanceof A11yTargetLineChartElement ? chart : undefined;
   const barChart = kind === 'bar' && chart instanceof A11yBarChartElement ? chart : undefined;
-  if (!lineChart && !barChart) throw new TypeError(`The ${kind} settings panel needs a matching chart element.`);
+  if (!targetLineChart && !barChart) throw new TypeError(`The ${kind} settings panel needs a matching chart element.`);
 
   const panelId = `example-settings-${++nextPanelId}`;
   const panel = document.createElement('div');
@@ -95,9 +95,9 @@ export function mountSettings(
   panel.dataset.settingsPanel = '';
   const common = addGroup(panel, 'Chart display');
   const controls = new Map<string, HTMLInputElement | HTMLSelectElement>();
-  const applyLine = <K extends keyof A11yLineChartConfig>(key: K, value: A11yLineChartConfig[K]) => {
-    if (!lineChart) return;
-    lineChart.config = { ...lineChart.config, [key]: value };
+  const applyLine = <K extends keyof A11yTargetLineChartConfig>(key: K, value: A11yTargetLineChartConfig[K]) => {
+    if (!targetLineChart) return;
+    targetLineChart.config = { ...targetLineChart.config, [key]: value };
     emitChange();
   };
   const applyBar = <K extends keyof A11yBarChartConfig>(key: K, value: A11yBarChartConfig[K]) => {
@@ -106,11 +106,11 @@ export function mountSettings(
     emitChange();
   };
   const onSharedSelect = (key: 'dataView') => (value: string) => {
-    if (lineChart) applyLine(key, value as A11yLineChartConfig[typeof key]);
+    if (targetLineChart) applyLine(key, value as A11yTargetLineChartConfig[typeof key]);
     else applyBar(key, value as A11yBarChartConfig[typeof key]);
   };
   const onSharedCheck = (key: 'showSummary' | 'showExplanation' | 'showGlossary' | 'showExport') => (value: boolean) => {
-    if (lineChart) applyLine(key, value);
+    if (targetLineChart) applyLine(key, value);
     else applyBar(key, value);
   };
   const select = (group: HTMLElement, key: string, label: string, help: string, options: readonly Option[], value: string, change: (value: string) => void) => {
@@ -130,12 +130,12 @@ export function mountSettings(
   checkbox(common, 'showGlossary', 'Show glossary', 'Show category definitions when the example includes them.', resolvedConfig().showGlossary === true, onSharedCheck('showGlossary'));
   checkbox(common, 'showExport', 'Show CSV export', 'Show the CSV export action when chart data is available.', resolvedConfig().showExport === true, onSharedCheck('showExport'));
 
-  if (lineChart) {
-    const group = addGroup(panel, 'Line chart');
+  if (targetLineChart) {
+    const group = addGroup(panel, 'Target line chart');
     checkbox(group, 'showControls', 'Show reader display controls', 'Expose the chart’s built-in Values panel so readers can change lines, fills, patterns, and labels.', resolvedConfig().showControls === true, (value) => applyLine('showControls', value));
     select(group, 'positiveDirection', 'Positive direction', 'Choose which direction counts as a positive result when comparing a value with a numeric target.', [
       ['above', 'Above target'], ['below', 'Below target']
-    ], String(resolvedConfig().positiveDirection), (value) => applyLine('positiveDirection', value as NonNullable<A11yLineChartConfig['positiveDirection']>));
+    ], String(resolvedConfig().positiveDirection), (value) => applyLine('positiveDirection', value as NonNullable<A11yTargetLineChartConfig['positiveDirection']>));
     select(group, 'decimalPlaces', 'Value decimal places', 'Set the number of decimal places used for chart values and comparisons.', numericOptions(Array.from({ length: 21 }, (_, index) => index)), String(resolvedConfig().decimalPlaces), (value) => applyLine('decimalPlaces', Number(value)));
     checkbox(group, 'showActualLine', 'Show actual line', 'Show the actual series line.', resolvedConfig().showActualLine === true, (value) => applyLine('showActualLine', value));
     checkbox(group, 'showTargetLine', 'Show target line', 'Show the target series line.', resolvedConfig().showTargetLine === true, (value) => applyLine('showTargetLine', value));
@@ -158,11 +158,11 @@ export function mountSettings(
   }
 
   function resolvedConfig(): Record<string, unknown> {
-    return (lineChart ? resolveLineConfig(lineChart.config) : resolveBarConfig(barChart!.config)) as unknown as Record<string, unknown>;
+    return (targetLineChart ? resolveLineConfig(targetLineChart.config) : resolveBarConfig(barChart!.config)) as unknown as Record<string, unknown>;
   }
 
-  function currentConfig(): A11yLineChartConfig | A11yBarChartConfig {
-    return lineChart ? lineChart.config : barChart!.config;
+  function currentConfig(): A11yTargetLineChartConfig | A11yBarChartConfig {
+    return targetLineChart ? targetLineChart.config : barChart!.config;
   }
   function emitChange(): void {
     container.dispatchEvent(new CustomEvent('demo-settings-change', {

@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "installCommand": "npm ci --prefix packages/line-chart && npm ci --prefix packages/bar-chart && npm ci --prefix packages/segmented-bar-chart && npm ci --prefix docs",
+  "installCommand": "npm ci --prefix packages/target-line-chart && npm ci --prefix packages/bar-chart && npm ci --prefix packages/segmented-bar-chart && npm ci --prefix docs",
   "buildCommand": "npm run deploy:build",
   "outputDirectory": "dist/site",
   "redirects": [
@@ -21,6 +21,11 @@
     { "source": "/:page(spp-apr|dispute-resolution)/:path+", "destination": "/reports/:page/:path+", "permanent": true },
     { "source": "/segmented", "destination": "/examples/segmented-bar-charts/", "permanent": true },
     { "source": "/segmented/", "destination": "/examples/segmented-bar-charts/", "permanent": true },
-    { "source": "/segmented/:path+", "destination": "/examples/segmented-bar-charts/", "permanent": true }
+    { "source": "/segmented/:path+", "destination": "/examples/segmented-bar-charts/", "permanent": true },
+    { "source": "/charts/line-chart", "destination": "/charts/target-line-chart/", "permanent": true },
+    { "source": "/charts/line-chart/", "destination": "/charts/target-line-chart/", "permanent": true },
+    { "source": "/examples/line-charts", "destination": "/examples/target-line-charts/", "permanent": true },
+    { "source": "/examples/line-charts/", "destination": "/examples/target-line-charts/", "permanent": true },
+    { "source": "/demo/line-chart.html", "destination": "/demo/target-line-chart.html", "permanent": true }
   ]
 }

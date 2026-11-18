@@ -36,7 +36,7 @@ describe('experimental category cards', () => {
     [4.01, 2, 4, 'not-met'],
     [0, 0, 0, 'met'],
     [1, 0, 0, 'not-met']
-  ] as const)('shows the line-chart range outcome for %s in [%s, %s]: %s', async (value, min, max, outcome) => {
+  ] as const)('shows the target-line-chart range outcome for %s in [%s, %s]: %s', async (value, min, max, outcome) => {
     const chart = await makeChart();
     // Default count formatting rounds 1.99 to 2 and 4.01 to 4; compare raw values.
     chart.data = [{ id: 'alpha', label: 'Alpha', value, target: { min, max } }];

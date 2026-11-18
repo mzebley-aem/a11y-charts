@@ -1,10 +1,10 @@
-import '@mzebley-aem/line-chart/define';
+import '@mzebley-aem/target-line-chart/define';
 import '@mzebley-aem/bar-chart/define';
-import '@mzebley-aem/line-chart/styles.css';
+import '@mzebley-aem/target-line-chart/styles.css';
 import '@mzebley-aem/bar-chart/styles.css';
 import '../adapt-report-theme.css';
 import './report.css';
-import type { A11yLineChartElement } from '@mzebley-aem/line-chart';
+import type { A11yTargetLineChartElement } from '@mzebley-aem/target-line-chart';
 import type { A11yBarChartElement } from '@mzebley-aem/bar-chart';
 import { indicators, type Measure } from './data.js';
 const $ = <T extends HTMLElement = HTMLElement>(selector: string) =>
@@ -129,8 +129,8 @@ function renderMeasure() {
   const stage = $('#chart-stage');
   if (view === 'trend') {
     const chart = document.createElement(
-      'a11y-line-chart',
-    ) as A11yLineChartElement;
+      'a11y-target-line-chart',
+    ) as A11yTargetLineChartElement;
     chart.chartTitle = `Measure ${measure.id}: actual vs. target`;
     chart.dataNote = targetNote;
     if (targetNote) chart.messages = { outcomeNotMet: 'Target not met using the detailed target (under review)' };
@@ -179,7 +179,7 @@ function renderMeasure() {
       axisLabelFontSize: 14,
       legendFontSize: 14,
     };
-    chart.addEventListener('a11y-line-chart-settings-change', () => {
+    chart.addEventListener('a11y-target-line-chart-settings-change', () => {
       zoom = chart.config.initialZoomY ?? zoom;
       actual = chart.config.showActualLine ?? actual;
       target = chart.config.showTargetLine ?? target;
@@ -247,7 +247,7 @@ function renderMeasure() {
       labels = $<HTMLInputElement>('#labels').checked;
       actual = $<HTMLInputElement>('#actual').checked;
       target = $<HTMLInputElement>('#target').checked;
-      const chart = $<A11yLineChartElement>('#chart-stage a11y-line-chart');
+      const chart = $<A11yTargetLineChartElement>('#chart-stage a11y-target-line-chart');
       chart.config = {
         ...chart.config,
         initialZoomY: zoom,

@@ -7,7 +7,7 @@ const root = new URL('../', import.meta.url);
 const output = new URL('dist/site/', root);
 const docs = new URL('docs/dist/', root);
 const demos = [
-	[new URL('packages/line-chart/demo/index.html', root), 'line-chart.html'],
+	[new URL('packages/target-line-chart/demo/index.html', root), 'target-line-chart.html'],
 	[new URL('packages/bar-chart/demo/index.html', root), 'bar-chart.html'],
 ];
 

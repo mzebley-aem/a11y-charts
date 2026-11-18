@@ -7,7 +7,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 
-export const PACKAGES = ['line-chart', 'bar-chart', 'segmented-bar-chart'];
+export const PACKAGES = ['target-line-chart', 'bar-chart', 'segmented-bar-chart'];
 
 /** Classifies an `npm view <name>@<version> version` result. */
 export function classifyView({ status, stdout = '', stderr = '' }, version) {

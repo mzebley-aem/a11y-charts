@@ -1,4 +1,4 @@
-# A11y Line Chart experience plan
+# A11y Target Line Chart experience plan
 
 **Status:** Initial plan approved; Phase 1 complete locally; Phase 2 underway
 **Created:** August 19, 2026
@@ -236,7 +236,7 @@ The public API should use a stable strategy or x-axis value rather than a
 fragile array index. Proposed shape:
 
 ```ts
-type A11yLineChartInitialSelection =
+type A11yTargetLineChartInitialSelection =
   | { mode: 'latest-actual' }
   | { mode: 'first' }
   | { mode: 'last' }

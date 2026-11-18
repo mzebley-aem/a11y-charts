@@ -1,4 +1,4 @@
-import type { A11yLineChartDatum } from '@mzebley-aem/line-chart';
+import type { A11yTargetLineChartDatum } from '@mzebley-aem/target-line-chart';
 export interface Measure {
   id: string;
   title: string;
@@ -8,7 +8,7 @@ export interface Measure {
   direction: 'above' | 'below';
   count: number;
   baseline?: { year: number; value: number };
-  history?: A11yLineChartDatum[];
+  history?: A11yTargetLineChartDatum[];
 }
 export interface Indicator {
   id: string;

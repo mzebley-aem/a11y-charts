@@ -33,7 +33,7 @@ Set it with `config.locale` or the `locale` attribute; the attribute wins. An in
 
 ## Override messages
 
-Assign a partial dictionary to `messages`. Any key you leave out uses the English default. Key names differ between charts, so this bar chart example won't translate a line chart (see [common keys](#common-keys)):
+Assign a partial dictionary to `messages`. Any key you leave out uses the English default. Key names differ between charts, so this bar chart example won't translate a target line chart (see [common keys](#common-keys)):
 
 ```ts
 barChart.messages = {
@@ -48,7 +48,7 @@ The same object works as a JSON attribute:
 <a11y-bar-chart messages='{"showData":"View data"}'></a11y-bar-chart>
 ```
 
-If the attribute isn't a valid JSON object of strings, the chart shows a configuration error and emits its `-error` event with code `invalid-messages`. The line chart also rejects keys it doesn't recognize. What happens to your translations depends on the chart:
+If the attribute isn't a valid JSON object of strings, the chart shows a configuration error and emits its `-error` event with code `invalid-messages`. The target line chart also rejects keys it doesn't recognize. What happens to your translations depends on the chart:
 
 - **Line and bar charts** keep using the last valid dictionary.
 - **Segmented bar chart** drops the dictionary and falls back to English for every key.
@@ -59,15 +59,15 @@ Each package exports its complete English catalog and key type, which is the aut
 
 | Package | Catalog | Key type |
 | --- | --- | --- |
-| `@mzebley-aem/line-chart` | `ENGLISH_LINE_CHART_MESSAGES` | `A11yLineChartMessageKey` |
+| `@mzebley-aem/target-line-chart` | `ENGLISH_LINE_CHART_MESSAGES` | `A11yTargetLineChartMessageKey` |
 | `@mzebley-aem/bar-chart` | `ENGLISH_BAR_CHART_MESSAGES` | `MessageKey` |
 | `@mzebley-aem/segmented-bar-chart` | `ENGLISH_SEGMENTED_BAR_CHART_MESSAGES` | `MessageKey` |
 
 ### Common keys
 
-The bar and segmented charts share most key names. The line chart names some actions differently:
+The bar and segmented charts share most key names. The target line chart names some actions differently:
 
-| Text | Line chart | Bar and segmented charts |
+| Text | Target line chart | Bar and segmented charts |
 | --- | --- | --- |
 | Open the data view | `dataAction` | `showData` |
 | Close the data dialog | `closeData` | `close` |
@@ -102,7 +102,7 @@ For a language switch, change all of these together:
 
 Keep category `id` values the same in every language. Selection, theming, and focus restoration all use IDs, so stable IDs keep them working across a switch.
 
-The standalone demos include complete French and Spanish catalogs for the [line chart](https://github.com/mzebley-aem/a11y-charts/blob/main/packages/line-chart/demo/locales.ts) and [bar chart](https://github.com/mzebley-aem/a11y-charts/blob/main/packages/bar-chart/demo/locales.ts). Start a translation from those.
+The standalone demos include complete French and Spanish catalogs for the [target line chart](https://github.com/mzebley-aem/a11y-charts/blob/main/packages/target-line-chart/demo/locales.ts) and [bar chart](https://github.com/mzebley-aem/a11y-charts/blob/main/packages/bar-chart/demo/locales.ts). Start a translation from those.
 
 ## Formatting values yourself
 

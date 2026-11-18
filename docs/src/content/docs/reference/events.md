@@ -3,7 +3,7 @@ title: Events
 description: Every event the chart elements dispatch, with its detail payload.
 ---
 
-Every event is a `CustomEvent` that bubbles, so you can listen on the chart or on any ancestor. Event names start with the element name: `a11y-line-chart-`, `a11y-bar-chart-`, or `a11y-segmented-bar-chart-`. The line and bar packages export a type for each event's detail, such as `A11yLineChartPointChangeDetail` or `A11yBarChartDataChangeDetail`. The segmented package doesn't export detail types, so type its payloads locally from the tables below.
+Every event is a `CustomEvent` that bubbles, so you can listen on the chart or on any ancestor. Event names start with the element name: `a11y-target-line-chart-`, `a11y-bar-chart-`, or `a11y-segmented-bar-chart-`. The line and bar packages export a type for each event's detail, such as `A11yTargetLineChartPointChangeDetail` or `A11yBarChartDataChangeDetail`. The segmented package doesn't export detail types, so type its payloads locally from the tables below.
 
 ```ts
 import type { A11yBarChartDataChangeDetail } from '@mzebley-aem/bar-chart';
@@ -45,15 +45,15 @@ Fires when data, configuration, or the `messages` attribute is invalid. The char
 
 | Field | Type |
 | --- | --- |
-| `code` | `string`. Machine-readable. The line chart uses `invalid-data`, `invalid-baseline`, and `invalid-messages`. The bar and segmented charts use their validation codes, such as `validationDuplicateId`, and `invalid-messages`. |
+| `code` | `string`. Machine-readable. The target line chart uses `invalid-data`, `invalid-baseline`, and `invalid-messages`. The bar and segmented charts use their validation codes, such as `validationDuplicateId`, and `invalid-messages`. |
 | `message` | `string`, localized |
 | `data` | Bar chart only: a copy of the rejected data |
 
-An invalid baseline doesn't stop the line chart: it renders without the baseline.
+An invalid baseline doesn't stop the target line chart: it renders without the baseline.
 
 ### `-data-change`
 
-Fires after the first render when the data, total, baseline, or error state changes. It doesn't fire for the initial data. The line and bar charts skip assignments that don't change anything, and the line chart combines several assignments in the same task into one event.
+Fires after the first render when the data, total, baseline, or error state changes. It doesn't fire for the initial data. The line and bar charts skip assignments that don't change anything, and the target line chart combines several assignments in the same task into one event.
 
 | Field | Type |
 | --- | --- |
@@ -78,9 +78,9 @@ Fires when a reader expands or collapses the Explain or Glossary section.
 | `disclosure` | `'explanation'` or `'glossary'` |
 | `expanded` | `boolean` |
 
-## Line chart only
+## Target line chart only
 
-### `a11y-line-chart-point-change`
+### `a11y-target-line-chart-point-change`
 
 Fires when the reader selects a period, by keyboard, pointer, or the Previous and Next buttons.
 
@@ -99,12 +99,12 @@ Fires when the reader selects a period, by keyboard, pointer, or the Previous an
 
 Differences are in whole percentage points for percent charts, whatever `percentScale` is.
 
-### `a11y-line-chart-settings-change`
+### `a11y-target-line-chart-settings-change`
 
 Fires once for each display setting a reader changes through the chart's own controls or legend. Property and attribute changes from your code never fire it, so it's safe to use for saving reader preferences:
 
 ```ts
-chart.addEventListener('a11y-line-chart-settings-change', (event) => {
+chart.addEventListener('a11y-target-line-chart-settings-change', (event) => {
 	save(event.detail.setting, event.detail.value);
 });
 ```

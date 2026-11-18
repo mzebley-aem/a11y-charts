@@ -1,5 +1,5 @@
 export interface CsvCellPolicy {
-  /** Quote every cell, as required by the line-chart CSV contract. */
+  /** Quote every cell, as required by the target-line-chart CSV contract. */
   alwaysQuote?: boolean;
   /** Treat negative numeric literals as safe from formula protection. */
   preserveNegativeNumericLiteral?: boolean;

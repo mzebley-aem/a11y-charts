@@ -7,11 +7,11 @@ The charts are published to GitHub Packages under the `@mzebley-aem` scope. Each
 
 | Package | Element |
 | --- | --- |
-| `@mzebley-aem/line-chart` | `<a11y-line-chart>` |
+| `@mzebley-aem/target-line-chart` | `<a11y-target-line-chart>` |
 | `@mzebley-aem/bar-chart` | `<a11y-bar-chart>`, `<a11y-bar-chart-group>` |
 | `@mzebley-aem/segmented-bar-chart` | `<a11y-segmented-bar-chart>` |
 
-None of the packages has runtime dependencies. The line chart bundles its ECharts renderer, and every package compiles its shared code in, so there is no shared runtime to load separately.
+None of the packages has runtime dependencies. The target line chart bundles its ECharts renderer, and every package compiles its shared code in, so there is no shared runtime to load separately.
 
 ## Configure the registry
 
@@ -36,7 +36,7 @@ GitHub Packages always needs a token to install, even for public packages.
 3. Install:
 
    ```bash
-   npm install @mzebley-aem/line-chart @mzebley-aem/bar-chart @mzebley-aem/segmented-bar-chart
+   npm install @mzebley-aem/target-line-chart @mzebley-aem/bar-chart @mzebley-aem/segmented-bar-chart
    ```
 
 ## Register the elements

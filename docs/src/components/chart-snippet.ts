@@ -5,7 +5,7 @@
 export type ChartType = 'line' | 'bar' | 'group' | 'segmented';
 
 export const CHARTS = {
-	line: { tag: 'a11y-line-chart', pkg: '@mzebley-aem/line-chart' },
+	line: { tag: 'a11y-target-line-chart', pkg: '@mzebley-aem/target-line-chart' },
 	bar: { tag: 'a11y-bar-chart', pkg: '@mzebley-aem/bar-chart' },
 	group: { tag: 'a11y-bar-chart-group', pkg: '@mzebley-aem/bar-chart' },
 	segmented: { tag: 'a11y-segmented-bar-chart', pkg: '@mzebley-aem/segmented-bar-chart' },
